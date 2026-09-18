@@ -1,0 +1,23 @@
+// Variáveis globais de estilo — SAUF.BR
+// Valores placeholder até o design system ser definido. Ajustar aqui, nunca
+// duplicar valores soltos dentro de um .module.scss.
+
+// Cores — ajustar quando a paleta oficial for definida
+$color-primary: #4f46e5; // ajustar: cor de marca
+$color-text: #1f2937; // ajustar: texto principal
+$color-text-muted: #6b7280; // ajustar: texto secundário
+$color-background: #ffffff; // ajustar: fundo padrão
+$color-border: #e5e7eb; // ajustar: bordas e divisores
+
+// Espaçamentos — escala base de 4px
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 40px;
+
+// Breakpoints — ajustar conforme definição de design responsivo
+$breakpoint-sm: 480px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;

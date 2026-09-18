@@ -1,0 +1,13 @@
+@use '../../styles/variables' as *;
+
+.page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-lg;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $color-text;
+}
