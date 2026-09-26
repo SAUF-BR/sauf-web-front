@@ -1,13 +1,76 @@
 @use '../../styles/variables' as *;
 
-.page {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.fundoMaior {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1rem 1.5rem;
+  background-color: $color-green-backgroud;
 }
 
-.title {
-  font-size: 1.5rem;
+.fundoMenor {
+  width: 100%;
+  max-width: 29rem;
+  padding: 2.25rem;
+  background-color: $color-white;
+  border-radius: 1.25rem;
+}
+
+.cabecalho {
+  margin-bottom: 1.625rem;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.125rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.esqueciSenha {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: $color-text;
+  color: $color-green;
+  text-decoration: none;
+}
+
+.botaoEntrar {
+  margin-top: 0.25rem;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.25rem 0;
+  font-size: 0.75rem;
+  color: $color-grey;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: $color-grey;
+  }
+}
+
+.cadastro {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+  color: $color-grey;
+}
+
+.cadastroLink {
+  margin-left: 0.25rem;
+  font-weight: 700;
+  color: $color-green;
+  cursor: pointer;
 }
