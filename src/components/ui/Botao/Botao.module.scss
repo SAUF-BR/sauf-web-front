@@ -1,0 +1,50 @@
+@use 'sass:color';
+@use '../../../styles/variables' as *;
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    border-radius: 0.625rem;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem rgba($color-green, 0.25);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.primary {
+    background: $color-green;
+    color: $color-white;
+
+    &:hover:not(:disabled) {
+        background: color.adjust($color-green, $lightness: -5%);
+    }
+}
+
+.outline {
+    background: #ffffff;
+    color: $color-blue-secondary;
+    border-color: $color-grey;
+
+    &:hover:not(:disabled) {
+        background: $color-white;
+    }
+}
+
+.fullWidth {
+    width: 100%;
+}
