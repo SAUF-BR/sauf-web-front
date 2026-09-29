@@ -14,6 +14,21 @@
   padding: 2.25rem;
   background-color: $color-white;
   border-radius: 1.25rem;
+  animation: cartaoEntrar 0.9s ease both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes cartaoEntrar {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .cabecalho {
@@ -73,4 +88,5 @@
   font-weight: 700;
   color: $color-green;
   cursor: pointer;
+  text-decoration: none;
 }

@@ -1,0 +1,27 @@
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: circuloCaindo 0.9s ease-in-out;
+}
+
+@keyframes circuloCaindo {
+  0% {
+    clip-path: circle(4% at 50% -10%);
+  }
+  40% {
+    clip-path: circle(4% at 50% 50%);
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -1,13 +1,95 @@
 @use '../../styles/variables' as *;
 
-.page {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.fundoMaior {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1rem 1.5rem;
+  background-color: $color-blue-primary;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.fundoMenor {
+  width: 100%;
+  max-width: 29rem;
+  padding: 2.25rem;
+  background-color: $color-white;
+  border-radius: 1.25rem;
+  animation: cartaoEntrar 0.9s ease both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes cartaoEntrar {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.topo {
+  margin-bottom: 1.5rem;
+}
+
+.topoLinha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.etapa {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-grey;
+}
+
+.progresso {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.segmento {
+  flex: 1;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: $color-grey;
+}
+
+.segmentoAtivo {
+  @extend .segmento;
+  background: $color-green;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.botaoContinuar{
+  margin-top: 0.25rem;
+  margin-bottom: 0.9rem;
+}
+
+.acessar{
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+  color: $color-grey;
+}
+
+.acessarLink{
+  margin-left: 0.25rem;
+  font-weight: 700;
+  color: $color-green;
+  cursor: pointer;
+  text-decoration: none;
 }

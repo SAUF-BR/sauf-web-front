@@ -3,6 +3,7 @@ import { Titulo } from '../../components/ui/Titulo/Titulo'
 import styles from './index.module.scss'
 import { TextInput } from '../../components/ui/TextInput/TextInput'
 import { Button } from '../../components/ui/Botao/Botao'
+import { Link } from 'react-router-dom'
 
 export default function Login() {
   return (
@@ -15,6 +16,7 @@ export default function Login() {
           <Titulo
             titulo='Entrar na sua conta'
             subtitulo='Acompanhe prazos, favoritos e o seu teste vocacional.'
+            size="Medio"
           />
         </header>
 
@@ -27,7 +29,6 @@ export default function Login() {
           <TextInput
             label="Senha"
             type="password"
-            autoComplete="current-password"
             labelAction={
               <a href="/esqueci-senha" className={styles.esqueciSenha}>
                 Esqueci minha senha
@@ -41,7 +42,7 @@ export default function Login() {
           <Button variant="outline" fullWidth>Entrar com Google</Button>
           <div className={styles.cadastro}>
             <span>Primeiro acesso?</span>
-            <span className={styles.cadastroLink}>Criar conta</span>
+            <Link to="/cadastro" viewTransition className={styles.cadastroLink}>Criar conta</Link>
           </div>
         </div>
       </div>

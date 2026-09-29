@@ -3,7 +3,6 @@
 .titulo {
     margin-bottom: 0.375rem;
     font-family: 'Instrument Serif', serif;
-    font-size: 1.875rem;
     font-weight: 400;
     line-height: 1.2;
     color: $color-green;
@@ -13,4 +12,19 @@
     font-size: 0.8125rem;
     line-height: 1.5;
     color: $color-grey;
+}
+
+.Pequeno{
+    .titulo { font-size: 1.875rem; }
+    .subtitulo { font-size: 0.8125rem; }
+}
+
+.Medio{
+    .titulo { font-size: 2rem; }
+    .subtitulo { font-size: 1rem; }
+}
+
+.Grande{
+    .titulo { font-size: 1.875rem; }
+    .subtitulo { font-size: 0.8125rem; }
 }
