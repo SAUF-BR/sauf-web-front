@@ -10,14 +10,36 @@
 
 .fundoMenor {
   width: 100%;
-  max-width: 29rem;
-  padding: 2.25rem;
+  max-width: 32.5rem;
+  display: grid;
+  overflow: hidden;
   background-color: $color-white;
   border-radius: 1.25rem;
   animation: cartaoEntrar 0.9s ease both;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+  }
+}
+
+.painel {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: opacity 0.35s ease, visibility 0s;
+}
+
+.oculto {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.35s ease, visibility 0s 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .painel,
+  .oculto {
+    transition: none;
   }
 }
 
@@ -29,67 +51,4 @@
   100% {
     opacity: 1;
   }
-}
-
-.topo {
-  margin-bottom: 1.5rem;
-}
-
-.topoLinha {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.etapa {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: $color-grey;
-}
-
-.progresso {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.segmento {
-  flex: 1;
-  height: 0.25rem;
-  border-radius: 999px;
-  background: $color-grey;
-}
-
-.segmentoAtivo {
-  @extend .segmento;
-  background: $color-green;
-}
-
-.form{
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.botaoContinuar{
-  margin-top: 0.25rem;
-  margin-bottom: 0.9rem;
-}
-
-.acessar{
-  margin-top: 0.25rem;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  text-align: center;
-  color: $color-grey;
-}
-
-.acessarLink{
-  margin-left: 0.25rem;
-  font-weight: 700;
-  color: $color-green;
-  cursor: pointer;
-  text-decoration: none;
 }
