@@ -1,0 +1,28 @@
+@use '../../../../styles/variables' as *;
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $spacing-sm $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: $color-blue-primary;
+}
+
+.subtitulo {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.acao {
+  padding-bottom: $spacing-xs;
+}

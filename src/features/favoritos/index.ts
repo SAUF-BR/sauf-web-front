@@ -1,2 +1,3 @@
-// Feature: favoritos do usuário. Lógica a ser implementada.
-export {}
+// Feature: favoritos do usuário.
+export * from './hooks'
+export { BotaoFavorito } from './components/BotaoFavorito/BotaoFavorito'

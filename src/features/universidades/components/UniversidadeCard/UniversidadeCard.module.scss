@@ -1,0 +1,49 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  color: inherit;
+  text-decoration: none;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $color-grey;
+    box-shadow: 0 6px 20px rgba($color-blue-primary, 0.06);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.info {
+  min-width: 0;
+}
+
+.nome {
+  @include truncate;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.detalhes {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}

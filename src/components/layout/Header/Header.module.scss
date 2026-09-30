@@ -1,0 +1,157 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: $color-blue-primary;
+  color: $color-white;
+}
+
+.conteudo {
+  @include container;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xl;
+  height: $header-height;
+}
+
+.logo {
+  display: flex;
+  text-decoration: none;
+  border-radius: $radius-sm;
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+  }
+}
+
+.nav {
+  display: none;
+
+  @media (min-width: $breakpoint-md) {
+    display: block;
+  }
+}
+
+.navLista {
+  display: flex;
+  gap: $spacing-lg;
+}
+
+.navLink {
+  position: relative;
+  display: inline-block;
+  padding: $spacing-sm 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba($color-white, 0.8);
+  text-decoration: none;
+  transition: color 0.15s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: $color-yellow;
+    border-radius: $radius-full;
+    transform: scaleX(0);
+    transition: transform 0.15s;
+  }
+
+  &:hover {
+    color: $color-white;
+  }
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+    border-radius: $radius-sm;
+  }
+}
+
+.navLinkAtivo {
+  color: $color-white;
+
+  &::after {
+    transform: scaleX(1);
+  }
+}
+
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-left: auto;
+}
+
+.acao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.25rem;
+  color: $color-white;
+  border-radius: $radius-full;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba($color-white, 0.08);
+  }
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+  }
+}
+
+.acaoContorno {
+  border: 2px solid rgba($color-white, 0.85);
+  font-size: 1.125rem;
+}
+
+.iconeFavoritos {
+  color: $color-yellow;
+}
+
+.indicador {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 0.625rem;
+  height: 0.625rem;
+  background: $color-yellow;
+  border: 2px solid $color-blue-primary;
+  border-radius: $radius-full;
+}
+
+.perfil {
+  display: inline-flex;
+  text-decoration: none;
+  border-radius: $radius-full;
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+  }
+}
+
+.entrar {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 $spacing-md;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  text-decoration: none;
+  background: $color-white;
+  border-radius: $radius-md;
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+  }
+}
