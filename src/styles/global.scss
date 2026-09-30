@@ -14,14 +14,33 @@ body {
 }
 
 body {
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  color: $color-text;
-  background: $color-background;
+  font-family: $font-sans;
+  color: $color-blue-primary;
+  background: $color-surface;
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 a {
   color: inherit;
+}
+
+button {
+  font: inherit;
 }
 
 #root {

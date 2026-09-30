@@ -1,3 +1,45 @@
 // Mixins reutilizáveis do projeto (ex.: flex-center, truncate).
-// Ainda vazio — adicionar conforme os padrões visuais forem aparecendo
-// organicamente em mais de um componente (ver ARQUITETURA.md, seção 4).
+// Adicionar conforme os padrões visuais forem aparecendo organicamente em
+// mais de um componente (ver ARQUITETURA.md, seção 4).
+@use './variables' as *;
+
+// Container central da página, com respiro lateral
+@mixin container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: 0 $spacing-xl;
+  }
+}
+
+// Anel de foco padrão (mesmo padrão do Botao)
+@mixin focus-ring($color: $color-green) {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba($color, 0.25);
+}
+
+// Texto em uma linha com reticências
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// Link de texto sem sublinhado que ganha sublinhado no hover
+@mixin text-link($color: $color-green) {
+  font-weight: 600;
+  color: $color;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring($color);
+    border-radius: $radius-sm;
+  }
+}

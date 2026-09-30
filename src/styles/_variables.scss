@@ -2,7 +2,6 @@
 // Valores placeholder até o design system ser definido. Ajustar aqui, nunca
 // duplicar valores soltos dentro de um .module.scss.
 
-// Cores — ajustar quando a paleta oficial for definida
 $color-blue-primary: #204B57; 
 $color-blue-secondary: #395E66;
 $color-yellow: #E2B93B; 
@@ -11,6 +10,30 @@ $color-green-backgroud: #143b30;
 $color-white: #F5F1E8;
 $color-grey: #a6a6a6;
 $color-error: #C0392B;
+
+// Complementos da paleta (Home) — derivados da paleta acima
+$color-surface: #FFFFFF;
+$color-text-secondary: #6F7A77;
+$color-border-light: #E6E1D6;
+$color-green-soft: #E3EEE8;
+$color-placeholder: #ECEAE4;
+$color-placeholder-stripe: #E2DFD8;
+
+// Tipografia
+$font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+$font-serif: 'Instrument Serif', serif;
+$font-mono: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+// Bordas arredondadas
+$radius-sm: 0.375rem;
+$radius-md: 0.625rem;
+$radius-lg: 1rem;
+$radius-xl: 1.25rem;
+$radius-full: 999px;
+
+// Layout
+$container-max-width: 1320px;
+$header-height: 4rem;
 
 $color-primary: #4f46e5; // ajustar: cor de marca
 $color-text: #1f2937; // ajustar: texto principal
@@ -25,6 +48,7 @@ $spacing-sm: 8px;
 $spacing-md: 16px;
 $spacing-lg: 24px;
 $spacing-xl: 40px;
+$spacing-2xl: 56px;
 
 // Breakpoints — ajustar conforme definição de design responsivo
 $breakpoint-sm: 480px;

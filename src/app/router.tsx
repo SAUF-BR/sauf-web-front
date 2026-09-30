@@ -7,6 +7,7 @@ import {
 import { MainLayout } from '../components/layout/MainLayout'
 import { PrivateRoute } from '../routes/PrivateRoute'
 import { SubscriberRoute } from '../routes/SubscriberRoute'
+import { ROTAS } from '../routes/paths'
 
 import Home from '../pages/Home'
 import Login from '../pages/Login'
@@ -30,41 +31,48 @@ import NotFound from '../pages/NotFound'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<MainLayout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/cadastro" element={<Cadastro />} />
+    <>
+      {/* Telas de autenticação: tela cheia, sem o header da aplicação */}
+      <Route path={ROTAS.login} element={<Login />} />
+      <Route path={ROTAS.cadastro} element={<Cadastro />} />
 
-      <Route path="/cursos" element={<Cursos />} />
-      <Route path="/cursos/:cursoId" element={<CursoDetalhe />} />
+      <Route element={<MainLayout />}>
+        <Route path={ROTAS.inicio} element={<Home />} />
 
-      <Route path="/universidades" element={<Universidades />} />
-      <Route path="/universidades/:universidadeId" element={<UniversidadeDetalhe />} />
+        <Route path={ROTAS.cursos} element={<Cursos />} />
+        <Route path={ROTAS.cursoDetalhe(':cursoId')} element={<CursoDetalhe />} />
 
-      <Route path="/formas-de-ingresso" element={<FormasDeIngresso />} />
-      <Route path="/calendario" element={<Calendario />} />
+        <Route path={ROTAS.universidades} element={<Universidades />} />
+        <Route
+          path={ROTAS.universidadeDetalhe(':universidadeId')}
+          element={<UniversidadeDetalhe />}
+        />
 
-      {/* Teste vocacional: apresentação pública, perguntas exigem login */}
-      <Route path="/teste-vocacional" element={<TesteVocacional />} />
-      <Route element={<PrivateRoute />}>
-        <Route path="/teste-vocacional/perguntas" element={<Perguntas />} />
+        <Route path={ROTAS.formasDeIngresso} element={<FormasDeIngresso />} />
+        <Route path={ROTAS.calendario} element={<Calendario />} />
+
+        {/* Teste vocacional: apresentação pública, perguntas exigem login */}
+        <Route path={ROTAS.testeVocacional} element={<TesteVocacional />} />
+        <Route element={<PrivateRoute />}>
+          <Route path={ROTAS.testeVocacionalPerguntas} element={<Perguntas />} />
+        </Route>
+
+        {/* Simulados: apresentação e paywall públicos, conteúdo exige assinatura ativa */}
+        <Route path={ROTAS.simulados} element={<Simulados />} />
+        <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
+        <Route element={<SubscriberRoute />}>
+          <Route path={ROTAS.simuladosConteudo} element={<SimuladosConteudo />} />
+        </Route>
+
+        <Route path={ROTAS.favoritos} element={<Favoritos />} />
+        <Route path={ROTAS.notificacoes} element={<Notificacoes />} />
+        <Route path={ROTAS.perfil} element={<Perfil />} />
+        <Route path={ROTAS.perfilAssinatura} element={<GerenciarAssinatura />} />
+
+        <Route path="*" element={<NotFound />} />
       </Route>
-
-      {/* Simulados: apresentação e paywall públicos, conteúdo exige assinatura ativa */}
-      <Route path="/simulados" element={<Simulados />} />
-      <Route path="/simulados/paywall" element={<Paywall />} />
-      <Route element={<SubscriberRoute />}>
-        <Route path="/simulados/conteudo" element={<SimuladosConteudo />} />
-      </Route>
-
-      <Route path="/favoritos" element={<Favoritos />} />
-      <Route path="/notificacoes" element={<Notificacoes />} />
-      <Route path="/perfil" element={<Perfil />} />
-      <Route path="/perfil/assinatura" element={<GerenciarAssinatura />} />
-
-      <Route path="*" element={<NotFound />} />
-    </Route>
-  )
+    </>,
+  ),
 )
 
 export function AppRouter() {
