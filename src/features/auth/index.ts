@@ -1,2 +1,4 @@
-// Feature: autenticação (login, cadastro, sessão). Lógica a ser implementada.
-export {}
+// Feature: autenticação (login, cadastro, sessão).
+export * from './types'
+export * from './utils'
+export * from './hooks'

@@ -1,0 +1,90 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.painel {
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.titulo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.verTodos {
+  @include text-link;
+  font-size: 0.875rem;
+}
+
+.vazio {
+  padding: $spacing-md 0;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+
+  & + & {
+    border-top: 1px solid $color-border-light;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  background: $color-white;
+  border-radius: $radius-md;
+}
+
+.dia {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+  color: $color-blue-primary;
+}
+
+.mes {
+  margin-top: 2px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: $color-text-secondary;
+}
+
+.info {
+  min-width: 0;
+}
+
+.itemTitulo {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.itemDescricao {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+}

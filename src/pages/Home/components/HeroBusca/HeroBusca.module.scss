@@ -1,0 +1,60 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.saudacao {
+  margin-bottom: $spacing-md;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $color-blue-secondary;
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: $color-blue-primary;
+}
+
+.destaque {
+  display: block;
+  font-style: italic;
+  color: $color-green;
+}
+
+.busca {
+  width: 100%;
+  max-width: 34rem;
+  margin-top: $spacing-xl;
+}
+
+.populares {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.popularesLista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs $spacing-md;
+}
+
+.popularLink {
+  @include text-link;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

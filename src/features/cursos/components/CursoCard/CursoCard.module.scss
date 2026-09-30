@@ -1,0 +1,101 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// O link "Ver curso" se estende sobre o card inteiro (card clicável),
+// mantendo a ação (favoritar) acima dele.
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $color-grey;
+    box-shadow: 0 6px 20px rgba($color-blue-primary, 0.06);
+  }
+}
+
+.imagem {
+  aspect-ratio: 16 / 9;
+}
+
+.corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg $spacing-lg;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.nome {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: $color-blue-primary;
+}
+
+.universidade {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.acao {
+  position: relative;
+  z-index: 1;
+  margin: -$spacing-xs (-$spacing-sm) 0 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.rodape {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $spacing-md;
+  margin-top: auto;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-border-light;
+}
+
+.destaqueRotulo {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.destaqueValor {
+  display: block;
+  margin-top: 2px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.9375rem;
+  @include text-link;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+}

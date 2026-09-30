@@ -1,9 +1,13 @@
 import styles from './Logo.module.scss'
 
-export function Logo(){
+type LogoProps = {
+    variant?: 'padrao' | 'clara'
+}
+
+export function Logo({ variant = 'padrao' }: LogoProps){
     return(
         <>
-            <div className={styles.wrapper}>
+            <div className={`${styles.wrapper} ${variant === 'clara' ? styles.clara : ''}`}>
                 <span className={styles.logo}>SAUF</span>
                 <span className={styles.dot}>.</span>
                 <span className={styles.logo}>BR</span>

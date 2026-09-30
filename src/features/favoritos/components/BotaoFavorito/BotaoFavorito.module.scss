@@ -1,0 +1,35 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 1.125rem;
+  color: $color-grey;
+  background: transparent;
+  border: none;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    color: $color-yellow;
+    background: rgba($color-yellow, 0.1);
+  }
+
+  &:focus-visible {
+    @include focus-ring($color-yellow);
+  }
+
+  &:disabled {
+    cursor: wait;
+  }
+}
+
+.ativo {
+  color: $color-yellow;
+}
