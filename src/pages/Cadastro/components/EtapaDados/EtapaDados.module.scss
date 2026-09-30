@@ -1,0 +1,51 @@
+@use '../../../../styles/variables' as *;
+
+.conteudo {
+  padding: 2.25rem;
+}
+
+.topo {
+  margin-bottom: 1.5rem;
+}
+
+.topoLinha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.etapa {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-grey;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.botaoContinuar {
+  margin-top: 0.25rem;
+  margin-bottom: 0.9rem;
+}
+
+.acessar {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+  color: $color-grey;
+}
+
+.acessarLink {
+  margin-left: 0.25rem;
+  font-weight: 700;
+  color: $color-green;
+  cursor: pointer;
+  text-decoration: none;
+}
