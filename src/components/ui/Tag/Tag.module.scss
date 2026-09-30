@@ -1,0 +1,22 @@
+@use '../../../styles/variables' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+}
+
+.destaque {
+  background: $color-green-soft;
+  color: $color-green;
+}
+
+.neutro {
+  background: $color-white;
+  color: $color-blue-secondary;
+}

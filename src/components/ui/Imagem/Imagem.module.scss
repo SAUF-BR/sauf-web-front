@@ -1,0 +1,27 @@
+@use '../../../styles/variables' as *;
+
+.imagem {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    $color-placeholder,
+    $color-placeholder 10px,
+    $color-placeholder-stripe 10px,
+    $color-placeholder-stripe 20px
+  );
+}
+
+.rotulo {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+}
