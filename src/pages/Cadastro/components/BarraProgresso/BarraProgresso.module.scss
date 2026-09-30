@@ -15,7 +15,6 @@ $gap: 0.5rem;
   background: $color-grey;
 }
 
-// Largura de um segmento; o translate usa a própria largura (100%) + o gap para pular de um segmento ao próximo.
 .indicador {
   position: absolute;
   top: 0;
