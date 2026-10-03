@@ -19,7 +19,6 @@ export function useFiltrosUniversidades(universidades: UniversidadeListagem[]) {
   const [filtros, setFiltros] = useState<Filtros>(Filtros_vazios)
   const [busca, setBusca] = useState('')
 
-  // Base dos contadores dos filtros: considera busca, estado e cidade
   const escopo = universidades.filter(
     (u) =>
       normalizar(`${u.nome} ${u.sigla ?? ''}`).includes(normalizar(busca)) &&
@@ -27,7 +26,7 @@ export function useFiltrosUniversidades(universidades: UniversidadeListagem[]) {
       (!filtros.cidade || u.cidade === filtros.cidade),
   )
 
-  // O que aparece na grade: o escopo, filtrado por categoria, nota do MEC e modalidade.
+  // O que aparece na grade: o escopo, filtrado por categoria, nota do MEC e modalidade
   const resultados = escopo.filter(
     (u) =>
       (filtros.categorias.length === 0 || filtros.categorias.includes(u.tipo)) &&

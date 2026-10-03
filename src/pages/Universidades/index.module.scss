@@ -83,7 +83,6 @@ $fundo-lateral: color.mix($color-surface, $color-white, 60%);
     grid-template-columns: repeat(3, 1fr);
   }
 
-  // Cards da mesma linha com a mesma altura
   > li {
     display: flex;
 

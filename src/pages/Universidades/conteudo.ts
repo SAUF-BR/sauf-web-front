@@ -2,8 +2,6 @@ import type { Modalidade } from '../../features/cursos'
 import type { TipoUniversidade } from '../../features/universidades'
 import { ESTADOS_BR, type UF } from '../../lib/utils'
 
-// Opções, textos e valores iniciais dos filtros da listagem de universidades
-
 export type FiltroNotaMec = 'todas' | '4-5' | '3'
 
 export type Filtros = {
