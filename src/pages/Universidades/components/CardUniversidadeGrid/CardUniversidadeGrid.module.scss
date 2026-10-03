@@ -1,0 +1,135 @@
+
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// Estilos do card de universidade da listagem.
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $color-grey;
+    box-shadow: 0 6px 20px rgba($color-blue-primary, 0.06);
+  }
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.logo {
+  width: 3.125rem;
+  height: 3.125rem;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nome {
+  @include truncate;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.local {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.favorito {
+  flex-shrink: 0;
+  margin: -$spacing-xs (-$spacing-xs) 0 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.cursos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-border-light;
+}
+
+.cursosRotulo {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.cursosValor {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: $color-blue-primary;
+}
+
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: $color-white;
+  text-decoration: none;
+  background: $color-green;
+  border-radius: $radius-md;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: color.adjust($color-green, $lightness: -5%);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.notaMec {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: color.adjust($color-yellow, $lightness: -30%);
+  white-space: nowrap;
+  background: rgba($color-yellow, 0.2);
+  border-radius: $radius-sm;
+}
+
+@media (max-width: #{$breakpoint-sm - 1px}) {
+  .logo {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .nome {
+    font-size: 1rem;
+  }
+
+  .local {
+    font-size: 0.8125rem;
+  }
+}
