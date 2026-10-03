@@ -18,9 +18,7 @@ import styles from './FiltrosLaterais.module.scss'
 type FiltrosLateraisProps = {
   filtros: Filtros
   cidades: string[]
-  // Universidades que atendem à busca, estado e cidade
   escopo: UniversidadeListagem[]
-  // Altera um ou mais filtros de uma vez
   onAtualizar: (parcial: Partial<Filtros>) => void
   onAlternarCategoria: (categoria: TipoUniversidade) => void
   onAlternarModalidade: (modalidade: Modalidade) => void

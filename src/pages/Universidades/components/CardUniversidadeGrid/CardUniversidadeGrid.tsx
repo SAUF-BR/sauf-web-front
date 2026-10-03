@@ -16,7 +16,6 @@ type CardUniversidadeGridProps = {
   onAlternarFavorito: () => void
 }
 
-// Versão completa do card 
 export function CardUniversidadeGrid({
   universidade,
   favorito,
