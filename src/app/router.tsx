@@ -23,6 +23,11 @@ import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
 import Simulados from '../pages/Simulados'
 import Paywall from '../pages/Simulados/Paywall'
+import SimuladosMain from '../pages/Simulados/Screens/Simulados_main'
+import SimuladosConfiguracao from '../pages/Simulados/Screens/Simulados_configuração'
+import SimuladosQuestões from '../pages/Simulados/Screens/Simulados_questões'
+import SimuladosHistórico from '../pages/Simulados/Screens/Simulados_histórico'
+import MeuAcompanhamento from '../pages/Simulados/Screens/Meu_acompanhamento'
 import Favoritos from '../pages/Favoritos'
 import Notificacoes from '../pages/Notificacoes'
 import Perfil from '../pages/Perfil'
@@ -61,6 +66,11 @@ const router = createBrowserRouter(
             paywall (e quem assina é redirecionado dele para os simulados). */}
         <Route element={<SubscriberRoute />}>
           <Route path={ROTAS.simulados} element={<Simulados />} />
+          <Route path={ROTAS.simuladosMain} element={<SimuladosMain />} />
+          <Route path={ROTAS.simuladosConfiguracao} element={<SimuladosConfiguracao />} />
+          <Route path={ROTAS.simuladosQuestoes} element={<SimuladosQuestões />} />
+          <Route path={ROTAS.simuladosHistorico} element={<SimuladosHistórico />} />
+          <Route path={ROTAS.simuladosAcompanhamento} element={<MeuAcompanhamento />} />
         </Route>
         <Route element={<SemAssinaturaRoute />}>
           <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
