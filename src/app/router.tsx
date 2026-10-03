@@ -23,6 +23,11 @@ import Perguntas from '../pages/TesteVocacional/Perguntas'
 import Simulados from '../pages/Simulados'
 import Paywall from '../pages/Simulados/Paywall'
 import SimuladosConteudo from '../pages/Simulados/SimuladosConteudo'
+import SimuladosMain from '../pages/Simulados/Screens/Simulados_main'
+import SimuladosConfiguracao from '../pages/Simulados/Screens/Simulados_configuração'
+import SimuladosQuestões from '../pages/Simulados/Screens/Simulados_questões'
+import SimuladosHistórico from '../pages/Simulados/Screens/Simulados_histórico'
+import MeuAcompanhamento from '../pages/Simulados/Screens/Meu_acompanhamento'
 import Favoritos from '../pages/Favoritos'
 import Notificacoes from '../pages/Notificacoes'
 import Perfil from '../pages/Perfil'
@@ -60,8 +65,16 @@ const router = createBrowserRouter(
         {/* Simulados: apresentação e paywall públicos, conteúdo exige assinatura ativa */}
         <Route path={ROTAS.simulados} element={<Simulados />} />
         <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
+
+        <Route path={ROTAS.simuladosMain} element={<SimuladosMain />} />
+        <Route path={ROTAS.simuladosConfiguracao} element={<SimuladosConfiguracao />} />
+        <Route path={ROTAS.simuladosQuestoes} element={<SimuladosQuestões />} />
+        <Route path={ROTAS.simuladosHistorico} element={<SimuladosHistórico />} />
+        <Route path={ROTAS.simuladosAcompanhamento} element={<MeuAcompanhamento />} />
+
         <Route element={<SubscriberRoute />}>
           <Route path={ROTAS.simuladosConteudo} element={<SimuladosConteudo />} />
+
         </Route>
 
         <Route path={ROTAS.favoritos} element={<Favoritos />} />
