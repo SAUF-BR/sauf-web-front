@@ -1,0 +1,58 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.trilhaLista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  font-size: 0.9375rem;
+
+  // Barra separadora entre os itens da trilha
+  li + li::before {
+    content: '/';
+    margin-right: $spacing-sm;
+    color: $color-grey;
+  }
+}
+
+.trilhaLink {
+  color: $color-text-secondary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}
+
+.trilhaAtual {
+  color: $color-blue-primary;
+}
+
+.titulo {
+  margin-top: $spacing-sm;
+  font-family: $font-serif;
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: $color-green;
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 2.5rem;
+  }
+}
+
+.contador {
+  margin-top: $spacing-xs;
+  font-size: 1rem;
+  color: $color-text-secondary;
+}
+
+.contadorTotal {
+  font-weight: 700;
+  color: $color-blue-primary;
+}
