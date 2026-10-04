@@ -1,0 +1,89 @@
+@use '../../../../../../styles/variables' as *;
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: $color-green;
+  }
+
+  &.selecionado {
+    background-color: $color-background-light-green;
+    border: 2px solid $color-green;
+  }
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.badgeSugerida {
+  background-color: $color-blue-primary;
+  color: $color-surface;
+  font-size: 0.625rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: $radius-sm;
+  letter-spacing: 0.05em;
+}
+
+.radioCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid $color-border-light;
+
+  &.radioChecked {
+    border-color: $color-green;
+    background: radial-gradient(circle, $color-green 40%, transparent 45%);
+  }
+}
+
+.questoesRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.numeroQuestoes {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  line-height: 1;
+}
+
+.labelQuestoes {
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+}
+
+.descricao {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+  margin: $spacing-xs 0 0 0;
+  line-height: 1.4;
+}
