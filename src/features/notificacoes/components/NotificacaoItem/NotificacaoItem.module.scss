@@ -1,0 +1,83 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.item {
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid $color-border-light;
+}
+
+.naoLida {
+  background: $color-fundo-lateral;
+}
+
+.ponto {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.4375rem;
+  flex-shrink: 0;
+  background: $color-yellow;
+  border-radius: $radius-full;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  min-width: 0;
+  flex: 1;
+}
+
+.topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.titulo {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: $color-blue-primary;
+}
+
+.tempo {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: $color-grey;
+  white-space: nowrap;
+}
+
+.descricao {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: $color-text-secondary;
+}
+
+.acao {
+  @include text-link;
+  align-self: flex-start;
+  margin-top: $spacing-xs;
+  font-size: 0.875rem;
+}
+
+.lida {
+  .ponto {
+    background: $color-border-light;
+  }
+
+  .titulo {
+    font-weight: 500;
+    color: $color-grey;
+  }
+
+  .descricao {
+    color: $color-grey;
+  }
+}
+
+.oculto {
+  @include visually-hidden;
+}

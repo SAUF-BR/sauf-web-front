@@ -1,7 +1,10 @@
+import { useCallback, useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Bell, Heart } from 'lucide-react'
 import { useUsuarioAtual } from '../../../features/auth'
 import { useTotalNotificacoesNaoLidas } from '../../../features/notificacoes'
+import { PainelNotificacoes } from '../../../features/notificacoes/components/PainelNotificacoes/PainelNotificacoes'
+import { useClickFora } from '../../../hooks/useClickFora'
 import { ROTAS } from '../../../routes/paths'
 import { Logo } from '../../logo/Logo'
 import { Avatar } from '../../ui/Avatar/Avatar'
@@ -12,6 +15,19 @@ import styles from './Header.module.scss'
 export function Header() {
   const { data: usuario, isPending: carregandoUsuario } = useUsuarioAtual()
   const { data: totalNaoLidas = 0 } = useTotalNotificacoesNaoLidas({ enabled: !!usuario })
+  const [notificacoesAbertas, setNotificacoesAbertas] = useState(false)
+  const painelNotificacoesId = useId()
+  const notificacoesRef = useRef<HTMLDivElement>(null)
+  const sinoRef = useRef<HTMLButtonElement>(null)
+
+  const fecharNotificacoes = useCallback(() => setNotificacoesAbertas(false), [])
+  useClickFora(notificacoesRef, fecharNotificacoes, notificacoesAbertas)
+
+  function fecharComEsc(evento: KeyboardEvent) {
+    if (evento.key !== 'Escape') return
+    fecharNotificacoes()
+    sinoRef.current?.focus()
+  }
 
   return (
     <header className={styles.header}>
@@ -43,18 +59,28 @@ export function Header() {
                 <Heart size="1em" fill="currentColor" className={styles.iconeFavoritos} />
               </Link>
 
-              <Link
-                to={ROTAS.notificacoes}
-                className={`${styles.acao} ${styles.acaoContorno}`}
-                aria-label={
-                  totalNaoLidas > 0
-                    ? `Notificações (${totalNaoLidas} não lidas)`
-                    : 'Notificações'
-                }
-              >
-                <Bell size="1em" />
-                {totalNaoLidas > 0 && <span className={styles.indicador} aria-hidden="true" />}
-              </Link>
+              <div ref={notificacoesRef} className={styles.notificacoes} onKeyDown={fecharComEsc}>
+                <button
+                  ref={sinoRef}
+                  type="button"
+                  className={`${styles.acao} ${styles.acaoContorno}`}
+                  aria-label={
+                    totalNaoLidas > 0
+                      ? `Notificações (${totalNaoLidas} não lidas)`
+                      : 'Notificações'
+                  }
+                  aria-expanded={notificacoesAbertas}
+                  aria-controls={painelNotificacoesId}
+                  onClick={() => setNotificacoesAbertas((abertas) => !abertas)}
+                >
+                  <Bell size="1em" />
+                  {totalNaoLidas > 0 && <span className={styles.indicador} aria-hidden="true" />}
+                </button>
+
+                {notificacoesAbertas && (
+                  <PainelNotificacoes id={painelNotificacoesId} onFechar={fecharNotificacoes} />
+                )}
+              </div>
 
               <Link to={ROTAS.perfil} className={styles.perfil} aria-label="Meu perfil">
                 <Avatar nome={usuario.nome} />
