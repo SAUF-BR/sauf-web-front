@@ -1,18 +1,54 @@
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.hero {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.heroConteudo {
+  @include container;
+  display: grid;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 26rem);
+    align-items: center;
+    gap: $spacing-2xl;
+    padding-top: $spacing-2xl;
+    padding-bottom: $spacing-2xl;
+  }
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+.conteudo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+}
+
+.gradeRecursos {
+  display: grid;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-lg;
+  }
+
+  > li {
+    display: flex;
+
+    > * {
+      flex: 1;
+    }
+  }
 }

@@ -18,7 +18,6 @@ export const ROTAS = {
   testeVocacionalPerguntas: '/teste-vocacional/perguntas',
   simulados: '/simulados',
   simuladosPaywall: '/simulados/paywall',
-  simuladosConteudo: '/simulados/conteudo',
   favoritos: '/favoritos',
   notificacoes: '/notificacoes',
   perfil: '/perfil',

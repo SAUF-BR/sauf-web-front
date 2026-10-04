@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styles from './Tag.module.scss'
 
 type TagProps = {
-  variant?: 'destaque' | 'neutro'
+  variant?: 'destaque' | 'neutro' | 'assinante' | 'premium'
   children: ReactNode
 }
 
