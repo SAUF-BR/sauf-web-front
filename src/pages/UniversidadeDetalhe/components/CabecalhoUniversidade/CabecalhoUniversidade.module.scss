@@ -1,0 +1,200 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.capa {
+  height: 9.5rem;
+  object-fit: cover;
+
+  @media (max-width: #{$breakpoint-md - 1px}) {
+    height: 7rem;
+  }
+}
+
+.faixa {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.conteudo {
+  @include container;
+  display: grid;
+  gap: $spacing-lg;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.principal {
+  min-width: 0;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg $spacing-xl $spacing-lg 0;
+    border-right: 1px solid $color-border-light;
+  }
+}
+
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  li + li::before {
+    content: '/';
+    margin: 0 $spacing-xs;
+    color: $color-grey;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+      border-radius: $radius-sm;
+    }
+  }
+
+  [aria-current='page'] {
+    color: $color-blue-primary;
+  }
+}
+
+.identificacao {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.logo {
+  width: 4rem;
+  height: 4rem;
+  flex-shrink: 0;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.textos {
+  min-width: 0;
+}
+
+.nome {
+  font-family: $font-serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-blue-primary;
+
+  @media (max-width: #{$breakpoint-md - 1px}) {
+    font-size: 1.875rem;
+  }
+}
+
+.subtitulo {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $color-blue-secondary;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: $color-blue-secondary;
+  white-space: nowrap;
+  background: rgba($color-blue-secondary, 0.08);
+  border-radius: $radius-sm;
+}
+
+.badgeGestao {
+  color: $color-green;
+  background: $color-green-soft;
+}
+
+.badgeNotaMec {
+  color: color.adjust($color-yellow, $lightness: -30%);
+  background: rgba($color-yellow, 0.2);
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: $spacing-sm;
+
+  @media (min-width: $breakpoint-lg) {
+    padding-left: $spacing-xl;
+  }
+}
+
+.botaoPrimario,
+.botaoSecundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.botaoPrimario {
+  color: $color-white;
+  text-decoration: none;
+  background: $color-green;
+
+  &:hover {
+    background: color.adjust($color-green, $lightness: -5%);
+  }
+}
+
+.botaoSecundario {
+  color: $color-green;
+  background: $color-surface;
+  border: 1px solid $color-green;
+
+  &:hover {
+    background: $color-green-soft;
+  }
+}
+
+.salvo {
+  color: color.adjust($color-yellow, $lightness: -30%);
+  background: rgba($color-yellow, 0.15);
+  border-color: $color-yellow;
+
+  &:hover {
+    background: rgba($color-yellow, 0.25);
+  }
+}
