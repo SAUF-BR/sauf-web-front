@@ -1,13 +1,132 @@
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.barraAbas {
+  border-bottom: 1px solid $color-border-light;
 }
 
-.title {
-  font-size: 1.5rem;
+.abas {
+  @include container;
+  display: flex;
+  gap: $spacing-lg;
+}
+
+.aba {
+  padding: $spacing-md 0;
+  font-size: 0.9375rem;
   font-weight: 600;
-  color: $color-text;
+  color: $color-text-secondary;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-blue-primary;
+  }
+
+  &[aria-selected='true'] {
+    color: $color-blue-primary;
+    border-bottom-color: $color-green;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.corpo {
+  @include container;
+  display: grid;
+  gap: $spacing-xl;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-2xl;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+}
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  min-width: 0;
+}
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 12.5rem));
+  gap: $spacing-md;
+  margin: 0;
+}
+
+.indicador {
+  padding: $spacing-md $spacing-md;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+
+  dt {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text-secondary;
+  }
+
+  dd {
+    margin: $spacing-xs 0 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: $color-blue-primary;
+  }
+}
+
+.tituloSecao {
+  margin-bottom: $spacing-md;
+  font-family: $font-serif;
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: $color-blue-primary;
+}
+
+.sobre {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  max-width: 46rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: $color-blue-secondary;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.semDados {
+  font-style: italic;
+  color: $color-text-secondary;
+}
+
+.estado {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  color: $color-text-secondary;
+
+  a {
+    @include text-link;
+  }
 }
