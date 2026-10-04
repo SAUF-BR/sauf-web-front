@@ -1,0 +1,63 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: 8rem minmax(0, 1fr) 5.5rem;
+    gap: $spacing-lg;
+  }
+
+  &:nth-child(4n + 1) .barra { background: $color-green; }
+  &:nth-child(4n + 2) .barra { background: $color-blue-primary; }
+  &:nth-child(4n + 3) .barra { background: $color-blue-secondary; }
+  &:nth-child(4n + 4) .barra { background: color.mix($color-green, $color-surface, 45%); }
+}
+
+.area {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.trilho {
+  display: block;
+  height: 0.5rem;
+  background: $color-white;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.barra {
+  display: block;
+  height: 100%;
+  border-radius: $radius-full;
+}
+
+.total {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vazio {
+  font-size: 0.9375rem;
+  font-style: italic;
+  color: $color-text-secondary;
+}

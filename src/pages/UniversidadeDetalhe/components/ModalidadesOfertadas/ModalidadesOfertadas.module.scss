@@ -1,0 +1,81 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+
+.grade {
+  display: grid;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  padding: $spacing-lg;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.nome {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.indicador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  flex-shrink: 0;
+  color: $color-green;
+  background: $color-green-soft;
+  border-radius: $radius-full;
+}
+
+.contador {
+  margin-top: $spacing-sm;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  strong {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $color-blue-primary;
+  }
+}
+
+.descricao {
+  margin-top: $spacing-sm;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.indisponivel {
+  background: color.mix($color-white, $color-surface, 50%);
+
+  .nome,
+  .contador strong {
+    color: $color-grey;
+  }
+
+  .contador,
+  .descricao {
+    color: color.adjust($color-text-secondary, $lightness: 15%);
+  }
+
+  .indicador {
+    color: $color-grey;
+    background: $color-placeholder;
+  }
+}
