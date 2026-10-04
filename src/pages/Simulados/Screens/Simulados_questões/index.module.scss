@@ -1,24 +1,208 @@
 @use '../../../../styles/variables' as *;
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+@use '../../../../styles/mixins' as *;
+
+.pageWrapper {
+  background-color: $color-placeholder;
+  min-height: 100vh;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.headerBar {
+  background-color: $color-white;
+  border-bottom: 1px solid $color-border-light;
+  padding: $spacing-md 0;
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+.headerContainer {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
 }
 
-.link {
-  display: inline-block;
+.progressTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.progressTitle {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+
+  strong {
+    font-size: 0.875rem;
+    color: $color-blue-primary;
+    white-space: nowrap;
+  }
+}
+
+.progressBarTrack {
+  width: 220px;
+  height: 6px;
+  background-color: $color-placeholder;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: $color-green;
+  border-radius: $radius-full;
+  transition: width 0.3s ease;
+}
+
+.legendStats {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.greenDot { background-color: $color-green; }
+  &.yellowDot { background-color: $color-yellow; }
+  &.grayDot { background-color: $color-text-muted; }
+}
+
+.numbersNavGrid {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.questionSection {
+  padding: $spacing-xl 0 $spacing-2xl;
+  background-color: $color-surface;
+}
+
+.questionContainer {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  max-width: 860px;
+}
+
+.tagsRow {
+  display: flex;
+  gap: $spacing-xs;
+
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $color-text-secondary;
+    background-color: $color-surface;
+    border: 1px solid $color-border-light;
+    padding: 3px $spacing-sm;
+    border-radius: $radius-sm;
+  }
+}
+
+.enunciadoContexto {
+  font-size: 0.9375rem;
+  color: $color-blue-primary;
+  line-height: 1.6;
+  margin: $spacing-xs 0 0 0;
+}
+
+.perguntaText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  margin: 0;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
+}
+
+// Botões da Barra Inferior
+.actionsFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: $spacing-lg;
-  color: $color-primary;
-  text-decoration: underline;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-border-light;
+}
+
+.prevBtn {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  padding: 10px $spacing-md;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.rightActions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.whiteBtn {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  padding: 10px $spacing-md;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: $color-text-secondary;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-blue-primary;
+  }
+}
+
+.nextBtn {
+  background-color: $color-border-light;
+  color: $color-text-secondary;
+  border: none;
+  border-radius: $radius-md;
+  padding: 10px $spacing-lg;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+
+  &.activeNext {
+    background-color: $color-green;
+    color: $color-surface;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.bottomFooterNote {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+  margin: $spacing-xs 0 0 0;
 }

@@ -1,0 +1,32 @@
+@use '../../../../../../styles/variables' as *;
+
+.btn {
+  width: 36px;
+  height: 32px;
+  border-radius: $radius-md;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &.respondida {
+    background-color: $color-green;
+    color: $color-surface;
+  }
+
+  &.em_branco {
+    background-color: $color-yellow;
+    color: $color-surface;
+  }
+
+  &.pendente {
+    background-color: $color-border;
+    color: $color-text-secondary;
+  }
+
+  &.ativa {
+    border: 2px solid $color-blue-primary;
+    box-shadow: 0 0 0 2px rgba(10, 37, 64, 0.1);
+  }
+}
