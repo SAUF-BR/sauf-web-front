@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import { MainLayout } from '../components/layout/MainLayout'
 import { PrivateRoute } from '../routes/PrivateRoute'
+import { SemAssinaturaRoute } from '../routes/SemAssinaturaRoute'
 import { SubscriberRoute } from '../routes/SubscriberRoute'
 import { ROTAS } from '../routes/paths'
 
@@ -22,7 +23,6 @@ import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
 import Simulados from '../pages/Simulados'
 import Paywall from '../pages/Simulados/Paywall'
-import SimuladosConteudo from '../pages/Simulados/SimuladosConteudo'
 import Favoritos from '../pages/Favoritos'
 import Notificacoes from '../pages/Notificacoes'
 import Perfil from '../pages/Perfil'
@@ -57,11 +57,13 @@ const router = createBrowserRouter(
           <Route path={ROTAS.testeVocacionalPerguntas} element={<Perguntas />} />
         </Route>
 
-        {/* Simulados: apresentação e paywall públicos, conteúdo exige assinatura ativa */}
-        <Route path={ROTAS.simulados} element={<Simulados />} />
-        <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
+        {/* Simulados: a tela principal exige assinatura ativa; quem não assina vê o
+            paywall (e quem assina é redirecionado dele para os simulados). */}
         <Route element={<SubscriberRoute />}>
-          <Route path={ROTAS.simuladosConteudo} element={<SimuladosConteudo />} />
+          <Route path={ROTAS.simulados} element={<Simulados />} />
+        </Route>
+        <Route element={<SemAssinaturaRoute />}>
+          <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
         </Route>
 
         <Route path={ROTAS.favoritos} element={<Favoritos />} />
