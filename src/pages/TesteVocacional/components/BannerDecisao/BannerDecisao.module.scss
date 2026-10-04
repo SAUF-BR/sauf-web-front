@@ -1,0 +1,36 @@
+@use '../../../../styles/variables' as *;
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-lg;
+  background: $color-white;
+  border-radius: $radius-lg;
+
+  @media (min-width: $breakpoint-md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-lg $spacing-xl;
+  }
+}
+
+.titulo {
+  margin-bottom: $spacing-xs;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.texto {
+  max-width: 46rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.botao {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
