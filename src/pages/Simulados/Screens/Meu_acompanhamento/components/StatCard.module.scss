@@ -1,0 +1,49 @@
+@use '../../../../../styles/variables' as *;
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: $color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+}
+
+.value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  line-height: 1.2;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &.positive {
+    color: $color-green;
+  }
+
+  &.negative {
+    color: $color-error;
+  }
+}
+
+.footer {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+}
