@@ -29,6 +29,7 @@ export const endpoints = {
   },
   testeVocacional: {
     perguntas: '/teste-vocacional/perguntas',
+    progresso: '/teste-vocacional/progresso',
   },
   simulados: {
     list: '/simulados',

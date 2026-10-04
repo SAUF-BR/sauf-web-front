@@ -1,0 +1,54 @@
+@use '../../../../styles/variables' as *;
+
+.painel {
+  padding: $spacing-lg;
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-lg $spacing-xl;
+  }
+}
+
+.titulo {
+  margin-bottom: $spacing-sm;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+
+  & + & {
+    border-top: 1px solid $color-border-light;
+  }
+}
+
+.indicador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: $color-green;
+  background: $color-white;
+  border-radius: $radius-sm;
+}
+
+.itemTitulo {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.itemDescricao {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: $color-text-secondary;
+}
