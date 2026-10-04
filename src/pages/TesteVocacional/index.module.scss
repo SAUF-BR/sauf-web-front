@@ -1,25 +1,97 @@
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.hero {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.heroConteudo {
+  @include container;
+  display: grid;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 32rem);
+    align-items: start;
+    gap: $spacing-2xl;
+    padding-top: $spacing-2xl;
+    padding-bottom: $spacing-2xl;
+  }
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+.apresentacao {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-lg) {
+    padding-top: $spacing-sm;
+  }
 }
 
-.link {
-  display: inline-block;
-  margin-top: $spacing-lg;
-  color: $color-primary;
-  text-decoration: underline;
+.selo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm $spacing-md;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.seloTag > * {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.titulo {
+  max-width: 34rem;
+  font-family: $font-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: $color-blue-primary;
+}
+
+.destaque {
+  color: $color-green;
+}
+
+.descricao {
+  max-width: 40rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: $color-text-secondary;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+  font-size: 0.875rem;
+  color: $color-grey;
+
+  &::before {
+    content: '';
+    width: 0.4375rem;
+    height: 0.4375rem;
+    flex-shrink: 0;
+    background: rgba($color-green, 0.45);
+    border-radius: $radius-full;
+  }
+}
+
+.conteudo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
 }
