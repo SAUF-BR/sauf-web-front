@@ -1,0 +1,33 @@
+@use '../../../../../../styles/variables' as *;
+
+.bar {
+  flex: 1;
+  height: 8px;
+  border: none;
+  border-radius: $radius-full;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  &:hover {
+    transform: scaleY(1.4);
+    opacity: 0.85;
+  }
+
+  &.acerto {
+    background-color: $color-green;
+  }
+
+  &.erro {
+    background-color: $color-error; // Vermelho/terracota do protótipo
+  }
+
+  &.em_branco {
+    background-color: $color-border-light;
+  }
+
+  &.ativa {
+    outline: 2px solid $color-blue-primary;
+    outline-offset: 2px;
+  }
+}
