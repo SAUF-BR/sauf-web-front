@@ -89,3 +89,18 @@ export function montarGradeDoMes({ ano, mes }: AnoMes): DiaDaGrade[] {
     }
   })
 }
+
+export function formatarTempoRelativo(dataHoraIso: string, agora = new Date()) {
+  const data = new Date(dataHoraIso)
+  const minutos = Math.floor((agora.getTime() - data.getTime()) / 60_000)
+
+  if (minutos < 1) return 'agora'
+  if (minutos < 60) return `há ${minutos} min`
+  if (minutos < 24 * 60) return `há ${Math.floor(minutos / 60)}h`
+
+  const ontem = new Date(agora)
+  ontem.setDate(agora.getDate() - 1)
+  if (data.toDateString() === ontem.toDateString()) return 'ontem'
+
+  return new Intl.DateTimeFormat(LOCALE, { day: '2-digit', month: '2-digit' }).format(data)
+}
