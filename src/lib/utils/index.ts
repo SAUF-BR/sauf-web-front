@@ -4,3 +4,4 @@ export function cn(...classes: Array<string | false | null | undefined>) {
 
 export * from './formatadores'
 export * from './estados'
+export * from './datas'
