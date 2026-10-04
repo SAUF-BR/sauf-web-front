@@ -1,24 +1,293 @@
 @use '../../../../styles/variables' as *;
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+@use '../../../../styles/mixins' as *;
+
+.pageWrapper {
+  background-color: $color-placeholder;
+  min-height: 100vh;
 }
 
-.title {
-  font-size: 1.5rem;
+.headerSection {
+  background-color: $color-white; // Fundo creme/off-white (#F5F1E8)
+  border-bottom: 1px solid $color-border-light;
+  padding: $spacing-xl 0;
+}
+
+.headerContainer {
+  @include container;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-lg;
+
+  @media (max-width: $breakpoint-md) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.leftInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: $color-text-secondary;
+
+    a {
+      color: $color-text-secondary;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .currentBreadcrumb {
+      color: $color-blue-primary;
+      font-weight: 600;
+    }
+  }
+
+  .title {
+    font-family: $font-serif;
+    font-size: 2.25rem;
+    font-weight: 400;
+    color: $color-blue-primary;
+    margin: 4px 0 0 0;
+  }
+
+  .metaInfo {
+    font-size: 0.875rem;
+    color: $color-text-secondary;
+    margin: 0;
+  }
+}
+
+.summaryCard {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+
+  .donutChart {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    // Gráfico de rosca com 70% acertos (verde) e erros/em branco (amarelo/cinza)
+    background: conic-gradient($color-green 0% 70%, $color-yellow 70% 95%, $color-border-light 95% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .donutHole {
+      width: 52px;
+      height: 52px;
+      background: $color-surface;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      span {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: $color-blue-primary;
+      }
+    }
+  }
+
+  .statsGroup {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  .statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .statLabel {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: $color-text-secondary;
+      letter-spacing: 0.05em;
+    }
+
+    .statValue {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+
+      &.greenValue {
+        color: $color-green;
+      }
+
+      &.redValue {
+        color: $color-error;
+      }
+
+      &.grayValue {
+        color: $color-text-secondary;
+      }
+    }
+  }
+}
+.filterBarSection {
+  background-color: $color-surface;
+  padding: $spacing-lg 0 $spacing-md 0;
+}
+
+.filterBarContainer {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.statusPills {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+
+  .pillBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: $radius-full;
+    padding: 6px 14px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.pillTodas {
+      border-color: $color-border-light;
+      color: $color-blue-primary;
+
+      &.active {
+        background-color: $color-blue-primary;
+        color: $color-surface;
+        border-color: $color-blue-primary;
+      }
+    }
+
+    &.pillAcertos {
+      border-color: $color-blue-secondary;
+      color: $color-green;
+
+      &.active {
+        background-color: $color-green;
+        color: $color-surface;
+        border-color: $color-green;
+      }
+    }
+
+    &.pillErros {
+      border-color: $color-error;
+      color: $color-error;
+
+      &.active {
+        background-color: $color-error;
+        color: $color-surface;
+        border-color: $color-error;
+      }
+    }
+
+    &.pillEmBranco {
+      border-color: $color-border-light;
+      color: $color-text-secondary;
+
+      &.active {
+        background-color: $color-text-secondary;
+        color: $color-surface;
+        border-color: $color-text-secondary;
+      }
+    }
+  }
+}
+
+.actionsRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  .categoriaSelect {
+    background-color: $color-surface;
+    border: 1px solid $color-border-light;
+    border-radius: $radius-md;
+    padding: 8px $spacing-md;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-blue-primary;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .refazerBtn {
+    background-color: $color-green;
+    color: $color-surface;
+    border: none;
+    border-radius: $radius-md;
+    padding: 8px $spacing-md;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.questoesBarsRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding-top: $spacing-xs;
+}
+.questoesListSection {
+  background-color: $color-surface;
+  padding: $spacing-lg 0 $spacing-2xl 0;
+}
+
+.questoesContainer {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.loadMoreBtn {
+  background: transparent;
+  border: 1px dashed $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: $color-text;
-}
+  color: $color-green;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
-}
-
-.link {
-  display: inline-block;
-  margin-top: $spacing-lg;
-  color: $color-primary;
-  text-decoration: underline;
+  &:hover {
+    background-color: $color-surface;
+  }
 }
