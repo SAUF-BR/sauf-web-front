@@ -1,18 +1,81 @@
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.carregando {
+  min-height: 60vh;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.cabecalho {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
 }
 
-.subtitle {
+.cabecalhoConteudo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+
+  @media (min-width: $breakpoint-lg) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $spacing-2xl;
+  }
+}
+
+.trilha {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  [aria-current] {
+    color: $color-blue-primary;
+  }
+}
+
+.trilhaLink {
+  @include text-link($color-text-secondary);
+  font-weight: 400;
+}
+
+.titulo {
+  margin-top: $spacing-md;
+  font-family: $font-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  max-width: 44rem;
   margin-top: $spacing-sm;
-  color: $color-text-muted;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
+}
+
+.conteudo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+}
+
+.planos {
+  display: grid;
+  gap: $spacing-lg;
+  align-items: start;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.rodape {
+  display: grid;
 }
