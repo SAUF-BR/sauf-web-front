@@ -1,0 +1,63 @@
+@use '../../../../styles/variables' as *;
+
+.cartao {
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+}
+
+.titulo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin-top: $spacing-sm;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+}
+
+.confirmacao {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: rgba($color-error, 0.05);
+  border-radius: $radius-md;
+
+  .acoes {
+    margin-top: $spacing-md;
+  }
+}
+
+.pergunta {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+// .cartao na frente para vencer as cores das variantes do Button
+.cartao .botaoPerigo {
+  color: $color-error;
+  border-color: rgba($color-error, 0.5);
+
+  &:hover:not(:disabled) {
+    background: rgba($color-error, 0.06);
+  }
+}
+
+.cartao .botaoConfirmar {
+  color: $color-surface;
+  background: $color-error;
+
+  &:hover:not(:disabled) {
+    background: $color-error;
+    filter: brightness(0.92);
+  }
+}

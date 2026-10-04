@@ -20,3 +20,23 @@
   background: $color-white;
   color: $color-blue-secondary;
 }
+
+
+
+.assinante,
+.premium {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.assinante {
+  background: $color-yellow-soft;
+  color: $color-yellow-dark;
+}
+
+.premium {
+  background: $color-green;
+  color: $color-white;
+}

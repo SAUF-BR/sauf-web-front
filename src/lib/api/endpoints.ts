@@ -32,5 +32,8 @@ export const endpoints = {
   },
   assinatura: {
     atual: '/assinatura',
+    planos: '/assinatura/planos',
+    cancelar: '/assinatura/cancelar',
+    reativar: '/assinatura/reativar',
   },
 } as const
