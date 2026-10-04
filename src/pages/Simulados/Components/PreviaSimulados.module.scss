@@ -1,0 +1,124 @@
+@use '../../../styles/variables' as *;
+
+.painel {
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.titulo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.rotulo {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+
+  & + & {
+    border-top: 1px solid $color-border-light;
+  }
+
+  
+  &:not(:first-child) {
+    opacity: 0.65;
+  }
+}
+
+.nota {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-green;
+  background: $color-green-soft;
+  border-radius: $radius-md;
+}
+
+.info {
+  min-width: 0;
+}
+
+.itemTitulo {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.itemDetalhe {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+}
+
+.esqueleto {
+  .nota {
+    background: $color-placeholder;
+  }
+}
+
+.linhas {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.linha {
+  height: 0.625rem;
+  background: $color-placeholder;
+  border-radius: $radius-full;
+
+  &:last-child {
+    width: 60%;
+  }
+}
+
+.bloqueio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: -$spacing-xl;
+  padding-top: $spacing-xl;
+  background: linear-gradient(to bottom, rgba($color-surface, 0), $color-surface 55%);
+}
+
+.cadeado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: $color-green;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-full;
+}
+
+.bloqueioTexto {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
