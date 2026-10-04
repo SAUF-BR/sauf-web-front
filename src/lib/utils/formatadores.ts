@@ -41,6 +41,13 @@ export function formatarDiaMes(dataIso: string) {
   return { dia, mes }
 }
 
+// Data ISO (somente data, ex.: "2026-10-02") → "2 de outubro". UTC pelo mesmo motivo do formatarDiaMes.
+export function formatarDataExtenso(dataIso: string) {
+  return new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(
+    new Date(dataIso),
+  )
+}
+
 export function obterIniciais(nomeCompleto: string) {
   const partes = nomeCompleto.trim().split(/\s+/)
   const primeira = partes[0]?.[0] ?? ''

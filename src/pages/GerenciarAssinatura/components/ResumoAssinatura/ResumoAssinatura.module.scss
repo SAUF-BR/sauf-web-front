@@ -1,0 +1,34 @@
+@use '../../../../styles/variables' as *;
+
+.resumo {
+  flex-shrink: 0;
+  padding: $spacing-md $spacing-lg;
+}
+
+.lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md $spacing-lg;
+}
+
+.item + .item {
+  padding-left: $spacing-lg;
+  border-left: 1px solid $color-border-light;
+}
+
+.rotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+// margin: 0 — o navegador coloca recuo padrão no <dd>
+.valor {
+  margin: $spacing-xs 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: $color-blue-primary;
+}
