@@ -1,0 +1,154 @@
+@use '../../../../../../styles/variables' as *;
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  // Aplica a borda esquerda cheia que segue o border-radius do card
+  border-left-width: 4px;
+  border-left-style: solid;
+
+  &.acerto {
+    border-left-color: $color-green;
+  }
+
+  &.erro {
+    border-left-color: $color-error;
+  }
+
+  &.em_branco {
+    border-left-color: $color-border-light;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.numero {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  margin: 0;
+}
+
+.statusTag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px $spacing-sm;
+  border-radius: $radius-sm;
+
+  &.tag_acerto {
+    background-color: #dcfce7;
+    color: $color-green;
+  }
+
+  &.tag_erro {
+    background-color: #fee2e2;
+    color: $color-error;
+  }
+
+  &.tag_em_branco {
+    background-color: #f1f5f9;
+    color: $color-text-secondary;
+  }
+}
+
+.categoriaTag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+  background-color: #f1f5f9;
+  padding: 3px $spacing-sm;
+  border-radius: $radius-sm;
+}
+
+.tempo {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+}
+
+.enunciado {
+  font-size: 0.875rem;
+  color: $color-blue-primary;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.respostasRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-md;
+}
+
+.boxResposta {
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  font-size: 0.875rem;
+
+  strong {
+    display: block;
+    color: $color-blue-primary;
+  }
+
+  .subtexto {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+
+  &.boxCorreta {
+    background-color: $color-background-light-green;
+    border: 1px solid $color-light-green;
+
+    .subtexto { color: $color-green; }
+  }
+
+  &.boxIncorreta {
+    background-color: $color-background-light-red;
+    border: 1px solid $color-light-red;
+
+    .subtexto { color: $color-error; }
+  }
+
+  &.boxEmBranco {
+    background-color: $color-white;
+    border: 1px solid $color-border-light;
+
+    .textGray { color: $color-text-secondary; }
+    .subtexto { color: $color-text-secondary; }
+  }
+}
+
+.checkIcon, .erroIcon, .circleIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.checkIcon { background-color: $color-green; color: $color-white; }
+.erroIcon { background-color: $color-error; color: $color-white; }
+.circleIcon { border: 2px solid $color-border-light; }
