@@ -1,0 +1,33 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.lista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.875rem;
+}
+
+.separador {
+  color: $color-grey;
+}
+
+.link {
+  color: $color-text-secondary;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-blue-primary;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}
+
+.atual {
+  color: $color-blue-primary;
+}

@@ -16,6 +16,7 @@ export const endpoints = {
   },
   calendario: {
     proximosPrazos: '/calendario/proximos-prazos',
+    eventos: '/calendario/eventos',
   },
   favoritos: {
     cursos: '/favoritos/cursos',

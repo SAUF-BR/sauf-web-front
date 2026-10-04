@@ -7,3 +7,12 @@ export interface Prazo {
   data: string
   descricao: string
 }
+
+export type TipoEvento = 'inscricao' | 'prova' | 'resultado' | 'feira'
+
+export interface EventoCalendario {
+  id: string
+  titulo: string
+  tipo: TipoEvento
+  data: string
+}

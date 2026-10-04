@@ -1,0 +1,74 @@
+@use 'sass:list';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.filtro {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.titulo {
+  padding: 0;
+  margin-bottom: $spacing-md;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs 0;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0 $spacing-xs 0 0;
+  accent-color: $color-green;
+  cursor: pointer;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.marcador {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: $radius-full;
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} {
+    background: list.nth($cores, 1);
+  }
+}
+
+.rotulo {
+  flex: 1;
+  color: $color-blue-primary;
+}
+
+.contador {
+  font-size: 0.8125rem;
+  color: $color-grey;
+}
+
+.oculto {
+  @include visually-hidden;
+}

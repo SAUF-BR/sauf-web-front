@@ -1,13 +1,56 @@
 @use '../../styles/variables' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.cabecalho {
+  border-bottom: 1px solid $color-border-light;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.cabecalhoConteudo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg $spacing-md;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg $spacing-xl;
+  }
+}
+
+.corpo {
+  display: grid;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.lateral {
+  padding: $spacing-lg $spacing-md;
+  background: $color-fundo-lateral;
+  border-bottom: 1px solid $color-border-light;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg;
+    border-right: 1px solid $color-border-light;
+  }
+}
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  min-width: 0;
+  padding: $spacing-lg $spacing-md $spacing-2xl;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg $spacing-xl $spacing-2xl;
+  }
+}
+
+.erro {
+  padding: $spacing-lg;
+  font-size: 0.9375rem;
+  color: $color-error;
+  background: $color-fundo-lateral;
+  border-radius: $radius-md;
 }

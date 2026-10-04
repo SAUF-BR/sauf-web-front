@@ -1,0 +1,27 @@
+@use '../../../../styles/variables' as *;
+
+.navegacao {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.botao {
+  width: 2.75rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.mes {
+  min-width: 0;
+  font-family: $font-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: $color-blue-primary;
+  white-space: nowrap;
+
+  @media (min-width: $breakpoint-md) {
+    min-width: 14rem;
+  }
+}

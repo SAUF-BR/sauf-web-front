@@ -21,6 +21,24 @@ $color-green-soft: #E3EEE8;
 $color-placeholder: #ECEAE4;
 $color-placeholder-stripe: #E2DFD8;
 
+// Calendário
+$color-evento-inscricao: $color-green;
+$color-evento-inscricao-fundo: $color-green-soft;
+$color-evento-prova: $color-blue-primary;
+$color-evento-prova-fundo: #E4EBEC;
+$color-evento-resultado: $color-yellow;
+$color-evento-resultado-fundo: #FBF0D2;
+$color-evento-feira: #8FAFA2;
+$color-evento-feira-fundo: #EEF3F0;
+$color-fundo-lateral: #FAF8F3;
+
+$cores-evento: (
+  inscricao: ($color-evento-inscricao, $color-evento-inscricao-fundo),
+  prova: ($color-evento-prova, $color-evento-prova-fundo),
+  resultado: ($color-evento-resultado, $color-evento-resultado-fundo),
+  feira: ($color-evento-feira, $color-evento-feira-fundo),
+);
+
 // Tipografia
 $font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
 $font-serif: 'Instrument Serif', serif;

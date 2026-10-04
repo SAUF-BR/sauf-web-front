@@ -1,0 +1,121 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.grade {
+  &[aria-busy='true'] {
+    opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+}
+
+.diasDaSemana,
+.dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: $spacing-xs;
+
+  @media (min-width: $breakpoint-md) {
+    gap: $spacing-sm;
+  }
+}
+
+.diasDaSemana {
+  margin-bottom: $spacing-sm;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: $color-text-secondary;
+}
+
+.celula.celula {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  height: 100%;
+  min-height: 3.5rem;
+  padding: $spacing-xs;
+  border-radius: $radius-md;
+
+  @media (min-width: $breakpoint-md) {
+    gap: $spacing-sm;
+    min-height: 7.5rem;
+    padding: $spacing-sm;
+  }
+}
+
+.foraDoMes.foraDoMes {
+  background: $color-fundo-lateral;
+
+  .numero {
+    color: $color-grey;
+  }
+}
+
+.hoje.hoje {
+  border: 2px solid $color-green;
+}
+
+.selecionado.selecionado {
+  background: $color-green-soft;
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-xs;
+}
+
+.numero {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $color-blue-primary;
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 1rem;
+  }
+}
+
+.seloHoje > * {
+  padding: 2px 6px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  @media (max-width: ($breakpoint-md - 1px)) {
+    display: none;
+  }
+}
+
+.eventos {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.marcadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.botaoDia {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: inherit;
+  cursor: pointer;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.oculto {
+  @include visually-hidden;
+}
