@@ -1,0 +1,52 @@
+@use '../../../../../styles/variables' as *;
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+  margin-top: 2px;
+}
+
+.barsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-xs;
+
+  .block {
+    height: 36px;
+    border-radius: $radius-sm;
+
+    &.level1 { background: $color-placeholder; }
+    &.level2 { background: #d3e2db; }
+    &.level3 { background: #96baac; }
+    &.level4 { background: $color-green; }
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+
+  strong {
+    font-size: 1.25rem;
+    color: $color-blue-primary;
+  }
+}

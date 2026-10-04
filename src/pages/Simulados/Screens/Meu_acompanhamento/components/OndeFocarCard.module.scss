@@ -1,0 +1,79 @@
+@use '../../../../../styles/variables' as *;
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.item {
+  display: flex;
+  gap: $spacing-md;
+  align-items: flex-start;
+  border-bottom: 1px solid $color-border-light;
+  padding-bottom: $spacing-sm;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.badgeNumber {
+  width: 22px;
+  height: 22px;
+  background: #fef08a;
+  color: #854d0e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.materiaTitle {
+  font-size: 0.8125rem;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+  margin: 2px 0 0 0;
+}
+
+.actionBtn {
+  background: $color-green;
+  color: #ffffff;
+  border: none;
+  border-radius: $radius-md;
+  padding: 10px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
