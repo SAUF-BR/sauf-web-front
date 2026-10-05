@@ -30,6 +30,7 @@ export const endpoints = {
   testeVocacional: {
     perguntas: '/teste-vocacional/perguntas',
     progresso: '/teste-vocacional/progresso',
+    resposta: (perguntaId: string) => `/teste-vocacional/respostas/${perguntaId}`,
   },
   simulados: {
     list: '/simulados',
