@@ -1,11 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getProgressoTeste, getQuestionario, salvarResposta } from './api'
+import {
+  finalizarTeste,
+  getProgressoTeste,
+  getQuestionario,
+  getResultadoTeste,
+  refazerTeste,
+  salvarResposta,
+} from './api'
 import type { ProgressoTeste } from './types'
 
 export const testeVocacionalKeys = {
   all: ['teste-vocacional'] as const,
   questionario: () => [...testeVocacionalKeys.all, 'questionario'] as const,
   progresso: () => [...testeVocacionalKeys.all, 'progresso'] as const,
+  resultado: () => [...testeVocacionalKeys.all, 'resultado'] as const,
 }
 
 export function useQuestionario() {
@@ -46,6 +54,40 @@ export function useSalvarResposta() {
     },
     onSuccess: (progresso) => {
       queryClient.setQueryData(chave, progresso)
+    },
+  })
+}
+
+export function useResultadoTeste({ enabled = true } = {}) {
+  return useQuery({
+    queryKey: testeVocacionalKeys.resultado(),
+    queryFn: getResultadoTeste,
+    enabled,
+  })
+}
+
+export function useFinalizarTeste() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: finalizarTeste,
+    onSuccess: (resultado) => {
+      queryClient.setQueryData(testeVocacionalKeys.resultado(), resultado)
+    },
+  })
+}
+
+export function useRefazerTeste() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: refazerTeste,
+    onSuccess: () => {
+      queryClient.setQueryData<ProgressoTeste>(testeVocacionalKeys.progresso(), {
+        respostas: {},
+        atualizadoEm: null,
+      })
+      queryClient.setQueryData(testeVocacionalKeys.resultado(), null)
     },
   })
 }

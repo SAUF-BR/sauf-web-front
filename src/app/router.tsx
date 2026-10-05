@@ -21,6 +21,7 @@ import FormasDeIngresso from '../pages/FormasDeIngresso'
 import Calendario from '../pages/Calendario'
 import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
+import ResultadoTeste from '../pages/TesteVocacional/Resultado'
 import Simulados from '../pages/Simulados'
 import Paywall from '../pages/Simulados/Paywall'
 import SimuladosMain from '../pages/Simulados/Screens/Simulados_main'
@@ -63,10 +64,11 @@ const router = createBrowserRouter(
         <Route path={ROTAS.formasDeIngresso} element={<FormasDeIngresso />} />
         <Route path={ROTAS.calendario} element={<Calendario />} />
 
-        {/* Teste vocacional: apresentação pública, perguntas exigem login */}
+        {/* Teste vocacional: apresentação pública, perguntas e resultado exigem login */}
         <Route path={ROTAS.testeVocacional} element={<TesteVocacional />} />
         <Route element={<PrivateRoute />}>
           <Route path={ROTAS.testeVocacionalPerguntas} element={<Perguntas />} />
+          <Route path={ROTAS.testeVocacionalResultado} element={<ResultadoTeste />} />
         </Route>
 
         {/* Simulados: a tela principal exige assinatura ativa; quem não assina vê o
