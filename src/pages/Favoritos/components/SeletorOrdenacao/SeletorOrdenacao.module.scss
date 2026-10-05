@@ -1,0 +1,61 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.ordenar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 14rem;
+  height: 3rem;
+  padding-left: $spacing-md;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $color-grey;
+  }
+
+  &:focus-within {
+    border-color: $color-green;
+    @include focus-ring;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    flex: 0 0 auto;
+    min-width: 15rem;
+  }
+}
+
+.ordenarRotulo {
+  flex-shrink: 0;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.select {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 2.5rem 0 $spacing-xs;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+  background: transparent;
+  border: none;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.seta {
+  position: absolute;
+  top: 50%;
+  right: $spacing-md;
+  transform: translateY(-50%);
+  color: $color-text-secondary;
+  pointer-events: none;
+}
