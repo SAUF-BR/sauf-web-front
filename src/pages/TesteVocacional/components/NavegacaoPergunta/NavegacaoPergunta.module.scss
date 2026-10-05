@@ -1,0 +1,37 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $color-border-light;
+}
+
+.avancar {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.pular {
+  padding: 0;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: $color-grey;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text-secondary;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
+}

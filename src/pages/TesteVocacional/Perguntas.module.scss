@@ -1,18 +1,84 @@
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.mensagem {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
 }
 
-.title {
-  font-size: 1.5rem;
+.corpo {
+  @include container;
+  display: grid;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    align-items: start;
+    gap: $spacing-2xl;
+  }
+}
+
+.pergunta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.categoria {
+  margin-bottom: $spacing-md;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: $color-text;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color-grey;
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+.enunciado {
+  max-width: 32rem;
+  font-family: $font-serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-blue-primary;
+}
+
+.instrucao {
+  margin-top: $spacing-md;
+  font-size: 1rem;
+  color: $color-text-secondary;
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin: $spacing-lg 0 $spacing-xl;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.comoUsamos {
+  padding: $spacing-lg;
+}
+
+.comoUsamosTitulo {
+  margin-bottom: $spacing-sm;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.comoUsamosTexto {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
 }
