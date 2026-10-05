@@ -3,6 +3,8 @@ import { useState } from 'react'
 import styles from './index.module.scss'
 import { QuestaoBar, type StatusQuestao } from './components/QuestaoBar/QuestaoBar'
 import { QuestaoCard, type QuestaoData } from './components/QuestaoCard/QuestaoCard'
+import { Titulo } from '../../../../components/ui/Titulo/Titulo'
+import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
 
 export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
 
@@ -11,7 +13,8 @@ interface QuestaoMock {
   status: StatusQuestao
 }
 
-export default function Simulados() {
+
+export default function SimuladosHistorico() {
   const mockHeader = {
     titulo: 'Simulado ENEM · Matemática e Física',
     concluidoEm: '2 de setembro de 2026',
@@ -22,6 +25,13 @@ export default function Simulados() {
     erros: 5,
     emBranco: 1,
   }
+
+  const opcoesFiltro: Array<{ label: string; tipo: FiltroStatus; quantidade: number }> = [
+  { label: 'Todas', tipo: 'todas', quantidade: mockHeader.totalQuestoes },
+  { label: 'Acertos', tipo: 'acertos', quantidade: mockHeader.acertos },
+  { label: 'Erros', tipo: 'erros', quantidade: mockHeader.erros },
+  { label: 'Em branco', tipo: 'em_branco', quantidade: mockHeader.emBranco },
+  ]
 
   const [visiveisCount, setVisiveisCount] = useState<number>(6)
 
@@ -82,7 +92,7 @@ export default function Simulados() {
       respostaCorreta: { letra: 'D', texto: '720 W', subtexto: 'Resposta correta · P = V²/R' },
     },
     {
-      numero: 14,
+      numero: 15,
       status: 'em_branco',
       categoria: 'Física · Eletricidade',
       tempo: 'tempo esgotado',
@@ -111,18 +121,18 @@ export default function Simulados() {
     <main className={styles.page}>
       <div className={styles.headerSection}>
         <div className={styles.headerContainer}>
-          <div className={styles.leftInfo}>
+         <div className={styles.leftInfo}>
             <div className={styles.breadcrumb}>
               <Link to="/simulados">Simulados</Link>
               <span>/</span>
               <span className={styles.currentBreadcrumb}>Revisão</span>
             </div>
 
-            <h1 className={styles.title}>{mockHeader.titulo}</h1>
-
-            <p className={styles.metaInfo}>
-              Concluído em {mockHeader.concluidoEm} · {mockHeader.totalQuestoes} questões · {mockHeader.tempoMinutos} minutos
-            </p>
+            <Titulo 
+              titulo={mockHeader.titulo} 
+              subtitulo={`Concluído em ${mockHeader.concluidoEm} · ${mockHeader.totalQuestoes} questões · ${mockHeader.tempoMinutos} minutos`}
+              size="Grande" 
+            />
           </div>
 
           <div className={styles.summaryCard}>
@@ -159,41 +169,18 @@ export default function Simulados() {
       </div>
       <section className={styles.filterBarSection}>
         <div className={styles.filterBarContainer}>
-          {/* Linha de Controles Superiores */}
           <div className={styles.controlsRow}>
-            {/* Esquerda: Pills de status */}
             <div className={styles.statusPills}>
-              <button
-                type="button"
-                className={`${styles.pillBtn} ${styles.pillTodas} ${filtroStatus === 'todas' ? styles.active : ''}`}
-                onClick={() => setFiltroStatus('todas')}
-              >
-                Todas · {mockHeader.totalQuestoes}
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.pillBtn} ${styles.pillAcertos} ${filtroStatus === 'acertos' ? styles.active : ''}`}
-                onClick={() => setFiltroStatus('acertos')}
-              >
-                Acertos · {mockHeader.acertos}
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.pillBtn} ${styles.pillErros} ${filtroStatus === 'erros' ? styles.active : ''}`}
-                onClick={() => setFiltroStatus('erros')}
-              >
-                Erros · {mockHeader.erros}
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.pillBtn} ${styles.pillEmBranco} ${filtroStatus === 'em_branco' ? styles.active : ''}`}
-                onClick={() => setFiltroStatus('em_branco')}
-              >
-                Em branco · {mockHeader.emBranco}
-              </button>
+              {opcoesFiltro.map((opcao) => (
+                <FilterPillButton
+                  key={opcao.tipo}
+                  label={opcao.label}
+                  quantidade={opcao.quantidade}
+                  tipo={opcao.tipo}
+                  filtroAtual={filtroStatus}
+                  onSelect={handleFiltroChange}
+                />
+              ))}
             </div>
 
             <div className={styles.actionsRight}>
@@ -228,12 +215,10 @@ export default function Simulados() {
       </section>
       <section className={styles.questoesListSection}>
         <div className={styles.questoesContainer}>
-          {/* Renderiza apenas a lista limitada */}
           {questoesExibidas.map((questao) => (
             <QuestaoCard key={questao.numero} questao={questao} />
           ))}
 
-          {/* Exibe o botão apenas se houver questões restantes */}
           {restantes > 0 && (
             <button
               type="button"
