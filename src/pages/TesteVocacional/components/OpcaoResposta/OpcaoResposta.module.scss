@@ -1,0 +1,68 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+
+  &:hover {
+    border-color: rgba($color-green, 0.4);
+  }
+
+  &:has(.radio:focus-visible) {
+    @include focus-ring;
+  }
+}
+
+.radio {
+  @include visually-hidden;
+}
+
+.letra {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: $color-text-secondary;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-full;
+}
+
+.texto {
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: $color-blue-primary;
+}
+
+.status {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-green;
+}
+
+.selecionada {
+  background: $color-green-soft;
+  border-color: $color-green;
+
+  .letra {
+    color: $color-surface;
+    background: $color-green;
+    border-color: $color-green;
+  }
+
+  .texto {
+    font-weight: 700;
+  }
+}
