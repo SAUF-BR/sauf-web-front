@@ -1,0 +1,38 @@
+@use 'sass:list';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.chip {
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: $color-blue-primary;
+  border-left: 3px solid;
+  border-radius: 0 $radius-sm $radius-sm 0;
+  overflow-wrap: anywhere;
+}
+
+.marcador {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: $radius-full;
+}
+
+.oculto {
+  @include visually-hidden;
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} {
+    border-color: list.nth($cores, 1);
+
+    &.chip {
+      background: list.nth($cores, 2);
+    }
+
+    &.marcador {
+      background: list.nth($cores, 1);
+    }
+  }
+}
