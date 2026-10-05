@@ -1,13 +1,141 @@
+@use 'sass:color';
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
-.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+.pagina {
+  @include container;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-blue-primary;
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 3rem;
+  }
+}
+
+.subtitulo {
+  margin-top: $spacing-sm;
+  font-size: 1rem;
+  color: $color-text-secondary;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm $spacing-md;
+}
+
+.abas {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-xl;
+  box-shadow: inset 0 -1px 0 $color-border-light;
+  overflow-x: auto;
+}
+
+.aba {
+  padding: $spacing-md $spacing-lg;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: $color-text-secondary;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: $color-blue-primary;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm $radius-sm 0 0;
+  }
+}
+
+.abaAtiva {
+  font-weight: 700;
+  color: $color-blue-primary;
+  border-bottom-color: $color-green;
+}
+
+.abaTotal {
+  font-weight: 500;
+  color: $color-text-secondary;
+}
+
+.conteudo {
+  display: grid;
+  gap: $spacing-lg;
+  margin-top: $spacing-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    align-items: start;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    gap: $spacing-xl;
+  }
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.vazio {
+  padding: $spacing-2xl $spacing-lg;
+  text-align: center;
+  color: $color-text-secondary;
+  background: color.mix($color-white, $color-surface, 50%);
+  border: 1px dashed $color-border-light;
+  border-radius: $radius-lg;
+}
+
+.vazioLink {
+  display: inline-block;
+  margin-top: $spacing-sm;
+  @include text-link;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  @media (min-width: $breakpoint-lg) {
+    position: sticky;
+    top: calc(#{$header-height} + #{$spacing-lg});
+  }
 }
