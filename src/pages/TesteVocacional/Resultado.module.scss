@@ -1,0 +1,80 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.mensagem {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.hero {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.heroConteudo {
+  @include container;
+  display: grid;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 32rem);
+    align-items: center;
+    gap: $spacing-2xl;
+    padding-top: $spacing-2xl;
+    padding-bottom: $spacing-2xl;
+  }
+}
+
+.apresentacao {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.sobretitulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.titulo {
+  max-width: 40rem;
+  font-family: $font-serif;
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: $color-blue-primary;
+}
+
+.destaque {
+  display: block;
+  color: $color-green;
+}
+
+.descricao {
+  max-width: 42rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: $color-text-secondary;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.conteudo {
+  @include container;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+}

@@ -21,3 +21,8 @@ export interface Curso {
   /** Presente em cursos pagos (universidades privadas). */
   mensalidadeMinima: number | null
 }
+
+export interface CursosPorArea {
+  cursos: Curso[]
+  total: number
+}

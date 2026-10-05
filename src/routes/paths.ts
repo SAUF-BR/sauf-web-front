@@ -16,6 +16,7 @@ export const ROTAS = {
   calendario: '/calendario',
   testeVocacional: '/teste-vocacional',
   testeVocacionalPerguntas: '/teste-vocacional/perguntas',
+  testeVocacionalResultado: '/teste-vocacional/resultado',
   simulados: '/simulados',
   simuladosPaywall: '/simulados/paywall',
   simuladosConteudo: '/simulados/conteudo',

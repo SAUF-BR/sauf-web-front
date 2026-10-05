@@ -28,3 +28,16 @@ export interface ProgressoTeste {
   respostas: Respostas
   atualizadoEm: string | null
 }
+
+export interface AfinidadeArea {
+  area: AreaVocacional
+  percentual: number
+}
+
+export interface ResultadoTeste {
+  areaPrincipal: AreaVocacional
+  descricao: string
+  afinidades: AfinidadeArea[]
+  totalRespostas: number
+  concluidoEm: string
+}

@@ -1,6 +1,6 @@
 import { simularRequisicao } from '../../lib/api/mock'
-import { cursosRecomendadosMock, totalCursosMock } from './mocks'
-import type { Curso } from './types'
+import { cursosPorAreaMock, cursosRecomendadosMock, totalCursosMock } from './mocks'
+import type { Curso, CursosPorArea } from './types'
 
 export async function getCursosRecomendados(): Promise<Curso[]> {
   // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
@@ -14,4 +14,11 @@ export async function getTotalCursos(): Promise<number> {
   // const { data } = await apiClient.get<Paginado<Curso>>(endpoints.cursos.list, { params: { size: 1 } })
   // return data.totalElements
   return simularRequisicao(totalCursosMock)
+}
+
+export async function getCursosPorArea(area: string): Promise<CursosPorArea> {
+  // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
+  // const { data } = await apiClient.get<Paginado<Curso>>(endpoints.cursos.list, { params: { area, size: 3 } })
+  // return { cursos: data.content, total: data.totalElements }
+  return simularRequisicao(cursosPorAreaMock[area] ?? { cursos: [], total: 0 })
 }

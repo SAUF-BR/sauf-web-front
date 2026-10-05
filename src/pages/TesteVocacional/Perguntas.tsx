@@ -1,12 +1,15 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card } from '../../components/ui/Card/Card'
 import {
+  contarRespondidas,
   estimarMinutosRestantes,
   obterNumeroParaContinuar,
+  useFinalizarTeste,
   useProgressoTeste,
   useQuestionario,
   useSalvarResposta,
 } from '../../features/testeVocacional'
+import { ROTAS } from '../../routes/paths'
 import { BarraTopoTeste } from './components/BarraTopoTeste/BarraTopoTeste'
 import { GradeProgresso } from './components/GradeProgresso/GradeProgresso'
 import { NavegacaoPergunta } from './components/NavegacaoPergunta/NavegacaoPergunta'
@@ -14,10 +17,12 @@ import { OpcaoResposta } from './components/OpcaoResposta/OpcaoResposta'
 import styles from './Perguntas.module.scss'
 
 export default function Perguntas() {
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const questionario = useQuestionario()
   const progresso = useProgressoTeste()
   const salvarResposta = useSalvarResposta()
+  const finalizarTeste = useFinalizarTeste()
 
   if (questionario.isPending || progresso.isPending) {
     return <p className={styles.mensagem}>Carregando o teste…</p>
@@ -44,6 +49,7 @@ export default function Perguntas() {
   const pergunta = perguntas[numero - 1]
   const alternativaSelecionada = respostas[pergunta.id] ?? null
   const ultima = numero === total
+  const podeConcluir = contarRespondidas(respostas) > 0 && !finalizarTeste.isPending
 
   function irPara(novoNumero: number) {
     setSearchParams({ pergunta: String(novoNumero) })
@@ -59,6 +65,13 @@ export default function Perguntas() {
       salvarResposta.mutate({ perguntaId: pergunta.id, alternativaId: null })
     }
     if (!ultima) irPara(numero + 1)
+    else if (podeConcluir) concluir()
+  }
+
+  function concluir() {
+    finalizarTeste.mutate(undefined, {
+      onSuccess: () => navigate(ROTAS.testeVocacionalResultado),
+    })
   }
 
   return (
@@ -91,11 +104,11 @@ export default function Perguntas() {
 
           <NavegacaoPergunta
             podeVoltar={numero > 1}
-            podeAvancar={!!alternativaSelecionada && !ultima}
+            podeAvancar={ultima ? podeConcluir : !!alternativaSelecionada}
             ultima={ultima}
             onAnterior={() => irPara(numero - 1)}
             onPular={pular}
-            onProxima={() => irPara(numero + 1)}
+            onProxima={ultima ? concluir : () => irPara(numero + 1)}
           />
         </section>
 
