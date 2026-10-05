@@ -7,9 +7,11 @@ import { AcertosErrosCard } from './components/AcertosErrosCard'
 import { AcertosCategoria } from './components/AcertosCategoria'
 import { OndeFocarCard } from './components/OndeFocarCard'
 import { ConstanciaCard } from './components/ConstanciaCard'
+import { Titulo } from '../../../../components/ui/Titulo/Titulo'
+import { PeriodSelector, type PeriodoOpcao } from './components/PeriodSelector/PeriodSelector'
 
-export default function Simulados() {
-  const [periodo, setPeriodo] = useState('ultimo-mes')
+export default function SimuladosMeuAcompanhamento() {
+  const [periodo, setPeriodo] = useState<PeriodoOpcao>('ultimo-mes')
   const [vestibular, setVestibular] = useState('todos')
         
   const mockStats = [    
@@ -114,31 +116,18 @@ const mockConstancia = {
           </div>
 
           <div className={styles.titleRow}>
-            <h1 className={styles.title}>Meu acompanhamento</h1>
-
+            <Titulo 
+              titulo={"Meu acompanhamento"} 
+              subtitulo={""}
+              size="Grande" 
+            />
+            
             <div className={styles.filters}>
               <div className={styles.periodGroup}>
-                <button
-                  type="button"
-                  className={periodo === '7-dias' ? styles.active : ''}
-                  onClick={() => setPeriodo('7-dias')}
-                >
-                  7 dias
-                </button>
-                <button
-                  type="button"
-                  className={periodo === 'ultimo-mes' ? styles.active : ''}
-                  onClick={() => setPeriodo('ultimo-mes')}
-                >
-                  Último mês
-                </button>
-                <button
-                  type="button"
-                  className={periodo === 'ultimo-ano' ? styles.active : ''}
-                  onClick={() => setPeriodo('ultimo-ano')}
-                >
-                  Último ano
-                </button>
+                <PeriodSelector
+                  periodoAtual={periodo}
+                  onSelect={(novoPeriodo) => setPeriodo(novoPeriodo)}
+                />
               </div>
 
               <select

@@ -7,7 +7,7 @@
 }
 
 .headerSection {
-  background-color: $color-white; // Fundo creme/off-white (#F5F1E8)
+  background-color: $color-white; 
   border-bottom: 1px solid $color-border-light;
   padding: $spacing-xl 0;
 }
@@ -81,7 +81,6 @@
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    // Gráfico de rosca com 70% acertos (verde) e erros/em branco (amarelo/cinza)
     background: conic-gradient($color-green 0% 70%, $color-yellow 70% 95%, $color-border-light 95% 100%);
     display: flex;
     align-items: center;
@@ -162,66 +161,7 @@
   flex-wrap: wrap;
 }
 
-.statusPills {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
 
-  .pillBtn {
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: $radius-full;
-    padding: 6px 14px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &.pillTodas {
-      border-color: $color-border-light;
-      color: $color-blue-primary;
-
-      &.active {
-        background-color: $color-blue-primary;
-        color: $color-surface;
-        border-color: $color-blue-primary;
-      }
-    }
-
-    &.pillAcertos {
-      border-color: $color-blue-secondary;
-      color: $color-green;
-
-      &.active {
-        background-color: $color-green;
-        color: $color-surface;
-        border-color: $color-green;
-      }
-    }
-
-    &.pillErros {
-      border-color: $color-error;
-      color: $color-error;
-
-      &.active {
-        background-color: $color-error;
-        color: $color-surface;
-        border-color: $color-error;
-      }
-    }
-
-    &.pillEmBranco {
-      border-color: $color-border-light;
-      color: $color-text-secondary;
-
-      &.active {
-        background-color: $color-text-secondary;
-        color: $color-surface;
-        border-color: $color-text-secondary;
-      }
-    }
-  }
-}
 
 .actionsRight {
   display: flex;

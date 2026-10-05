@@ -26,7 +26,6 @@ export function QuestaoCard({ questao }: QuestaoCardProps) {
 
   return (
     <div className={`${styles.card} ${styles[status]}`}>
-      {/* Topo do Card */}
       <div className={styles.header}>
         <div className={styles.titleGroup}>
           <h3 className={styles.numero}>Questão {numero}</h3>
@@ -43,12 +42,9 @@ export function QuestaoCard({ questao }: QuestaoCardProps) {
         <span className={styles.tempo}>{tempo}</span>
       </div>
 
-      {/* Enunciado */}
       <p className={styles.enunciado}>{enunciado}</p>
 
-      {/* Grid de Respostas */}
       <div className={styles.respostasRow}>
-        {/* Caso 1: Acerto (Exibe só a caixa verde com a resposta correta/escolhida) */}
         {status === 'acerto' && (
           <div className={`${styles.boxResposta} ${styles.boxCorreta}`}>
             <div className={styles.checkIcon}>✓</div>
@@ -59,7 +55,6 @@ export function QuestaoCard({ questao }: QuestaoCardProps) {
           </div>
         )}
 
-        {/* Caso 2: Erro (Exibe a caixa vermelha do usuário + a caixa verde correta) */}
         {status === 'erro' && (
           <>
             {respostaUsuario && (
@@ -82,7 +77,6 @@ export function QuestaoCard({ questao }: QuestaoCardProps) {
           </>
         )}
 
-        {/* Caso 3: Em branco (Exibe caixa cinza 'Você não respondeu' + caixa verde correta) */}
         {status === 'em_branco' && (
           <>
             <div className={`${styles.boxResposta} ${styles.boxEmBranco}`}>

@@ -51,29 +51,6 @@
   gap: $spacing-sm;
 }
 
-.periodGroup {
-  display: flex;
-  border: 1px solid $color-border-light;
-  border-radius: $radius-md;
-  background: $color-surface;
-  padding: 2px;
-
-  button {
-    background: transparent;
-    border: none;
-    padding: 6px $spacing-md;
-    font-size: 0.8125rem;
-    color: $color-text-muted;
-    cursor: pointer;
-    border-radius: $radius-sm;
-
-    &.active {
-      background: $color-blue-primary;
-      color: $color-surface;
-      font-weight: 600;
-    }
-  }
-}
 
 .select {
   border: 1px solid $color-border-light;

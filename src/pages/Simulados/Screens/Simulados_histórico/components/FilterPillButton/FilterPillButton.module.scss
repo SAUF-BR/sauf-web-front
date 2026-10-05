@@ -1,0 +1,57 @@
+@use '../../../../../../styles/variables' as *;
+
+.pillBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-full;
+  padding: 6px 14px;
+  font-family: $font-sans;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.pillTodas {
+    border-color: $color-border-light;
+    color: $color-blue-primary;
+
+    &.active {
+      background-color: $color-blue-primary;
+      color: $color-surface;
+      border-color: $color-blue-primary;
+    }
+  }
+
+  &.pillAcertos {
+    border-color: $color-blue-secondary;
+    color: $color-green;
+
+    &.active {
+      background-color: $color-green;
+      color: $color-surface;
+      border-color: $color-green;
+    }
+  }
+
+  &.pillErros {
+    border-color: $color-error;
+    color: $color-error;
+
+    &.active {
+      background-color: $color-error;
+      color: $color-surface;
+      border-color: $color-error;
+    }
+  }
+
+  &.pillEmBranco {
+    border-color: $color-border-light;
+    color: $color-text-secondary;
+
+    &.active {
+      background-color: $color-text-secondary;
+      color: $color-surface;
+      border-color: $color-text-secondary;
+    }
+  }
+}
