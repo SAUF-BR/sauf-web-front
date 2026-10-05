@@ -1,6 +1,14 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+.mensagem {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
 .hero {
   background: $color-white;
   border-bottom: 1px solid $color-border-light;
@@ -15,7 +23,7 @@
 
   @media (min-width: $breakpoint-lg) {
     grid-template-columns: minmax(0, 1fr) minmax(22rem, 32rem);
-    align-items: start;
+    align-items: center;
     gap: $spacing-2xl;
     padding-top: $spacing-2xl;
     padding-bottom: $spacing-2xl;
@@ -26,72 +34,47 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-
-  @media (min-width: $breakpoint-lg) {
-    padding-top: $spacing-sm;
-  }
 }
 
-.selo {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: $spacing-sm $spacing-md;
-  font-size: 0.875rem;
+.sobretitulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: $color-text-secondary;
 }
 
-.seloTag > * {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .titulo {
-  max-width: 34rem;
+  max-width: 40rem;
   font-family: $font-serif;
-  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.08;
   letter-spacing: -0.01em;
   color: $color-blue-primary;
 }
 
 .destaque {
+  display: block;
   color: $color-green;
 }
 
 .descricao {
-  max-width: 40rem;
+  max-width: 42rem;
   font-size: 1.0625rem;
   line-height: 1.6;
   color: $color-text-secondary;
 }
 
-.aviso {
+.acoes {
   display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  margin-top: $spacing-md;
-  font-size: 0.875rem;
-  color: $color-grey;
-
-  &::before {
-    content: '';
-    width: 0.4375rem;
-    height: 0.4375rem;
-    flex-shrink: 0;
-    background: rgba($color-green, 0.45);
-    border-radius: $radius-full;
-  }
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
 }
 
 .conteudo {
   @include container;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xl;
   padding-top: $spacing-xl;
   padding-bottom: $spacing-2xl;
 }

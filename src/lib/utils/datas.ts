@@ -104,3 +104,11 @@ export function formatarTempoRelativo(dataHoraIso: string, agora = new Date()) {
 
   return new Intl.DateTimeFormat(LOCALE, { day: '2-digit', month: '2-digit' }).format(data)
 }
+
+export function formatarDataPorExtenso(dataHoraIso: string) {
+  const data = new Date(dataHoraIso)
+  const dia = data.getDate()
+  const mesAno = new Intl.DateTimeFormat(LOCALE, { month: 'long', year: 'numeric' }).format(data)
+
+  return `${dia === 1 ? '1º' : dia} de ${mesAno}`
+}
