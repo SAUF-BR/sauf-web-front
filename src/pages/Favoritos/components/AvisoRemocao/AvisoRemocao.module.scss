@@ -1,0 +1,46 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: color.mix($color-white, $color-surface, 50%);
+  border: 1px dashed $color-grey;
+  border-radius: $radius-lg;
+  animation: entrar 0.2s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.texto {
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.nome {
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.desfazer {
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.9375rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include text-link;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
