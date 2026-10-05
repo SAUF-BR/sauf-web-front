@@ -2,7 +2,11 @@ import { useNavigate } from 'react-router-dom'
 import { Breadcrumb } from '../../components/ui/Breadcrumb/Breadcrumb'
 import { Tag } from '../../components/ui/Tag/Tag'
 import { useUsuarioAtual } from '../../features/auth'
-import { temProgressoSalvo, useProgressoTeste } from '../../features/testeVocacional'
+import {
+  temProgressoSalvo,
+  useProgressoTeste,
+  useResultadoTeste,
+} from '../../features/testeVocacional'
 import { ROTAS } from '../../routes/paths'
 import { BannerDecisao } from './components/BannerDecisao/BannerDecisao'
 import { ComoFunciona } from './components/ComoFunciona/ComoFunciona'
@@ -13,7 +17,12 @@ export default function TesteVocacional() {
   const navigate = useNavigate()
   const { data: usuario } = useUsuarioAtual()
   const { data: progresso } = useProgressoTeste({ enabled: !!usuario })
+  const { data: resultado } = useResultadoTeste({ enabled: !!usuario })
   const continuar = temProgressoSalvo(progresso)
+
+  function comecar() {
+    navigate(resultado ? ROTAS.testeVocacionalResultado : ROTAS.testeVocacionalPerguntas)
+  }
 
   return (
     <main>
@@ -53,8 +62,10 @@ export default function TesteVocacional() {
       <div className={styles.conteudo}>
         <ComoFunciona />
         <BannerDecisao
-          rotuloAcao={continuar ? 'Continuar de onde parei' : 'Vamos lá'}
-          onComecar={() => navigate(ROTAS.testeVocacionalPerguntas)}
+          rotuloAcao={
+            resultado ? 'Ver meu resultado' : continuar ? 'Continuar de onde parei' : 'Vamos lá'
+          }
+          onComecar={comecar}
         />
       </div>
     </main>

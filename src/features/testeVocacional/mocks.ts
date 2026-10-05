@@ -154,3 +154,12 @@ export const perguntasMock: Pergunta[] = [
     ['“Gosto de criar coisas novas.”', 'tecnologia'],
   ]),
 ]
+
+export const descricaoAreaMock: Record<AreaVocacional, string> = {
+  tecnologia:
+    'Suas respostas indicam preferência por raciocínio lógico, trabalho com dados e construção de soluções. Perfis assim se adaptam bem a cursos que combinam matemática aplicada e projeto.',
+  saude:
+    'Suas respostas indicam interesse em cuidar de pessoas e entender o corpo humano. Perfis assim se adaptam bem a cursos com muita prática, estágios e contato direto com pacientes.',
+  educacao:
+    'Suas respostas indicam gosto por comunicar, explicar e acompanhar a evolução de outras pessoas. Perfis assim se adaptam bem a licenciaturas e cursos ligados à formação.',
+}
