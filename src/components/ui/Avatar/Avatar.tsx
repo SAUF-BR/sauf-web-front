@@ -4,12 +4,16 @@ import styles from './Avatar.module.scss'
 type AvatarProps = {
   nome: string
   fotoUrl?: string | null
+  tamanho?: 'padrao' | 'grande'
   className?: string
 }
 
-export function Avatar({ nome, fotoUrl, className }: AvatarProps) {
+export function Avatar({ nome, fotoUrl, tamanho = 'padrao', className }: AvatarProps) {
   return (
-    <span className={`${styles.avatar} ${className ?? ''}`} title={nome}>
+    <span
+      className={`${styles.avatar} ${tamanho === 'grande' ? styles.grande : ''} ${className ?? ''}`}
+      title={nome}
+    >
       {fotoUrl ? (
         <img src={fotoUrl} alt="" className={styles.foto} />
       ) : (

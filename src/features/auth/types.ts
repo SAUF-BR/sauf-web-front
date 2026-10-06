@@ -13,4 +13,12 @@ export interface PreferenciasEstudante {
 
 export interface UsuarioAtual extends Usuario {
   preferencias: PreferenciasEstudante
+  fotoUrl: string | null
+  notaEnem: number | null
+  emailVerificado: boolean
+  criadoEm: string
+  senhaAlteradaEm: string
 }
+
+// Campos que a própria pessoa edita no perfil (e-mail e senha têm fluxo próprio)
+export type DadosPerfil = Pick<UsuarioAtual, 'nome' | 'notaEnem'>

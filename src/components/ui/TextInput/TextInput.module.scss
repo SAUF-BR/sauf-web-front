@@ -69,6 +69,11 @@
     align-items: center;
 }
 
+.hint {
+    font-size: 0.75rem;
+    color: $color-text-secondary;
+}
+
 .error {
     font-size: 0.75rem;
     color: $color-error;
