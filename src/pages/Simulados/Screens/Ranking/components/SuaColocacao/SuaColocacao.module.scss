@@ -1,0 +1,114 @@
+@use '../../../../../../styles/variables' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-green-soft;
+  border: 1px solid $color-green;
+  border-radius: $radius-xl;
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-lg $spacing-xl;
+  }
+}
+
+.rotulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $color-blue-secondary;
+}
+
+.destaque {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.posicao {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: $color-green;
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 3.5rem;
+  }
+}
+
+.mudanca {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.subiu {
+  color: $color-green;
+}
+
+.caiu {
+  color: $color-error;
+}
+
+.manteve {
+  color: $color-text-secondary;
+}
+
+.paraBaixo {
+  transform: rotate(180deg);
+}
+
+.total {
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.trilho {
+  height: 0.5rem;
+  overflow: hidden;
+  background: $color-surface;
+  border-radius: $radius-full;
+}
+
+.barra {
+  height: 100%;
+  background: $color-green;
+  border-radius: $radius-full;
+}
+
+.insight {
+  font-size: 0.9375rem;
+  color: $color-blue-secondary;
+
+  strong {
+    color: $color-green;
+  }
+}
+
+.estatisticas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid rgba($color-green, 0.2);
+
+  dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text-secondary;
+  }
+
+  dd {
+    margin: $spacing-xs 0 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $color-blue-primary;
+  }
+}

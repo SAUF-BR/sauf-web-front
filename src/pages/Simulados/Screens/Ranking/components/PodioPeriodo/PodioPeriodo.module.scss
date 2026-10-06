@@ -1,0 +1,193 @@
+@use 'sass:color';
+@use '../../../../../../styles/variables' as *;
+@use '../../../../../../styles/mixins' as *;
+
+$cor-texto-claro: rgba($color-surface, 0.7);
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-lg $spacing-lg 0;
+  overflow: hidden;
+  color: $color-surface;
+  background: $color-blue-primary;
+  border-radius: $radius-xl;
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-lg $spacing-xl 0;
+  }
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: $spacing-sm $spacing-md;
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: 1.625rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.subtitulo {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $cor-texto-claro;
+}
+
+.participantes {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $cor-texto-claro;
+}
+
+.vazio {
+  padding-bottom: $spacing-xl;
+  font-style: italic;
+  color: $cor-texto-claro;
+}
+
+.podio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  gap: $spacing-sm;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: $breakpoint-md) {
+    gap: $spacing-md;
+  }
+}
+
+.lugar {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.lugar1 {
+  order: 2;
+}
+
+.lugar2 {
+  order: 1;
+}
+
+.lugar3 {
+  order: 3;
+}
+
+.pessoa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.foto {
+  position: relative;
+  margin-bottom: $spacing-sm;
+}
+
+.podio .avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1rem;
+  color: $color-surface;
+  background: $color-blue-secondary;
+  border: 3px solid rgba($color-surface, 0.35);
+
+  @media (min-width: $breakpoint-md) {
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.125rem;
+  }
+}
+
+.lugar1 .avatar {
+  color: $color-blue-primary;
+  background: $color-yellow;
+  border-color: $color-surface;
+
+  @media (min-width: $breakpoint-md) {
+    width: 4.5rem;
+    height: 4.5rem;
+    font-size: 1.375rem;
+  }
+}
+
+.medalha {
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  z-index: 1;
+  padding: 2px $spacing-sm;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+  background: $color-surface;
+  border-radius: $radius-sm;
+  transform: translateX(-50%);
+}
+
+.nome {
+  @include truncate;
+  max-width: 100%;
+  font-size: 0.9375rem;
+}
+
+.local {
+  @include truncate;
+  max-width: 100%;
+  font-size: 0.8125rem;
+  color: $cor-texto-claro;
+}
+
+.degrau {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 4.5rem;
+  background: color.mix($color-surface, $color-blue-primary, 12%);
+  border-radius: $radius-lg $radius-lg 0 0;
+}
+
+.lugar1 .degrau {
+  height: 7rem;
+  color: $color-blue-primary;
+  background: $color-yellow;
+}
+
+.lugar2 .degrau {
+  height: 5.5rem;
+}
+
+.posicao {
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tempo {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.simulados {
+  font-size: 0.8125rem;
+}
+
+.somenteLeitor {
+  @include visually-hidden;
+}
