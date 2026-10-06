@@ -1,0 +1,49 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.corpo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+}
+
+.resumo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.inferior {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: $spacing-md;
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: 1.45fr 1fr;
+  }
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.estado {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  color: $color-text-secondary;
+}
