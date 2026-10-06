@@ -29,6 +29,7 @@ import SimuladosQuestões from '../pages/Simulados/Screens/Simulados_questões'
 import SimuladosHistórico from '../pages/Simulados/Screens/Simulados_histórico'
 import SimuladosMeuAcompanhamento from '../pages/Simulados/Screens/Meu_acompanhamento'
 import Cronometro from '../pages/Simulados/Screens/Cronometro'
+import Ranking from '../pages/Simulados/Screens/Ranking'
 import Favoritos from '../pages/Favoritos'
 import Notificacoes from '../pages/Notificacoes'
 import Perfil from '../pages/Perfil'
@@ -73,6 +74,7 @@ const router = createBrowserRouter(
           <Route path={ROTAS.simuladosHistorico} element={<SimuladosHistórico />} />
           <Route path={ROTAS.simuladosAcompanhamento} element={<SimuladosMeuAcompanhamento />} />
           <Route path={ROTAS.simuladosCronometro} element={<Cronometro />} />
+          <Route path={ROTAS.simuladosRanking} element={<Ranking />} />
         </Route>
         <Route element={<SemAssinaturaRoute />}>
           <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
