@@ -1,0 +1,36 @@
+@use '../../../../styles/variables' as *;
+
+.cartao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md $spacing-lg;
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+}
+
+.titulo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.acao {
+  white-space: nowrap;
+}
+
+// Visitante: sem sessão para encerrar
+.cartao.desabilitado {
+  background: rgba($color-white, 0.5);
+
+  .titulo {
+    color: $color-text-secondary;
+  }
+}

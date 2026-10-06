@@ -1,0 +1,35 @@
+@use '../../../../styles/variables' as *;
+
+// Cada seção termina com uma divisória, como no protótipo
+.secao {
+  padding-bottom: $spacing-xl;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-xs $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: $color-blue-primary;
+}
+
+.aviso {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.observacao {
+  margin-top: $spacing-md;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}

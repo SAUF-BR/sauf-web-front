@@ -1,0 +1,65 @@
+@use '../../../../styles/variables' as *;
+
+.cartao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-md $spacing-lg;
+  padding: $spacing-lg;
+  border-radius: $radius-xl;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  color: $color-yellow-dark;
+  background: $color-yellow-soft;
+  border-radius: $radius-md;
+}
+
+.textos {
+  flex: 1;
+  min-width: 14rem;
+}
+
+.linhaTitulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+}
+
+.acao {
+  gap: $spacing-xs;
+  white-space: nowrap;
+}
+
+// Visitante: mesmo card, apagado
+.cartao.visitante {
+  background: rgba($color-white, 0.5);
+
+  .icone {
+    color: $color-grey;
+    background: $color-placeholder;
+  }
+
+  .titulo {
+    color: $color-text-secondary;
+  }
+}

@@ -15,6 +15,13 @@
   flex-shrink: 0;
 }
 
+// Seletor duplo para vencer o tamanho padrão do .avatar
+.avatar.grande {
+  width: 7.5rem;
+  height: 7.5rem;
+  font-size: 2.25rem;
+}
+
 .foto {
   width: 100%;
   height: 100%;

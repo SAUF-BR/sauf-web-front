@@ -57,7 +57,7 @@ export function Header() {
               </Link>
 
               <Link to={ROTAS.perfil} className={styles.perfil} aria-label="Meu perfil">
-                <Avatar nome={usuario.nome} />
+                <Avatar nome={usuario.nome} fotoUrl={usuario.fotoUrl} />
               </Link>
             </>
           ) : (

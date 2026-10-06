@@ -5,6 +5,7 @@ import styles from './TextInput.module.scss'
 type TextInputProps = ComponentProps<'input'> & {
   label: string
   error?: string
+  hint?: string
   labelAction?: ReactNode
   rightElement?: ReactNode
 }
@@ -12,6 +13,7 @@ type TextInputProps = ComponentProps<'input'> & {
 export function TextInput({
   label,
   error,
+  hint,
   labelAction,
   rightElement,
   id,
@@ -21,6 +23,8 @@ export function TextInput({
   const autoId = useId()
   const inputId = id ?? autoId
   const errorId = `${inputId}-error`
+  const hintId = `${inputId}-hint`
+  const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(' ') || undefined
 
   return (
     <div className={styles.wrapper}>
@@ -36,11 +40,17 @@ export function TextInput({
           id={inputId}
           className={`${error ? styles.inputError : styles.input} ${className ?? ''}`}
           aria-invalid={!!error}
-          aria-describedby={error ? errorId : undefined}
+          aria-describedby={describedBy}
           {...rest}
         />
         {rightElement && <div className={styles.right}>{rightElement}</div>}
       </div>
+
+      {hint && (
+        <span id={hintId} className={styles.hint}>
+          {hint}
+        </span>
+      )}
 
       {error && (
         <span id={errorId} role="alert" className={styles.error}>

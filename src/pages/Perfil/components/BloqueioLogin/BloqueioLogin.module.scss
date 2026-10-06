@@ -1,0 +1,56 @@
+@use '../../../../styles/variables' as *;
+
+.bloqueio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-xl $spacing-lg;
+  text-align: center;
+  background: $color-surface;
+  border: 1.5px dashed $color-border-light;
+  border-radius: $radius-xl;
+}
+
+.cadeado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: $color-green;
+  background: $color-green-soft;
+  border-radius: $radius-full;
+}
+
+.titulo {
+  margin-top: $spacing-md;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  max-width: 36rem;
+  margin-top: $spacing-sm;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+
+  button {
+    white-space: nowrap;
+  }
+}
+
+.nota {
+  margin-top: $spacing-md;
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+}
