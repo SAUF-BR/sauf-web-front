@@ -23,6 +23,8 @@ export const ROTAS = {
   simuladosQuestoes: '/simulados/questoes',
   simuladosHistorico: '/simulados/historico',
   simuladosAcompanhamento: '/simulados/acompanhamento',
+  simuladosCronometro: '/simulados/cronometro',
+  simuladosRanking: '/simulados/ranking',
   favoritos: '/favoritos',
   notificacoes: '/notificacoes',
   perfil: '/perfil',

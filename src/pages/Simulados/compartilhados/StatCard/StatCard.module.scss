@@ -1,0 +1,87 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+$cor-destaque: color.scale($color-yellow, $lightness: -55%);
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-lg;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+}
+
+.rotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $spacing-xs $spacing-sm;
+}
+
+.valor {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: $color-blue-primary;
+}
+
+.complemento {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.variacao {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.paraBaixo {
+  transform: rotate(180deg);
+}
+
+.positivo {
+  color: $color-green;
+}
+
+.negativo {
+  color: $color-error;
+}
+
+.neutro {
+  color: $color-text-secondary;
+}
+
+.detalhe {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.destaque {
+  background: color.mix($color-yellow, $color-surface, 8%);
+  border-color: $color-yellow;
+
+  .rotulo,
+  .valor,
+  .complemento,
+  .detalhe {
+    color: $cor-destaque;
+  }
+}
+
+.somenteLeitor {
+  @include visually-hidden;
+}
