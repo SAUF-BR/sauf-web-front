@@ -1,0 +1,39 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.grupo {
+  display: inline-flex;
+  overflow: hidden;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+}
+
+.opcao {
+  padding: $spacing-sm $spacing-md;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-blue-primary;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.ativa {
+  font-weight: 700;
+  color: $color-surface;
+  background: $color-blue-primary;
+
+  &:hover {
+    color: $color-surface;
+  }
+}
