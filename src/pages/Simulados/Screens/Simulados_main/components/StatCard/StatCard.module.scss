@@ -1,0 +1,25 @@
+@use '../../../../../../styles/variables' as *;
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: $color-text-secondary;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: $color-blue-primary;
+}

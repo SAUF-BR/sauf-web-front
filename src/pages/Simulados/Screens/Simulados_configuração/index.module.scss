@@ -1,23 +1,142 @@
-@use '../../../../styles/variables' as *;.page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.pageWrapper { background: $color-surface; min-height: 100vh; }
+
+.headerSection {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
+  padding: $spacing-xl 0;
+
+  .headerContainer {
+    @include container;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+
+  a { color: $color-text-secondary; text-decoration: none; &:hover { text-decoration: underline; } }
+  .currentBreadcrumb { color: $color-blue-primary; font-weight: 600; }
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+.title { font-family: $font-serif; font-size: 2.25rem; font-weight: 400; color: $color-blue-primary; margin: 4px 0 0; }
+.subtitle { font-size: 0.875rem; color: $color-text-secondary; margin: 0; }
+
+/* Grid Principal e Seções */
+.contentSection { padding: $spacing-xl 0 $spacing-2xl; }
+
+.contentContainer {
+  @include container;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: $spacing-xl;
+  align-items: start;
+  @media (max-width: $breakpoint-md) { grid-template-columns: 1fr; }
 }
 
-.link {
-  display: inline-block;
-  margin-top: $spacing-lg;
-  color: $color-primary;
-  text-decoration: underline;
+.configForm { display: flex; flex-direction: column; gap: $spacing-xl; }
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  border-bottom: 1px solid $color-border-light;
+  padding-bottom: $spacing-xl;
+  &:last-child { border: none; padding: 0; }
+
+  h2 { font-size: 0.75rem; font-weight: 700; color: $color-text-secondary; letter-spacing: 0.05em; margin: 0; }
 }
+
+.sectionTitleRow, .sectionHeaderFlex { display: flex; justify-content: space-between; align-items: center; }
+.badgeObrigatorio { font-size: 0.6875rem; color: $color-text-secondary; }
+
+.linkAction {
+  background: transparent; border: none; font-size: 0.8125rem; font-weight: 600; color: $color-green; cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
+/* Grids e Seletores */
+.tamanhosGrid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: $spacing-md;
+  @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr; }
+}
+
+.pillsRow {
+  display: flex; gap: $spacing-sm; flex-wrap: wrap;
+
+  .pillBtn {
+    background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-full;
+    padding: 8px $spacing-md; font: 600 0.8125rem $font-sans; color: $color-blue-primary; cursor: pointer;
+    &.activePill { background: $color-blue-primary; color: $color-surface; border-color: $color-blue-primary; }
+  }
+}
+
+.categoriasGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: $spacing-sm;
+  @media (max-width: $breakpoint-sm) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.checkboxCard {
+  background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-md;
+  padding: 10px $spacing-md; display: flex; align-items: center; gap: $spacing-sm; cursor: pointer;
+  &.checkedCard { background: #f0fdf4; border-color: $color-green; }
+}
+
+.checkIcon {
+  width: 18px; height: 18px; border: 1px solid $color-border-light; border-radius: $radius-sm;
+  display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; font-weight: 700;
+  &.iconActive { background: $color-green; border-color: $color-green; color: $color-surface; }
+}
+
+.catLabel { font-size: 0.8125rem; font-weight: 600; color: $color-blue-primary; }
+
+.toggleCard {
+  background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg; display: flex; justify-content: space-between; align-items: center;
+  strong { font-size: 0.875rem; color: $color-blue-primary; }
+  p { font-size: 0.75rem; color: $color-text-secondary; margin: 2px 0 0; }
+}
+
+.switchBtn {
+  width: 44px; height: 24px; background: $color-border-light; border-radius: $radius-full; border: none;
+  padding: 2px; cursor: pointer;
+  &.switchOn { background: $color-green; .switchHandle { transform: translateX(20px); } }
+  .switchHandle { display: block; width: 20px; height: 20px; background: $color-surface; border-radius: 50%; transition: transform 0.2s; }
+}
+
+/* Sidebar Resumo */
+.summarySidebar { position: sticky; top: $spacing-lg; }
+
+.summaryCard {
+  background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-lg;
+  padding: $spacing-lg; display: flex; flex-direction: column; gap: $spacing-md;
+
+  .summaryTitle { font-size: 1rem; font-weight: 700; color: $color-blue-primary; margin: 0; }
+}
+
+.summaryList {
+  display: flex; flex-direction: column; gap: $spacing-sm;
+
+  .summaryRow {
+    display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8125rem;
+    .label { color: $color-text-secondary; }
+    .value { color: $color-blue-primary; text-align: right; max-width: 60%; }
+  }
+}
+
+.startBtn, .cancelBtn {
+  width: 100%; border-radius: $radius-md; font-weight: 700; cursor: pointer; padding: 10px;
+}
+
+.startBtn { background: $color-green; color: $color-surface; border: none; font-size: 0.875rem; padding: 12px; }
+.cancelBtn { background: transparent; color: $color-blue-primary; border: 1px solid $color-border-light; font-size: 0.8125rem; }
+
+.footerInfo { font-size: 0.75rem; color: $color-text-secondary; margin: 0; line-height: 1.4; }
