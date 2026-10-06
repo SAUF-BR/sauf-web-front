@@ -1,0 +1,39 @@
+@use '../../../../../../styles/variables' as *;
+
+.vazio {
+  font-style: italic;
+  color: $color-text-secondary;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+  font-size: 1rem;
+  border-bottom: 1px solid $color-border-light;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  dt {
+    color: $color-blue-secondary;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
+    color: $color-blue-primary;
+  }
+
+  .lenta {
+    color: $color-error;
+  }
+}
+
+.insight {
+  margin-top: $spacing-md;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
