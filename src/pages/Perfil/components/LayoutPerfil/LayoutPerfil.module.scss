@@ -1,0 +1,79 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.cabecalho {
+  background: $color-white;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.cabecalhoConteudo {
+  @include container;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+}
+
+.trilha {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  [aria-current] {
+    color: $color-blue-primary;
+  }
+}
+
+.trilhaLink {
+  @include text-link($color-text-secondary);
+  font-weight: 400;
+}
+
+.identidade {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-lg;
+  margin-top: $spacing-lg;
+}
+
+.textos {
+  flex: 1;
+  min-width: 16rem;
+}
+
+.titulo {
+  font-family: $font-serif;
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: $color-blue-primary;
+}
+
+.tituloVisitante {
+  color: $color-text-secondary;
+}
+
+.subtitulo {
+  margin-top: $spacing-xs;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+
+  // Evita que o texto dos botões quebre em duas linhas
+  button {
+    white-space: nowrap;
+  }
+}
+
+.conteudo {
+  @include container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-2xl;
+}

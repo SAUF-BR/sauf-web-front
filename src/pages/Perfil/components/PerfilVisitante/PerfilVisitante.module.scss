@@ -1,0 +1,27 @@
+@use '../../../../styles/variables' as *;
+
+// Mesmo tamanho do Avatar grande, para o cabeçalho não mudar entre visitante e logado
+.foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7.5rem;
+  height: 7.5rem;
+  flex-shrink: 0;
+  color: $color-grey;
+  background: $color-surface;
+  border: 2px dashed $color-border-light;
+  border-radius: $radius-full;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+
+  // A Tag "neutro" tem o mesmo fundo do cabeçalho; escurece um pouco para aparecer
+  > span {
+    background: $color-border-light;
+  }
+}

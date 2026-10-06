@@ -1,0 +1,48 @@
+@use '../../../../styles/variables' as *;
+
+.grade {
+  display: grid;
+  align-items: start;
+  gap: $spacing-lg;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// "input." na frente para vencer os estilos do TextInput independente da ordem do CSS.
+// Espaço à direita para o texto não ficar por baixo do selo/ação do campo.
+input.comAcao {
+  padding-right: 8.5rem;
+}
+
+input.somenteLeitura {
+  background: $color-white;
+}
+
+.acaoCampo {
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-green;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:disabled {
+    color: $color-grey;
+    cursor: not-allowed;
+  }
+}
+
+.opcional {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+}
+
+.sufixo {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+  pointer-events: none;
+}

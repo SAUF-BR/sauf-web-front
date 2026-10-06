@@ -3,6 +3,7 @@ export const endpoints = {
     login: '/auth/login',
     logout: '/auth/logout',
     me: '/me',
+    foto: '/me/foto',
   },
   cursos: {
     list: '/cursos',
