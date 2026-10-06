@@ -1,0 +1,74 @@
+@use 'sass:color';
+@use '../../../../../../styles/variables' as *;
+
+.vazio {
+  font-style: italic;
+  color: $color-text-secondary;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: 0;
+  list-style: none;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.nome {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.tempos {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  strong {
+    font-size: 1rem;
+    color: $color-blue-primary;
+  }
+}
+
+.trilho {
+  height: 0.625rem;
+  margin-top: $spacing-sm;
+  overflow: hidden;
+  background: $color-white;
+  border-radius: $radius-full;
+}
+
+.barra {
+  height: 100%;
+  border-radius: $radius-full;
+}
+
+.rapida {
+  background: color.mix($color-green, $color-surface, 50%);
+}
+
+.media {
+  background: $color-green;
+}
+
+.longa {
+  background: $color-blue-primary;
+}
+
+.detalhe {
+  margin-top: $spacing-xs;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
