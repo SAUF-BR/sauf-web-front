@@ -1,0 +1,337 @@
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  align-items: start;
+  gap: 32px;
+  padding: 28px 0;
+}
+
+.conteudoPrincipal {
+  min-width: 0;
+}
+
+.secao {
+  margin-bottom: 32px;
+
+  h2 {
+    margin: 0 0 14px;
+    color: #204b57;
+    font-size: 1.80rem;
+    font-family:'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: #555650;
+    line-height: 1.8;
+  }
+}
+
+.areas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 14px;
+    border: 1px solid #e7e4de;
+    border-radius: 8px;
+    color: #444640;
+    background: #fff;
+  }
+}
+
+.universidade {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #e7e4de;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+
+  h3 {
+    margin: 0 0 5px;
+    color: #204b57;
+    font-size: 1rem;
+  }
+
+  p {
+    color: #777873;
+    font-size: 0.875rem;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.sigla {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: #fbfaf7;
+  color: #204b57;
+  font-weight: 700;
+}
+
+.nota {
+  margin-top: 10px !important;
+  color: #777873 !important;
+  font-size: 0.8rem;
+}
+
+.painel {
+  padding: 20px;
+  border: 1px solid #e7e4de;
+  border-radius: 12px;
+  background: #fbfaf7;
+
+  h2 {
+    margin: 0 0 18px;
+    color: #204b57;
+    font-size: 1.2rem;
+  }
+}
+
+.itemPainel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e7e4de;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  span {
+    color: #777873;
+    font-size: 0.85rem;
+  }
+
+  strong {
+    color: #333630;
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .painel {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .areas {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.cardsInformativos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.cardInformativo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 62px;
+  padding: 12px;
+  border: 1px solid #e7e4de;
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.cardRotulo {
+  color: #9a9d99;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cardValor {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+
+  strong {
+    color: #204b57;
+    font-size: 1.2rem;
+  }
+
+  span {
+    color: #777873;
+    font-size: 0.7rem;
+  }
+}
+
+.cardValorUnico {
+  color: #204b57;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .cardsInformativos {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.chanceCard {
+  align-self: start;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e7e0d5;
+  border-radius: 12px;
+  background: #fbfaf7;
+  box-sizing: border-box;
+}
+
+.chanceTitulo {
+  margin: 0 0 8px;
+  color: #204b57;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chanceResultado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  strong {
+    color: #28634f;
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+
+  span {
+    color: #898b85;
+    font-size: 0.75rem;
+  }
+}
+
+
+.chanceBarra {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5ded2;
+}
+
+.chanceProgresso {
+  height: 100%;
+  border-radius: inherit;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.baixa {
+  background: #dc4545;
+}
+
+.media {
+  background: #e8b52e;
+}
+
+.alta {
+  background: #28634f;
+}
+
+.indisponivel {
+  background: #a0a0a0;
+}
+
+
+.chanceDescricao {
+  margin: 8px 0 0;
+  color: #898b85;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.colunaLateral {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.botaoIngresso,
+.botaoFavorito {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 14px;
+  border: 1px solid #28634f;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.botaoIngresso {
+  background: #28634f;
+  color: #fff;
+
+  &:hover {
+    background: #204b3e;
+  }
+}
+
+.botaoFavorito {
+  background: transparent;
+  color: #28634f;
+
+  &:hover {
+    background: #e8f0ec;
+  }
+}
+
+.favoritoSalvo {
+  background: #28634f;
+  color: #fff;
+
+  &:hover {
+    background: #204b3e;
+  }
+}

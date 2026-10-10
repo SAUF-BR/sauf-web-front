@@ -1,0 +1,30 @@
+
+.navegacao {
+  display: flex;
+  gap: 28px;
+  margin-top: 24px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e7e4de;
+}
+
+.aba {
+  flex-shrink: 0;
+  padding: 12px 2px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #777873;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color: #204b57;
+  }
+}
+
+.ativa {
+  border-bottom-color: #204b57;
+  color: #204b57;
+  font-weight: 600;
+}

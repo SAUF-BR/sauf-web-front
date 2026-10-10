@@ -7,6 +7,8 @@ import { CursoListCard } from './components/CursoListCard/CursoListCard'
 import styles from './index.module.scss'
 import { useState } from 'react'
 import { Titulo } from '../../components/ui/Titulo/Titulo'
+import { ROTAS } from '../../routes/paths'
+import { Link } from 'react-router-dom'
 
 export default function Cursos() {
 
@@ -16,13 +18,13 @@ export default function Cursos() {
     <main className={styles.page}>
       <header className={styles.pageHeader}>
         <p className={styles.breadcrumb}>
-          Início / Cursos
-        </p>
-
+          <Link to={ROTAS.inicio}>Início</Link>
+          {' / '}  
+          {' Cursos '}    
+      </p>
         <Titulo
           titulo="Cursos"
           subtitulo={`${totalCursosMock} cursos encontrados`}
-          size="Grande"
         />
       </header>
 
@@ -115,7 +117,12 @@ export default function Cursos() {
               max="720"
               value={notaCorte}
               onChange={(event) => setNotaCorte(Number(event.target.value))}
-            />
+              style={{
+                background: `linear-gradient(to right, #204B57 ${
+                  (notaCorte / 720) * 100
+                }%, #d9dedf ${(notaCorte / 720) * 100}%)`,
+              }}
+              />
 
             <div className={styles.sliderValores}>
               <span>{notaCorte}</span>

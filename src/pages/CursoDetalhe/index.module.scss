@@ -1,13 +1,30 @@
 @use '../../styles/variables' as *;
 
+
+
 .page {
-  max-width: 960px;
+  width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+  padding: 32px 24px;
+  box-sizing: border-box;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.conteudo {
+  width: 100%;
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 20px 16px;
+  }
+}
+
+
+.container {
+  width: 100%;
+  max-width: 1152px;
+  margin: 0 auto;
 }
