@@ -1,13 +1,12 @@
 
 import type { Curso } from '../../../../features/cursos/types'
 import { mercadoSalariosMock } from '../../../../features/cursos/mercadoSalariosMock'
-import styles from './MercadoSalarios.module.scss'
 import { formatarMoeda } from '../../../../lib/utils/formatadores'
+import styles from './MercadoSalarios.module.scss'
 
 interface MercadoSalariosProps {
   curso: Curso
 }
-
 
 export function MercadoSalarios({ curso }: MercadoSalariosProps) {
   const dados = mercadoSalariosMock[curso.id]
@@ -38,7 +37,7 @@ export function MercadoSalarios({ curso }: MercadoSalariosProps) {
 
           <article className={styles.indicador}>
             <span>Média com 5 anos</span>
-            <strong>{formatarMoeda(dados.salarioInicialMedio)}</strong>
+            <strong>{formatarMoeda(dados.salarioMedioCincoAnos)}</strong>
           </article>
 
           <article className={styles.indicador}>
@@ -75,7 +74,6 @@ export function MercadoSalarios({ curso }: MercadoSalariosProps) {
                 </div>
               </div>
             ))}
-
           </div>
         </section>
 

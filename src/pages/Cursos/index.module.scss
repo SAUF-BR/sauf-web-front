@@ -331,3 +331,62 @@
 .filtroCabecalho button:hover {
   background-color: $color-blue-secondary;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+  grid-column: 1 / -1;
+
+  margin: 32px auto 24px;
+}
+
+.paginationButton {
+  background-color: #204f5b;
+  color: #fff;
+  border: 1px solid #204f5b;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #173d47;
+    border-color: #173d47;
+  }
+
+  &:disabled {
+    background-color: #e8eeef;
+    border-color: #e8eeef;
+    color: #8b9b9e;
+    cursor: not-allowed;
+  }
+}
+
+.paginationInfo {
+  color: #204f5b;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .pagination {
+    gap: 8px;
+  }
+
+  .paginationButton {
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+
+  .paginationInfo {
+    font-size: 13px;
+  }
+}

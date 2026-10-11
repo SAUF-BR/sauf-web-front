@@ -44,7 +44,6 @@ export function CursoListCard({
         <Imagem
           src={curso.imagemUrl}
           alt={`Foto do curso de ${curso.nome}`}
-          rotuloPlaceholder="foto do curso 16:9"
           className={styles.imagem}
         />
 
@@ -61,12 +60,22 @@ export function CursoListCard({
         <h3 className={styles.nome}>{curso.nome}</h3>
 
         <div className={styles.tags}>
-          <Tag>{ROTULO_MODALIDADE[curso.modalidade]}</Tag>
-          <Tag>{formatarDuracao(curso.duracaoSemestres)}</Tag>
+          {(curso.modalidades ?? []).map((modalidade) => (
+            <Tag key={modalidade}>
+              {ROTULO_MODALIDADE[modalidade]}
+            </Tag>
+          ))}
+
+          <Tag>
+            {formatarDuracao(
+              curso.duracaoSemestresMin,
+              curso.duracaoSemestresMax,
+            )}
+          </Tag>
         </div>
 
         <p className={styles.ofertas}>
-          {curso.totalOfertas ?? 0} universidades ofertam este curso
+          {curso.totalUniversidades ?? 0} universidades ofertam este curso
         </p>
 
         <div className={styles.rodape}>

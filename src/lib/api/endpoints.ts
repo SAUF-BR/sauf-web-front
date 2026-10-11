@@ -8,6 +8,7 @@ export const endpoints = {
   cursos: {
     list: '/cursos',
     detalhe: (id: string) => `/cursos/${id}`,
+    ofertas: (id: string) => `/cursos/${id}/ofertas`,
     recomendados: '/cursos/recomendados',
   },
   universidades: {

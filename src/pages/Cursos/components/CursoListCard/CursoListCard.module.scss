@@ -9,8 +9,12 @@
 
 .imagemContainer {
   position: relative;
-  height: 8.125rem;
+  height: 7.4rem; 
   overflow: hidden;
+}
+
+.corpo {
+  padding: $spacing-md; 
 }
 
 .imagem {
@@ -25,10 +29,6 @@
   top: 0.625rem;
   right: 0.625rem;
   left: auto;
-}
-
-.corpo {
-  padding: $spacing-md;
 }
 
 .nome {

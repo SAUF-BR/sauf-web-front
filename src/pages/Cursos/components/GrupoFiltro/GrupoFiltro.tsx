@@ -11,6 +11,8 @@ interface GrupoFiltroProps {
   titulo: string
   opcoes: OpcaoFiltro[]
   tipo?: 'checkbox' | 'radio'
+  valoresSelecionados: string[]
+  onChange: (valores: string[]) => void
 }
 
 export function GrupoFiltro({
@@ -18,7 +20,22 @@ export function GrupoFiltro({
   titulo,
   opcoes,
   tipo = 'checkbox',
+  valoresSelecionados,
+  onChange,
 }: GrupoFiltroProps) {
+  function alterarSelecao(valor: string) {
+    if (tipo === 'radio') {
+      onChange([valor])
+      return
+    }
+
+    const selecionados = valoresSelecionados.includes(valor)
+      ? valoresSelecionados.filter((item) => item !== valor)
+      : [...valoresSelecionados, valor]
+
+    onChange(selecionados)
+  }
+
   return (
     <fieldset className={styles.grupo}>
       <legend>{titulo}</legend>
@@ -29,7 +46,8 @@ export function GrupoFiltro({
             type={tipo}
             name={nome}
             value={opcao.valor}
-            defaultChecked={tipo === 'radio' && opcao.valor === '8'}
+            checked={valoresSelecionados.includes(opcao.valor)}
+            onChange={() => alterarSelecao(opcao.valor)}
           />
           {opcao.rotulo}
         </label>
