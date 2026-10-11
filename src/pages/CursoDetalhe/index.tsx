@@ -12,7 +12,7 @@ import {
 } from './components/NavegacaoAbas/NavegacaoAbas'
 import { VisaoGeral } from './abas/VisaoGeral/VisaoGeral'
 import { MercadoSalarios } from './abas/MercadoSalarios/MercadoSalarios'
-// import { CursosParecidos } from './abas/CursosParecidos/CursosParecidos'
+import { CursosParecidos } from './abas/CursosParecidos/CursosParecidos'
 import styles from './index.module.scss'
 
 export default function CursoDetalhe() {
@@ -46,9 +46,9 @@ return (
 
         {abaAtiva === 'mercado-salarios' && (<MercadoSalarios curso={curso} />)}
 
-        {/* {abaAtiva === 'cursos-parecidos' && (
+        {abaAtiva === 'cursos-parecidos' && (
           <CursosParecidos curso={curso} />
-        )} */}
+        )}
       </section>
     </div>
   </main>
