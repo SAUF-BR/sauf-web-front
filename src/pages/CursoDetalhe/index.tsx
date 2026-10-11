@@ -11,7 +11,7 @@ import {
   type AbaCurso,
 } from './components/NavegacaoAbas/NavegacaoAbas'
 import { VisaoGeral } from './abas/VisaoGeral/VisaoGeral'
-// import { MercadoSalarios } from './abas/MercadoSalarios/MercadoSalarios'
+import { MercadoSalarios } from './abas/MercadoSalarios/MercadoSalarios'
 // import { CursosParecidos } from './abas/CursosParecidos/CursosParecidos'
 import styles from './index.module.scss'
 
@@ -44,11 +44,9 @@ return (
       <section className={styles.conteudo}>
         {abaAtiva === 'visao-geral' && <VisaoGeral curso={curso} />}
 
-        {/* {abaAtiva === 'mercado-salarios' && (
-          <MercadoSalarios curso={curso} />
-        )}
+        {abaAtiva === 'mercado-salarios' && (<MercadoSalarios curso={curso} />)}
 
-        {abaAtiva === 'cursos-parecidos' && (
+        {/* {abaAtiva === 'cursos-parecidos' && (
           <CursosParecidos curso={curso} />
         )} */}
       </section>
