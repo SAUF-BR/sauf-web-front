@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useCurso } from '../../features/cursos/hooks'
@@ -36,7 +37,7 @@ export default function CursoDetalhe() {
 
   return (
     <main className={styles.page}>
-      <CursoDetalheHeader curso={curso}/>
+      <CursoDetalheHeader curso={curso} />
 
       <div className={styles.container}>
         <NavegacaoAbas
@@ -47,7 +48,6 @@ export default function CursoDetalhe() {
         <section className={styles.conteudo}>
           {abaAtiva === 'visao-geral' && <VisaoGeral curso={curso} />}
 
-          
           {abaAtiva === 'mercado-salarios' && (
             <MercadoSalarios curso={curso} />
           )}
@@ -55,7 +55,6 @@ export default function CursoDetalhe() {
           {abaAtiva === 'cursos-parecidos' && (
             <CursosParecidos curso={curso} />
           )}
-         
         </section>
       </div>
     </main>

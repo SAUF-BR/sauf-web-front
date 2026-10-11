@@ -13,8 +13,27 @@ export const ROTULO_MODALIDADE: Record<Modalidade, string> = {
   ead: 'EaD',
 }
 
-export function formatarDuracao(semestres: number) {
-  return `${semestres} sem.`
+export function formatarDuracao(
+  minimo: number | null,
+  maximo: number | null,
+) {
+  if (minimo === null && maximo === null) {
+    return 'Duração não informada'
+  }
+
+  if (minimo === maximo) {
+    return `${minimo} semestres`
+  }
+
+  if (minimo === null) {
+    return `Até ${maximo} semestres`
+  }
+
+  if (maximo === null) {
+    return `A partir de ${minimo} semestres`
+  }
+
+  return `${minimo} a ${maximo} semestres`
 }
 
 /**
@@ -24,10 +43,6 @@ export function formatarDuracao(semestres: number) {
 export function obterDestaqueCurso(curso: Curso) {
   if (curso.notaCorteSisu !== null) {
     return { rotulo: 'Nota de corte SISU', valor: formatarNumero(curso.notaCorteSisu) }
-  }
-
-  if (curso.mensalidadeMinima !== null) {
-    return { rotulo: 'Mensalidade desde', valor: formatarMoeda(curso.mensalidadeMinima) }
   }
 
   return null
