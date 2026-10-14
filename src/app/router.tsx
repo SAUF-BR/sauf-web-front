@@ -41,6 +41,11 @@ const router = createBrowserRouter(
       <Route path={ROTAS.login} element={<Login />} />
       <Route path={ROTAS.cadastro} element={<Cadastro />} />
 
+      {/* Simulado em andamento: header próprio, mas exige assinatura */}
+      <Route element={<SubscriberRoute />}>
+        <Route path={ROTAS.simuladosQuestoes} element={<SimuladosQuestões />} />      
+      </Route>
+
       <Route element={<MainLayout />}>
         <Route path={ROTAS.inicio} element={<Home />} />
 
@@ -68,9 +73,8 @@ const router = createBrowserRouter(
           <Route path={ROTAS.simulados} element={<Simulados />} />
           <Route path={ROTAS.simuladosMain} element={<SimuladosMain />} />
           <Route path={ROTAS.simuladosConfiguracao} element={<SimuladosConfiguracao />} />
-          <Route path={ROTAS.simuladosQuestoes} element={<SimuladosQuestões />} />
           <Route path={ROTAS.simuladosHistorico} element={<SimuladosHistórico />} />
-          <Route path={ROTAS.simuladosAcompanhamento} element={<SimuladosMeuAcompanhamento />} />
+          <Route path={ROTAS.simuladosAcompanhamento} element={<SimuladosMeuAcompanhamento />} />           
         </Route>
         <Route element={<SemAssinaturaRoute />}>
           <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />

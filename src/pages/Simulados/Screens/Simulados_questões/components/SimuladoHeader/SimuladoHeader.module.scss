@@ -20,19 +20,11 @@
   align-items: center;
   gap: $spacing-lg;
 }
-/* essa parté é muda a cor da logo do header especial*/
 .logoLink { 
   display: flex;
   align-items: center;
   text-decoration: none;
 
-  :global(.logo),
-  * {
-    color: $color-surface !important;
-  }
-  :global(.dot) {
-    color: $color-yellow !important;
-  }
 }
 
 .simuladoTitle {
