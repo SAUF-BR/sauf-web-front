@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { StatCard } from './components/StatCard/StatCard'
 import { SimuladoCard, type SimuladoItemData } from './components/SimuladoCard/SimuladoCard'
 import styles from './index.module.scss'
+import { Titulo } from '../../../../components/ui/Titulo/Titulo'
 
 export type VestibularFiltro = 'todos' | 'ENEM' | 'UEM' | 'UTFPR' | 'UEL'
 export type OrdenacaoFiltro = 'recente' | 'antigo' | 'maior_nota' | 'menor_nota'
@@ -80,13 +81,11 @@ export default function SimuladosMain() {
     },
   ]
 
-  // Lógica de Filtro por Vestibular
   const simuladosFiltrados = mockSimulados.filter((item) => {
     if (vestibularFiltro === 'todos') return true
     return item.vestibular === vestibularFiltro
   })
 
-  // Lógica de Ordenação
   const simuladosOrdenados = [...simuladosFiltrados].sort((a, b) => {
     if (ordenacao === 'recente') return b.dataTimestamp - a.dataTimestamp
     if (ordenacao === 'antigo') return a.dataTimestamp - b.dataTimestamp
@@ -97,15 +96,16 @@ export default function SimuladosMain() {
 
   return (
     <main className={styles.pageWrapper}>
-      {/* Header Superior */}
       <header className={styles.headerSection}>
         <div className={styles.headerContainer}>
           <div className={styles.topRow}>
             <div className={styles.titleGroup}>
               <div className={styles.badgePremium}>PLANO PREMIUM</div>
               <div className={styles.titleWrapper}>
-                <h1 className={styles.title}>Simulados</h1>
-                <span className={styles.subtitle}>Simulados do ENEM e de vestibulares</span>
+                <Titulo 
+                    titulo="Simulados" 
+                    subtitulo="Simulados do ENEM e de vestibulares" 
+                  />
               </div>
             </div>
 
@@ -135,10 +135,8 @@ export default function SimuladosMain() {
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
       <section className={styles.mainContentSection}>
         <div className={styles.mainContentContainer}>
-          {/* Topo: Cards de Estatísticas */}
           <div className={styles.statsGrid}>
             <StatCard label="SIMULADOS FEITOS" valor={mockStats.simuladosFeitos} />
             <StatCard label="QUESTÕES RESPONDIDAS" valor={mockStats.questoesRespondidas} />
@@ -146,7 +144,6 @@ export default function SimuladosMain() {
             <StatCard label="MELHOR CATEGORIA" valor={mockStats.melhorCategoria} />
           </div>
 
-          {/* Cabeçalho da Lista e Controles de Filtro */}
           <div className={styles.listHeaderRow}>
             <div>
               <h2 className={styles.sectionTitle}>Meus simulados</h2>
@@ -181,14 +178,12 @@ export default function SimuladosMain() {
             </div>
           </div>
 
-          {/* Lista de Simulados */}
           <div className={styles.simuladosList}>
             {simuladosOrdenados.map((simulado) => (
               <SimuladoCard key={simulado.id} simulado={simulado} />
             ))}
           </div>
 
-          {/* Card Banner CTA no Rodapé */}
           <div className={styles.bannerCta}>
             <div>
               <h3>Monte um simulado do jeito que você precisa</h3>

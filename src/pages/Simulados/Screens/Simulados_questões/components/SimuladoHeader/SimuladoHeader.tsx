@@ -19,7 +19,7 @@ export function SimuladoHeader({
         <div className={styles.leftGroup}>
           <Link to="/simulados/main" className={styles.logoLink}>
             <span className={styles.whiteLogo}>
-              <Logo />
+              <Logo variant="clara" />
             </span>
           </Link>
           <span className={styles.simuladoTitle}>{tituloSimulado}</span>
