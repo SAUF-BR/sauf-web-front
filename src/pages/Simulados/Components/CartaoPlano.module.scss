@@ -1,0 +1,51 @@
+@use '../../../styles/variables' as *;
+
+.cartao {
+  padding: $spacing-lg;
+}
+
+.destaque {
+  border-color: $color-green;
+  border-width: 2px;
+}
+
+.topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-md;
+}
+
+.identificacao {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.nome {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.preco {
+  white-space: nowrap;
+  color: $color-blue-primary;
+}
+
+.valor {
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.periodo {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+}
+
+.descricao {
+  margin-top: $spacing-sm;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}

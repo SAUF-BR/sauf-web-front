@@ -1,18 +1,23 @@
 @use '../../styles/variables' as *;
 
-.page {
-  max-width: 960px;
+.pagina {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1440px;
+  min-height: calc(100vh - 87px);
   margin: 0 auto;
-  padding: $spacing-xl $spacing-lg;
+  background: #fff;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-text;
+.indisponivel {
+  flex: 1;
+  padding: 40px;
+  color: #64736c;
 }
 
-.subtitle {
-  margin-top: $spacing-sm;
-  color: $color-text-muted;
+@media (max-width: 800px) {
+  .pagina {
+    flex-direction: column;
+  }
 }

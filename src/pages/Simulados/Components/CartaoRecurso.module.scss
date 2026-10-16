@@ -1,0 +1,67 @@
+@use '../../../styles/variables' as *;
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-lg;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  // Mesmo hover do CursoCard/UniversidadeCard, com uma leve subida
+  &:hover {
+    border-color: $color-grey;
+    box-shadow: 0 6px 20px rgba($color-blue-primary, 0.06);
+    transform: translateY(-2px);
+  }
+
+  // Quem pede menos movimento no sistema não vê o card subir
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: $spacing-md;
+  color: $color-blue-secondary;
+  background: $color-border-light;
+  border-radius: $radius-md;
+  transition: background-color 0.2s, color 0.2s;
+
+  .cartao:hover & {
+    color: $color-green;
+    background: $color-green-soft;
+  }
+}
+
+.titulo {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin-top: $spacing-sm;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
+}
+
+.plano {
+  margin-top: auto;
+  padding-top: $spacing-md;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-green;
+}
+
+.planoPremium {
+  color: $color-yellow-dark;
+}
