@@ -6,7 +6,7 @@ import { ROTAS } from '../../../routes/paths'
 export type AbaSimulados = 'simulados' | 'acompanhamento' | 'cronometro' | 'ranking'
 
 export const Abas_simulados: { id: AbaSimulados; rotulo: string; rota: string }[] = [
-  { id: 'simulados', rotulo: 'Simulados', rota: ROTAS.simuladosMain },
+  { id: 'simulados', rotulo: 'Simulados', rota: ROTAS.simulados },  
   { id: 'acompanhamento', rotulo: 'Meu acompanhamento', rota: ROTAS.simuladosAcompanhamento },
   { id: 'cronometro', rotulo: 'Cronômetro', rota: ROTAS.simuladosCronometro },
   { id: 'ranking', rotulo: 'Ranking', rota: ROTAS.simuladosRanking },
