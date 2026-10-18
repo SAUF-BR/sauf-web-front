@@ -157,7 +157,7 @@ import {
       questoes: 30,
       simulados: 3,
       mediaSegundos: 5040,
-      totalSegundos: 15180,
+      totalSegundos: 15120,
       segundosPorQuestao: 168,
       observacao: 'ritmo mais lento no fim da prova',
     },
