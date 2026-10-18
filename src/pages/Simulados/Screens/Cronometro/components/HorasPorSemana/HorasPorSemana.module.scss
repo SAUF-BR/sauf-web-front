@@ -30,6 +30,10 @@
   border-radius: $radius-sm $radius-sm 0 0;
 }
 
+.nivel0 {
+  background: $color-border-light;
+}
+
 .nivel1 {
   background: color.mix($color-green, $color-surface, 18%);
 }

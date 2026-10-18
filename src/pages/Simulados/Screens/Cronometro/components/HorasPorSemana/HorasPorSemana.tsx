@@ -4,20 +4,24 @@ import { formatarHoras } from '../../../../compartilhados/conteudo'
 import type { HorasSemana } from '../../conteudo'
 import styles from './HorasPorSemana.module.scss'
 
+function nivelDaSemana(segundos: number, maior: number) {
+  if (segundos <= 0 || maior <= 0) return 0
+  return Math.ceil((segundos / maior) * 4)
+}
+
 type HorasPorSemanaProps = {
   semanas: HorasSemana[]
 }
 
 export function HorasPorSemana({ semanas }: HorasPorSemanaProps) {
   const maior = Math.max(...semanas.map((semana) => semana.segundos), 0)
-  const ordenadas = [...semanas].sort((a, b) => a.segundos - b.segundos)
 
   return (
     <Painel titulo="Horas por semana" subtitulo={`Últimas ${semanas.length} semanas`}>
       <ol className={styles.grafico}>
         {semanas.map((semana) => {
           const altura = maior > 0 ? Math.max((semana.segundos / maior) * 100, 4) : 4
-          const nivel = Math.ceil(((ordenadas.indexOf(semana) + 1) / semanas.length) * 4)
+          const nivel = nivelDaSemana(semana.segundos, maior)
 
           return (
             <li key={semana.rotulo} className={styles.coluna}>
