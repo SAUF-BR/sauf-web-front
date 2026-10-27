@@ -1,0 +1,77 @@
+@use '../../../styles/variables' as *;
+
+.erro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  min-height: 16rem;
+  padding: $spacing-xl $spacing-lg;
+  text-align: center;
+  background: $color-fundo-lateral;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+
+  button {
+    gap: $spacing-sm;
+  }
+}
+
+.compacto {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: $spacing-md;
+  text-align: left;
+  border-radius: $radius-md;
+
+  .icone {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .textos {
+    flex: 1;
+    min-width: 12rem;
+  }
+
+  .titulo {
+    font-size: 0.9375rem;
+  }
+}
+
+.icone {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: $color-error;
+}
+
+.titulo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin-top: $spacing-xs;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.girando {
+  animation: girar 0.8s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}

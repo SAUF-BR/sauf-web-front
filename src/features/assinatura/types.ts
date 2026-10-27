@@ -15,7 +15,7 @@ export interface Plano {
   precoMensal: number
   descricao: string
   recursos: RecursoPlano[]
-  selo?: string
+  selo: string | null
 }
 
 export interface Assinatura {
