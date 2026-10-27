@@ -1,8 +1,11 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-.carregando {
-  min-height: 60vh;
+// Carregando e erro: centralizados no lugar da página
+.estado {
+  width: calc(100% - #{$spacing-lg * 2});
+  max-width: 40rem;
+  margin: $spacing-2xl auto;
 }
 
 .cabecalho {

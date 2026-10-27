@@ -2,6 +2,7 @@ import { useRef, useState, type ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../../../components/ui/Botao/Botao'
+import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
 import { useAssinaturaAtual, usePlanos } from '../../../../features/assinatura'
 import {
   converterNotaEnem,
@@ -34,8 +35,8 @@ export function PerfilLogado({ usuario }: PerfilLogadoProps) {
   const atualizarPerfil = useAtualizarPerfil()
   const enviarFoto = useEnviarFoto()
   const sair = useSair({ onSuccess: () => navigate(ROTAS.inicio) })
-  const { data: assinatura, isPending: carregandoAssinatura } = useAssinaturaAtual()
-  const { data: planos, isPending: carregandoPlanos } = usePlanos()
+  const consultaAssinatura = useAssinaturaAtual()
+  const consultaPlanos = usePlanos()
 
   const inputFoto = useRef<HTMLInputElement>(null)
   const [erroFoto, setErroFoto] = useState<string | null>(null)
@@ -52,7 +53,6 @@ export function PerfilLogado({ usuario }: PerfilLogadoProps) {
     },
   })
 
-  const planoAtual = planos?.find((plano) => plano.id === assinatura?.plano)
   const salvo = atualizarPerfil.isSuccess && !isDirty
   const criadaEm = formatarDataExtenso(usuario.criadoEm, { comDia: false, comAno: true })
 
@@ -128,9 +128,19 @@ export function PerfilLogado({ usuario }: PerfilLogadoProps) {
         observacao="Trocar de plano e cancelar a assinatura ficam na tela de assinatura."
       >
         {/* Só mostra depois de carregar, para não "piscar" como sem plano */}
-        {!carregandoAssinatura && !carregandoPlanos && (
-          <CartaoAssinatura assinatura={assinatura} plano={planoAtual} />
-        )}
+        <EstadoConsulta
+          consultas={[consultaAssinatura, consultaPlanos]}
+          mensagemCarregando="Carregando assinatura…"
+          tituloErro="Não foi possível carregar sua assinatura"
+          compacto
+        >
+          {([assinatura, planos]) => (
+            <CartaoAssinatura
+              assinatura={assinatura}
+              plano={planos.find((plano) => plano.id === assinatura?.plano)}
+            />
+          )}
+        </EstadoConsulta>
       </SecaoPerfil>
 
       <CartaoSair
