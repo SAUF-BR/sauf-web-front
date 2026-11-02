@@ -12,6 +12,8 @@ export const endpoints = {
   },
   universidades: {
     list: '/universidades',
+    contagens: '/universidades/contagens',
+    cidades: '/universidades/cidades',
     detalhe: (id: string) => `/universidades/${id}`,
     destaques: '/universidades/destaques',
   },
