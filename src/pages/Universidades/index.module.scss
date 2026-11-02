@@ -76,13 +76,12 @@ $fundo-lateral: color.mix($color-surface, $color-white, 60%);
   gap: $spacing-md;
 
   @media (min-width: $breakpoint-md) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (min-width: $breakpoint-xl) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
   > li {
     display: flex;
 
@@ -99,4 +98,21 @@ $fundo-lateral: color.mix($color-surface, $color-white, 60%);
   background: $fundo-lateral;
   border: 1px dashed $color-border-light;
   border-radius: $radius-lg;
+}
+
+.tentarDeNovo {
+  margin-top: $spacing-md;
+}
+
+.rodapeLista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-xl;
+}
+
+.mostrando {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
 }
