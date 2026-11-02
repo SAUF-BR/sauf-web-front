@@ -1,7 +1,5 @@
 import type { UF } from '../../lib/utils'
-
-// Tipos provisórios — alinhar com o DER/Diagrama de Classe quando o contrato
-// com a API estiver definido.
+import type { Modalidade } from '../cursos/types'
 
 export type TipoUniversidade = 'publica' | 'privada'
 
@@ -16,5 +14,25 @@ export interface Universidade {
   totalCursos: number
 }
 
-// Dados resumidos da universidade que acompanham um curso.
 export type UniversidadeResumo = Pick<Universidade, 'id' | 'nome' | 'sigla' | 'tipo'>
+
+export type FaixaNotaMec = '4-5' | '3'
+
+export interface UniversidadeListagemApi extends Universidade {
+  notaMec: number | null
+  modalidades: Modalidade[]
+}
+
+export interface FiltrosUniversidadesApi {
+  busca?: string
+  uf?: UF
+  cidade?: string
+  tipos?: TipoUniversidade[]
+  modalidades?: Modalidade[]
+  notaMec?: FaixaNotaMec
+}
+
+export interface ContagensUniversidades {
+  tipo: Record<TipoUniversidade, number>
+  modalidade: Record<Modalidade, number>
+}
