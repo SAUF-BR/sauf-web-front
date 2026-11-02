@@ -1,8 +1,7 @@
 import { useId } from 'react'
 import { Check, ChevronDown, X } from 'lucide-react'
 import type { Modalidade } from '../../../../features/cursos'
-import type { TipoUniversidade } from '../../../../features/universidades'
-import type { UniversidadeListagem } from '../../../../features/universidades/mockUniversidades'
+import type { ContagensUniversidades, TipoUniversidade } from '../../../../features/universidades'
 import { ESTADOS_BR, formatarInteiro } from '../../../../lib/utils'
 import {
   Opcoes_categoria,
@@ -18,7 +17,7 @@ import styles from './FiltrosLaterais.module.scss'
 type FiltrosLateraisProps = {
   filtros: Filtros
   cidades: string[]
-  escopo: UniversidadeListagem[]
+  contagens: ContagensUniversidades | undefined
   onAtualizar: (parcial: Partial<Filtros>) => void
   onAlternarCategoria: (categoria: TipoUniversidade) => void
   onAlternarModalidade: (modalidade: Modalidade) => void
@@ -28,7 +27,7 @@ type FiltrosLateraisProps = {
 export function FiltrosLaterais({
   filtros,
   cidades,
-  escopo,
+  contagens,
   onAtualizar,
   onAlternarCategoria,
   onAlternarModalidade,
@@ -125,7 +124,7 @@ export function FiltrosLaterais({
         titulo="Categoria"
         opcoes={Opcoes_categoria}
         selecionados={filtros.categorias}
-        contar={(tipo) => escopo.filter((u) => u.tipo === tipo).length}
+        contar={(tipo) => contagens?.tipo[tipo] ?? 0}
         onAlternar={onAlternarCategoria}
       />
 
@@ -154,7 +153,7 @@ export function FiltrosLaterais({
         titulo="Modalidade ofertada"
         opcoes={Opcoes_modalidade}
         selecionados={filtros.modalidades}
-        contar={(modalidade) => escopo.filter((u) => u.modalidades.includes(modalidade)).length}
+        contar={(modalidade) => contagens?.modalidade[modalidade] ?? 0}
         onAlternar={onAlternarModalidade}
       />
     </div>

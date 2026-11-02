@@ -123,7 +123,13 @@
   border-top: 1px solid $color-border-light;
 
   .rotulo {
+    float: left;
+    width: 100%;
     margin-bottom: $spacing-sm;
+  }
+
+  > :not(legend) {
+    clear: both;
   }
 }
 
