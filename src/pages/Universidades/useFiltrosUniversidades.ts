@@ -1,61 +1,59 @@
 import { useState } from 'react'
-import type { UniversidadeListagem } from '../../features/universidades/mockUniversidades'
+import {
+  useCidadesComUniversidade,
+  useContagensUniversidades,
+  useUniversidades,
+  type ContagensUniversidades,
+  type FiltrosUniversidadesApi,
+} from '../../features/universidades'
 import { Filtros_vazios, formatarLocalEstado, type Filtros } from './conteudo'
-
-// busca sem diferenciar maiúsculas nem acentos
-function normalizar(texto: string) {
-  return texto
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-}
 
 function alternarItem<T>(lista: T[], item: T) {
   return lista.includes(item) ? lista.filter((i) => i !== item) : [...lista, item]
 }
 
-// filtra o mock no navegador
-export function useFiltrosUniversidades(universidades: UniversidadeListagem[]) {
+function somarTipos(contagens: ContagensUniversidades | undefined) {
+  return contagens ? contagens.tipo.publica + contagens.tipo.privada : 0
+}
+
+export function useFiltrosUniversidades() {
   const [filtros, setFiltros] = useState<Filtros>(Filtros_vazios)
   const [busca, setBusca] = useState('')
 
-  const escopo = universidades.filter(
-    (u) =>
-      normalizar(`${u.nome} ${u.sigla ?? ''}`).includes(normalizar(busca)) &&
-      (!filtros.estado || u.uf === filtros.estado) &&
-      (!filtros.cidade || u.cidade === filtros.cidade),
-  )
+  const filtrosApi: FiltrosUniversidadesApi = {
+    busca,
+    uf: filtros.estado || undefined,
+    cidade: filtros.cidade || undefined,
+    tipos: filtros.categorias,
+    modalidades: filtros.modalidades,
+    notaMec: filtros.notaMec === 'todas' ? undefined : filtros.notaMec,
+  }
 
-  // O que aparece na grade: o escopo, filtrado por categoria, nota do MEC e modalidade
-  const resultados = escopo.filter(
-    (u) =>
-      (filtros.categorias.length === 0 || filtros.categorias.includes(u.tipo)) &&
-      (filtros.notaMec === 'todas' ||
-        (filtros.notaMec === '4-5' ? u.notaMec >= 4 : u.notaMec === 3)) &&
-      (filtros.modalidades.length === 0 ||
-        filtros.modalidades.some((modalidade) => u.modalidades.includes(modalidade))),
-  )
+  const lista = useUniversidades(filtrosApi)
+  const contagens = useContagensUniversidades(filtrosApi)
+  const cidades = useCidadesComUniversidade(filtros.estado)
 
-  const cidades = filtros.estado
-    ? Array.from(
-        new Set(universidades.filter((u) => u.uf === filtros.estado).map((u) => u.cidade)),
-      ).sort((a, b) => a.localeCompare(b, 'pt-BR'))
-    : []
+  const totalGeral = useContagensUniversidades({})
+  const totalEstado = useContagensUniversidades({ uf: filtros.estado || undefined })
 
-  const totalNoEstado = filtros.estado
-    ? {
-        quantidade: universidades.filter((u) => u.uf === filtros.estado).length,
-        local: formatarLocalEstado(filtros.estado),
-      }
-    : null
+  const resultados = lista.data?.pages.flatMap((pagina) => pagina.content) ?? []
 
   return {
     filtros,
-    escopo,
     resultados,
-    cidades,
-    totalInstituicoes: universidades.length,
-    totalNoEstado,
+    totalResultados: lista.data?.pages[0]?.totalElements ?? 0,
+    contagens: contagens.data,
+    cidades: cidades.data ?? [],
+    totalInstituicoes: somarTipos(totalGeral.data),
+    totalNoEstado: filtros.estado
+      ? { quantidade: somarTipos(totalEstado.data), local: formatarLocalEstado(filtros.estado) }
+      : null,
+    carregando: lista.isPending,
+    erro: lista.isError,
+    tentarDeNovo: () => lista.refetch(),
+    temMais: lista.hasNextPage,
+    carregandoMais: lista.isFetchingNextPage,
+    carregarMais: () => lista.fetchNextPage(),
     buscar: setBusca,
     atualizar: (parcial: Partial<Filtros>) => setFiltros((atual) => ({ ...atual, ...parcial })),
     alternarCategoria: (categoria: Filtros['categorias'][number]) =>
