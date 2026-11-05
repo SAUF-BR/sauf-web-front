@@ -49,7 +49,8 @@ export function EstadoConsulta<const T extends readonly Consulta[]>({
     return (
       <EstadoErro
         titulo={tituloErro}
-        descricao={descricaoErro}
+        // Sem descrição própria, mostra o motivo (sem internet, tempo esgotado...)
+        descricao={descricaoErro ?? comErro[0].error?.message}
         onTentarDeNovo={() => comErro.forEach((consulta) => void consulta.refetch())}
         compacto={compacto}
         className={className}

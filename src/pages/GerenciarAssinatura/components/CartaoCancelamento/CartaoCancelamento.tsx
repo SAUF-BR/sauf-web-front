@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Button } from '../../../../components/ui/Botao/Botao'
 import { Card } from '../../../../components/ui/Card/Card'
 import type { Plano } from '../../../../features/assinatura'
@@ -9,6 +10,8 @@ type CartaoCancelamentoProps = {
   plano: Plano
   acessoAte: string
   cancelando: boolean
+  // Mensagem quando o cancelamento falhou
+  erro?: string
   onConfirmar: () => void
 }
 
@@ -16,6 +19,7 @@ export function CartaoCancelamento({
   plano,
   acessoAte,
   cancelando,
+  erro,
   onConfirmar,
 }: CartaoCancelamentoProps) {
   const [confirmando, setConfirmando] = useState(false)
@@ -41,6 +45,8 @@ export function CartaoCancelamento({
               Manter assinatura
             </Button>
           </div>
+
+          {erro && <AvisoErro className={styles.erro}>{erro}</AvisoErro>}
         </div>
       ) : (
         <div className={styles.acoes}>
