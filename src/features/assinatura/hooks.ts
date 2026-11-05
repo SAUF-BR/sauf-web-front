@@ -29,10 +29,20 @@ export function useAssinaturaAtual() {
   })
 }
 
-// Depois de qualquer mudança, recarrega a assinatura: selo "Seu plano", resumo e acesso
+// Depois de qualquer tentativa de mudança, recarrega a assinatura (selo "Seu plano", resumo
+// e acesso). No sucesso, a ação só termina depois de recarregar, para o botão não liberar
+// com dados antigos. No erro, a mensagem aparece na hora e a recarga segue em segundo plano
+// (um 409 indica que a tela estava desatualizada).
 function useRecarregarAssinatura() {
   const queryClient = useQueryClient()
-  return () => queryClient.invalidateQueries({ queryKey: assinaturaKeys.atual() })
+  const recarregar = () => queryClient.invalidateQueries({ queryKey: assinaturaKeys.atual() })
+
+  return {
+    onSuccess: recarregar,
+    onError: () => {
+      void recarregar()
+    },
+  }
 }
 
 export function useTrocarPlano() {
@@ -40,18 +50,18 @@ export function useTrocarPlano() {
 
   return useMutation({
     mutationFn: (plano: PlanoAssinatura) => trocarPlano(plano),
-    onSuccess: recarregar,
+    ...recarregar,
   })
 }
 
 export function useCancelarAssinatura() {
   const recarregar = useRecarregarAssinatura()
 
-  return useMutation({ mutationFn: cancelarAssinatura, onSuccess: recarregar })
+  return useMutation({ mutationFn: cancelarAssinatura, ...recarregar })
 }
 
 export function useReativarAssinatura() {
   const recarregar = useRecarregarAssinatura()
 
-  return useMutation({ mutationFn: reativarAssinatura, onSuccess: recarregar })
+  return useMutation({ mutationFn: reativarAssinatura, ...recarregar })
 }

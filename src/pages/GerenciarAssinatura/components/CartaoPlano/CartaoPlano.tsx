@@ -1,4 +1,5 @@
 import { Check, Minus } from 'lucide-react'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Button } from '../../../../components/ui/Botao/Botao'
 import { Card } from '../../../../components/ui/Card/Card'
 import { Tag } from '../../../../components/ui/Tag/Tag'
@@ -20,6 +21,8 @@ type CartaoPlanoProps = {
   renovaEm?: string
   recursosNovos: RecursoPlano[]
   desabilitado?: boolean
+  // Mensagem quando a ação deste cartão falhou
+  erro?: string
   onEscolher: () => void
   onReativar: () => void
 }
@@ -80,7 +83,7 @@ function montarAcao({
 }
 
 export function CartaoPlano(props: CartaoPlanoProps) {
-  const { plano, relacao, recursosNovos, desabilitado } = props
+  const { plano, relacao, recursosNovos, desabilitado, erro } = props
   const atual = relacao === 'atual'
   const acao = montarAcao(props)
   const idInclui = `inclui-${plano.id}`
@@ -138,6 +141,7 @@ export function CartaoPlano(props: CartaoPlanoProps) {
         >
           {acao.rotulo}
         </Button>
+        {erro && <AvisoErro className={styles.erro}>{erro}</AvisoErro>}
         <p className={styles.nota}>{acao.nota}</p>
       </div>
     </Card>

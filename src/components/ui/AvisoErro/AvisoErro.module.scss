@@ -1,0 +1,15 @@
+@use '../../../styles/variables' as *;
+
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-xs;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: $color-error;
+}
+
+.icone {
+  flex-shrink: 0;
+  margin-top: 0.0625rem;
+}

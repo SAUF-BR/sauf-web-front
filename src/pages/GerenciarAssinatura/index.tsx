@@ -42,6 +42,15 @@ export default function GerenciarAssinatura() {
           const textos =
             TEXTOS_CABECALHO[situacao === 'sem-assinatura' ? 'semAssinatura' : 'assinante']
 
+          // O erro aparece no cartão onde a pessoa clicou: o plano escolhido ou,
+          // para reativar, o plano atual
+          function erroDoCartao(planoId: string) {
+            if (trocarPlano.isError && trocarPlano.variables === planoId) {
+              return trocarPlano.error.message
+            }
+            if (reativar.isError && planoId === planoAtual?.id) return reativar.error.message
+          }
+
           return (
             <>
               <section className={styles.cabecalho}>
@@ -77,6 +86,7 @@ export default function GerenciarAssinatura() {
                         renovaEm={assinatura?.renovaEm}
                         recursosNovos={recursosNovos(plano, todos)}
                         desabilitado={ocupado}
+                        erro={erroDoCartao(plano.id)}
                         onEscolher={() => trocarPlano.mutate(plano.id)}
                         onReativar={() => reativar.mutate()}
                       />
@@ -90,6 +100,7 @@ export default function GerenciarAssinatura() {
                       plano={planoAtual}
                       acessoAte={assinatura.renovaEm}
                       cancelando={cancelar.isPending}
+                      erro={cancelar.error?.message}
                       onConfirmar={() => cancelar.mutate()}
                     />
                   </div>
