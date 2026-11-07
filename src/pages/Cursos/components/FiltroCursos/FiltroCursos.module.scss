@@ -1,0 +1,22 @@
+@use '../../../../styles/variables' as *;
+
+.botaoLimpar {
+  background-color:$color-blue-primary;
+  border-radius: $radius-md;
+  color: $color-white;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-sm $spacing-md;
+}
+
+
+.filtroCabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sliderValores {
+  display: flex;
+  justify-content: space-between;
+}

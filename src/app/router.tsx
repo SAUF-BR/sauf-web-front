@@ -17,7 +17,7 @@ import Cursos from '../pages/Cursos'
 import CursoDetalhe from '../pages/CursoDetalhe'
 import Universidades from '../pages/Universidades'
 import UniversidadeDetalhe from '../pages/UniversidadeDetalhe'
-import FormasDeIngresso from '../pages/FormasDeIngresso'
+import { FormasIngresso } from '../pages/FormasDeIngresso'
 import Calendario from '../pages/Calendario'
 import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
@@ -61,7 +61,7 @@ const router = createBrowserRouter(
           element={<UniversidadeDetalhe />}
         />
 
-        <Route path={ROTAS.formasDeIngresso} element={<FormasDeIngresso />} />
+        <Route path={ROTAS.formasDeIngresso} element={<FormasIngresso />} />
         <Route path={ROTAS.calendario} element={<Calendario />} />
 
         {/* Teste vocacional: apresentação pública, perguntas e resultado exigem login */}

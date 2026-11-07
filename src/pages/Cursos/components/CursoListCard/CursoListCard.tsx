@@ -5,6 +5,10 @@ import { Card } from '../../../../components/ui/Card/Card'
 import { Imagem } from '../../../../components/ui/Imagem/Imagem'
 import { Tag } from '../../../../components/ui/Tag/Tag'
 import { BotaoFavorito } from '../../../../features/favoritos/components/BotaoFavorito/BotaoFavorito'
+import {
+  useAlternarCursoFavorito,
+  useCursosFavoritosIds,
+} from '../../../../features/favoritos/hooks'
 
 import { ROTAS } from '../../../../routes/paths'
 import type { Curso } from '../../../../features/cursos/types'
@@ -17,12 +21,22 @@ import styles from './CursoListCard.module.scss'
 
 type CursoListCardProps = {
   curso: Curso
-  universidadesNaRegiao: number
 }
 
+export function CursoListCard({
+  curso,
+}: CursoListCardProps) {
+  const { data: favoritosIds } = useCursosFavoritosIds()
+  const alternarFavorito = useAlternarCursoFavorito()
 
+  const ativo = favoritosIds?.has(curso.id) ?? false
 
-export function CursoListCard({curso, universidadesNaRegiao,}: CursoListCardProps) {
+  function handleAlternarFavorito() {
+    alternarFavorito.mutate({
+      cursoId: curso.id,
+      favoritar: !ativo,
+    })
+  }
 
   return (
     <Card className={styles.card}>
@@ -35,9 +49,10 @@ export function CursoListCard({curso, universidadesNaRegiao,}: CursoListCardProp
         />
 
         <BotaoFavorito
-          ativo={false}
+          ativo={ativo}
           nomeItem={curso.nome}
-          onAlternar={() => {}}
+          onAlternar={handleAlternarFavorito}
+          disabled={alternarFavorito.isPending}
           className={styles.favorito}
         />
       </div>
@@ -50,8 +65,8 @@ export function CursoListCard({curso, universidadesNaRegiao,}: CursoListCardProp
           <Tag>{formatarDuracao(curso.duracaoSemestres)}</Tag>
         </div>
 
-       <p className={styles.ofertas}>
-            {universidadesNaRegiao} universidades ofertam na sua região
+        <p className={styles.ofertas}>
+          {curso.totalOfertas ?? 0} universidades ofertam este curso
         </p>
 
         <div className={styles.rodape}>

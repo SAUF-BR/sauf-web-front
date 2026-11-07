@@ -7,6 +7,11 @@ export type GrauAcademico = 'bacharelado' | 'licenciatura' | 'tecnologo'
 
 export type Modalidade = 'presencial' | 'semipresencial' | 'ead'
 
+export interface DetalhesCurso {
+  descricao: string
+  areasAtuacao: string[]
+}
+
 export interface Curso {
   id: string
   nome: string
@@ -16,10 +21,12 @@ export interface Curso {
   duracaoSemestres: number
   imagemUrl: string | null
   universidade: UniversidadeResumo
-  /** Presente em cursos de universidades que usam o SISU. */
   notaCorteSisu: number | null
-  /** Presente em cursos pagos (universidades privadas). */
   mensalidadeMinima: number | null
+
+  // Dados complementares do curso
+  totalOfertas?: number
+  detalhes?: DetalhesCurso
 }
 
 export interface CursosPorArea {

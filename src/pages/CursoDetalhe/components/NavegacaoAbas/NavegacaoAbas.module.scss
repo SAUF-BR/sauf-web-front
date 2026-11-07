@@ -1,0 +1,31 @@
+@use '../../../../styles/variables' as *;
+
+.navegacao {
+  display: flex;
+  gap: 28px;
+  margin-top: $spacing-lg;
+  overflow-x: auto;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.aba {
+  flex-shrink: 0;
+  padding: 12px 2px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: $color-grey;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color: $color-blue-primary;
+  }
+}
+
+.ativa {
+  border-bottom-color: $color-blue-primary;
+  color: $color-blue-primary;
+  font-weight: 600;
+}

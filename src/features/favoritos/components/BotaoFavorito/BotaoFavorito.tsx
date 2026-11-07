@@ -8,9 +8,10 @@ type BotaoFavoritoProps = {
   onAlternar: () => void
   disabled?: boolean
   className?: string
+   mostrarTexto?: boolean
 }
 
-export function BotaoFavorito({ ativo, nomeItem, onAlternar, disabled, className }: BotaoFavoritoProps) {
+export function BotaoFavorito({ ativo, nomeItem, onAlternar, disabled, className, mostrarTexto = false }: BotaoFavoritoProps) {
   return (
     <button
       type="button"
@@ -21,6 +22,7 @@ export function BotaoFavorito({ ativo, nomeItem, onAlternar, disabled, className
       disabled={disabled}
     >
       <Heart size="1em" fill={ativo ? 'currentColor' : 'none'} />
+      {mostrarTexto && (ativo ? 'Salvo' : 'Salvar nos favoritos')}
     </button>
   )
 }
