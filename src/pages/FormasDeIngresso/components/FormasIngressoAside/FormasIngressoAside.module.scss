@@ -1,0 +1,108 @@
+
+@use '../../../../styles/variables' as *;
+
+.aside {
+  align-self: stretch;
+  width: 274px;
+  min-width: 274px;
+  padding: $spacing-lg 1.25rem;
+  background: $color-white;
+  border-right: 1px solid $color-border-light;
+}
+
+.titulo {
+  margin: 0 0 0.75rem;
+  color: $color-grey;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.opcao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  width: 100%;
+  padding: 0.6875rem 0.75rem;
+  border: 0;
+  border-radius: $radius-md;
+  background: transparent;
+  color: $color-blue-primary;
+  text-align: left;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+
+  &:hover:not(.ativa) {
+    background: $color-placeholder;
+  }
+}
+
+.ativa {
+  background: $color-green;
+  color: $color-surface;
+
+  .descricao {
+    color: $color-green-soft;
+  }
+}
+
+.nome {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.descricao {
+  color: $color-text-secondary;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.nestaPagina {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid $color-border-light;
+
+  a {
+    color: $color-text-secondary;
+    font-size: 0.75rem;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-green;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .aside {
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    padding: $spacing-md;
+    border-right: 0;
+    border-bottom: 1px solid $color-border-light;
+  }
+
+  .opcoes {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .opcao {
+    flex: 1 1 130px;
+  }
+
+  .nestaPagina {
+    display: none;
+  }
+}
