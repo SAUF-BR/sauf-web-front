@@ -97,6 +97,11 @@ export function formatarTempoQuestao(segundos: number) {
   return `${minutos}m${String(resto).padStart(2, '0')}s`
 }
 
+// (1, 'questão', 'questões') → "1 questão" · (10, ...) → "10 questões"
+export function formatarQuantidade(valor: number, singular: string, plural: string) {
+  return `${formatarInteiro(valor)} ${valor === 1 ? singular : plural}`
+}
+
 // 150 → "02:30"
 export function formatarCronometro(segundos: number) {
   const total = Math.max(0, Math.round(segundos))

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { ROTAS } from '../../../../../../routes/paths'
 import { NOME_AREA, type SimuladoResumo } from '../../../../../../features/simulados'
-import { formatarData, formatarDuracao } from '../../../../../../lib/utils/formatadores'
+import { formatarData, formatarDuracao, formatarQuantidade } from '../../../../../../lib/utils/formatadores'
 import styles from './SimuladoCard.module.scss'
 
 interface SimuladoCardProps {
@@ -54,7 +54,7 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
             </div>
 
             <p className={styles.metaData}>
-              {formatarData(data)} · {simulado.totalQuestoes} questões ·{' '}
+              {formatarData(data)} · {formatarQuantidade(simulado.totalQuestoes, 'questão', 'questões')} ·{' '}
               {formatarDuracao(simulado.duracaoSegundos)} de duração
             </p>
 

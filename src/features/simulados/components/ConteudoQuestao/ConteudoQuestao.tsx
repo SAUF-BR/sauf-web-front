@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styles from './ConteudoQuestao.module.scss'
 
 // Renderiza o Markdown simples que vem do banco (texto-base, comando e alternativas):
-// parágrafos, títulos "## ", imagens ![alt](url) e tabelas com "|". Sem HTML cru.
+// parágrafos, títulos "# " a "###### ", imagens ![alt](url) e tabelas com "|". Sem HTML cru.
 // Isolado aqui para poder ser trocado por react-markdown sem mexer nas telas.
 
 type Bloco =
@@ -12,6 +12,7 @@ type Bloco =
   | { tipo: 'paragrafo'; texto: string }
 
 const REGEX_IMAGEM = /^!\[([\s\S]*)\]\((\S+)\)$/
+const REGEX_TITULO = /^#{1,6}\s+(.*)$/
 const REGEX_SEPARADOR_TABELA = /^\|?[\s:|-]+\|?$/
 
 function ehLinhaTabela(linha: string) {
@@ -66,12 +67,13 @@ function lerBlocos(texto: string): Bloco[] {
     fecharTabela()
 
     const imagem = REGEX_IMAGEM.exec(linha)
+    const titulo = REGEX_TITULO.exec(linha)
 
     if (linha === '') {
       fecharParagrafo()
-    } else if (linha.startsWith('## ')) {
+    } else if (titulo) {
       fecharParagrafo()
-      blocos.push({ tipo: 'titulo', texto: linha.slice(3).trim() })
+      blocos.push({ tipo: 'titulo', texto: titulo[1].trim() })
     } else if (imagem) {
       fecharParagrafo()
       blocos.push({ tipo: 'imagem', alt: imagem[1], url: imagem[2] })

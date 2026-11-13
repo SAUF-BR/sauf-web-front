@@ -58,10 +58,12 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .titleRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: $spacing-sm;
 }
@@ -98,6 +100,7 @@
 
 .tagsRow {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin-top: 2px;
 }
