@@ -1,162 +1,170 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
-import { useState } from 'react'
 import styles from './index.module.scss'
 import { QuestaoBar } from './components/QuestaoBar/QuestaoBar'
-import { QuestaoCard, type QuestaoData } from './components/QuestaoCard/QuestaoCard'
+import { QuestaoCard } from './components/QuestaoCard/QuestaoCard'
 import { Titulo } from '../../../../components/ui/Titulo/Titulo'
+import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
+import { Carregando } from '../../../../components/ui/Carregando/Carregando'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
+import {
+  NOME_AREA,
+  ORDEM_AREAS,
+  useRefazerErros,
+  useRevisao,
+  type Area,
+  type RevisaoSimulado,
+} from '../../../../features/simulados'
+import { ErroApi } from '../../../../lib/api/erros'
+import { formatarData, formatarDuracao } from '../../../../lib/utils/formatadores'
 
 export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
 
-export default function SimuladosHistorico() {
-  const mockHeader = {
-    titulo: 'Simulado ENEM · Matemática e Física',
-    concluidoEm: '2 de setembro de 2026',
-    totalQuestoes: 20,
-    tempoMinutos: 47,
-    porcentagemAcerto: 70,
-    acertos: 14,
-    erros: 5,
-    emBranco: 1,
+const POR_PAGINA = 6
+
+const RESULTADO_DO_FILTRO = {
+  acertos: 'acerto',
+  erros: 'erro',
+  em_branco: 'em_branco',
+} as const
+
+const OPCOES_FILTRO: Array<{ label: string; tipo: FiltroStatus }> = [
+  { label: 'Todas', tipo: 'todas' },
+  { label: 'Acertos', tipo: 'acertos' },
+  { label: 'Erros', tipo: 'erros' },
+  { label: 'Em branco', tipo: 'em_branco' },
+]
+
+function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
+  const navigate = useNavigate()
+  const refazer = useRefazerErros()
+
+  const [visiveisCount, setVisiveisCount] = useState(POR_PAGINA)
+  const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('todas')
+  const [area, setArea] = useState<Area | 'todas'>('todas')
+  const [questaoAtiva, setQuestaoAtiva] = useState<number | null>(null)
+  // Questão para onde rolar depois que a lista for renderizada
+  const alvoRolagem = useRef<number | null>(null)
+
+  const areasPresentes = ORDEM_AREAS.filter((id) =>
+    revisao.porArea.some((item) => item.area === id),
+  )
+
+  const dasArea = revisao.questoes.filter((q) => area === 'todas' || q.area === area)
+  const contagem: Record<FiltroStatus, number> = {
+    todas: dasArea.length,
+    acertos: dasArea.filter((q) => q.resultado === 'acerto').length,
+    erros: dasArea.filter((q) => q.resultado === 'erro').length,
+    em_branco: dasArea.filter((q) => q.resultado === 'em_branco').length,
   }
 
-  const opcoesFiltro: Array<{ label: string; tipo: FiltroStatus; quantidade: number }> = [
-  { label: 'Todas', tipo: 'todas', quantidade: mockHeader.totalQuestoes },
-  { label: 'Acertos', tipo: 'acertos', quantidade: mockHeader.acertos },
-  { label: 'Erros', tipo: 'erros', quantidade: mockHeader.erros },
-  { label: 'Em branco', tipo: 'em_branco', quantidade: mockHeader.emBranco },
-  ]
-
-  const [visiveisCount, setVisiveisCount] = useState<number>(6)
-
-  const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>('todas')
-  const [categoria, setCategoria] = useState('todas')
-  const [questaoAtiva, setQuestaoAtiva] = useState<number>(1)
-
-  // Lista mockada com os status exatos da imagem (20 questões)
-  const mockQuestoes: QuestaoData[] = [
-    {
-      numero: 1,
-      status: 'acerto',
-      categoria: 'Matemática · Porcentagem',
-      tempo: '45s respondida',
-      enunciado: 'Qual é o valor de 20% de R$ 150,00?',
-      respostaCorreta: { letra: 'A', texto: 'R$ 30,00' },
-    },
-    {
-      numero: 2,
-      status: 'acerto',
-      categoria: 'Física · Velocidade Média',
-      tempo: '1m02s respondida',
-      enunciado: 'Um carro percorre 120 km em 2 horas. Qual a sua velocidade média?',
-      respostaCorreta: { letra: 'C', texto: '60 km/h' },
-    },
-    {
-      numero: 3,
-      status: 'erro',
-      categoria: 'Matemática · Geometria',
-      tempo: '2m10s respondida',
-      enunciado: 'Calcule a área de um triângulo com base 8 cm e altura 5 cm.',
-      respostaUsuario: { letra: 'A', texto: '40 cm²' },
-      respostaCorreta: { letra: 'B', texto: '20 cm²' },
-    },
-    {
-      numero: 7,
-      status: 'acerto',
-      categoria: 'Matemática · Porcentagem',
-      tempo: '1m14 respondida',
-      enunciado: 'Um produto que custava R$ 240,00 recebeu desconto de 15% e, na semana seguinte, um novo desconto de 10% sobre o valor já reduzido. Qual é o preço final?',
-      respostaCorreta: { letra: 'B', texto: 'R$ 183,60' },
-    },
-    {
-      numero: 8,
-      status: 'erro',
-      categoria: 'Matemática · Função quadrática',
-      tempo: '2m28 respondida',
-      enunciado: 'Uma empresa de transporte cobra taxa fixa de R$ 12,00 mais R$ 2,50 por quilômetro. Um passageiro pagou R$ 37,00. Quantos quilômetros foram percorridos?',
-      respostaUsuario: { letra: 'C', texto: '11 quilômetros' },
-      respostaCorreta: { letra: 'B', texto: '10 quilômetros' },
-    },
-    {
-      numero: 14,
-      status: 'em_branco',
-      categoria: 'Física · Eletricidade',
-      tempo: 'tempo esgotado',
-      enunciado: 'Um resistor de 20 Ω é submetido a uma tensão de 120 V. Qual é a potência dissipada por esse resistor?',
-      respostaCorreta: { letra: 'D', texto: '720 W', subtexto: 'Resposta correta · P = V²/R' },
-    },
-    {
-      numero: 15,
-      status: 'em_branco',
-      categoria: 'Física · Eletricidade',
-      tempo: 'tempo esgotado',
-      enunciado: 'Um resistor de 20 Ω é submetido a uma tensão de 120 V. Qual é a potência dissipada por esse resistor?',
-      respostaCorreta: { letra: 'D', texto: '720 W', subtexto: 'Resposta correta · P = V²/R' },
-    },
-  ]
-
-  const questoesFiltradas = mockQuestoes.filter((q) => {
-    if (filtroStatus === 'acertos') return q.status === 'acerto'
-    if (filtroStatus === 'erros') return q.status === 'erro'
-    if (filtroStatus === 'em_branco') return q.status === 'em_branco'
-    return true
-  })
-
+  const questoesFiltradas =
+    filtroStatus === 'todas'
+      ? dasArea
+      : dasArea.filter((q) => q.resultado === RESULTADO_DO_FILTRO[filtroStatus])
   const questoesExibidas = questoesFiltradas.slice(0, visiveisCount)
+  const restantes = questoesFiltradas.length - questoesExibidas.length
 
-  const restantes = questoesFiltradas.length - visiveisCount
+  useEffect(() => {
+    if (alvoRolagem.current === null) return
+
+    document
+      .getElementById(`questao-${alvoRolagem.current}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    alvoRolagem.current = null
+  }, [questaoAtiva, visiveisCount, filtroStatus, area])
 
   const handleFiltroChange = (novoFiltro: FiltroStatus) => {
     setFiltroStatus(novoFiltro)
-    setVisiveisCount(6)
+    setVisiveisCount(POR_PAGINA)
   }
+
+  const handleAreaChange = (novaArea: Area | 'todas') => {
+    setArea(novaArea)
+    setVisiveisCount(POR_PAGINA)
+  }
+
+  const paginasAte = (indice: number) => Math.ceil((indice + 1) / POR_PAGINA) * POR_PAGINA
+
+  const irParaQuestao = (ordem: number) => {
+    const indiceNaLista = questoesFiltradas.findIndex((q) => q.ordem === ordem)
+
+    if (indiceNaLista === -1) {
+      // Escondida pelos filtros: limpa os filtros e mostra a lista até ela
+      setFiltroStatus('todas')
+      setArea('todas')
+      setVisiveisCount(
+        Math.max(POR_PAGINA, paginasAte(revisao.questoes.findIndex((q) => q.ordem === ordem))),
+      )
+    } else if (indiceNaLista >= visiveisCount) {
+      setVisiveisCount(paginasAte(indiceNaLista))
+    }
+
+    setQuestaoAtiva(ordem)
+
+    const cardAtual = document.getElementById(`questao-${ordem}`)
+    if (cardAtual) cardAtual.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    else alvoRolagem.current = ordem
+  }
+
+  const refazerErros = () =>
+    refazer.mutate(revisao.id, {
+      onSuccess: (novo) => navigate(ROTAS.simuladosQuestoes(novo.id)),
+    })
+
+  const semErros = revisao.erros === 0
+  const total = revisao.totalQuestoes || 1
+  const grafico = {
+    '--acertos': `${(revisao.acertos / total) * 100}%`,
+    '--ate-erros': `${((revisao.acertos + revisao.erros) / total) * 100}%`,
+  } as CSSProperties
 
   return (
     <main className={styles.page}>
       <div className={styles.headerSection}>
         <div className={styles.headerContainer}>
-         <div className={styles.leftInfo}>
+          <div className={styles.leftInfo}>
             <div className={styles.breadcrumb}>
               <Link to={ROTAS.simulados}>Simulados</Link>
               <span>/</span>
               <span className={styles.currentBreadcrumb}>Revisão</span>
             </div>
 
-            <Titulo 
-              titulo={mockHeader.titulo} 
-              subtitulo={`Concluído em ${mockHeader.concluidoEm} · ${mockHeader.totalQuestoes} questões · ${mockHeader.tempoMinutos} minutos`}
-              size="Grande" 
+            <Titulo
+              titulo={revisao.titulo}
+              subtitulo={`Concluído em ${formatarData(revisao.finalizadoEm)} · ${revisao.totalQuestoes} questões · ${formatarDuracao(revisao.duracaoSegundos)}`}
+              size="Grande"
             />
           </div>
 
           <div className={styles.summaryCard}>
-            <div className={styles.donutChart}>
+            <div
+              className={styles.donutChart}
+              role="img"
+              aria-label={`${Math.round(revisao.porcentagemAcerto)}% de acertos`}
+              style={grafico}
+            >
               <div className={styles.donutHole}>
-                <span>{mockHeader.porcentagemAcerto}%</span>
+                <span>{Math.round(revisao.porcentagemAcerto)}%</span>
               </div>
             </div>
 
             <div className={styles.statsGroup}>
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>ACERTOS</span>
-                <span className={`${styles.statValue} ${styles.greenValue}`}>
-                  {mockHeader.acertos}
-                </span>
+                <span className={`${styles.statValue} ${styles.greenValue}`}>{revisao.acertos}</span>
               </div>
 
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>ERROS</span>
-                <span className={`${styles.statValue} ${styles.redValue}`}>
-                  {mockHeader.erros}
-                </span>
+                <span className={`${styles.statValue} ${styles.redValue}`}>{revisao.erros}</span>
               </div>
 
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>EM BRANCO</span>
-                <span className={`${styles.statValue} ${styles.grayValue}`}>
-                  {mockHeader.emBranco}
-                </span>
+                <span className={`${styles.statValue} ${styles.grayValue}`}>{revisao.emBranco}</span>
               </div>
             </div>
           </div>
@@ -166,11 +174,11 @@ export default function SimuladosHistorico() {
         <div className={styles.filterBarContainer}>
           <div className={styles.controlsRow}>
             <div className={styles.statusPills}>
-              {opcoesFiltro.map((opcao) => (
+              {OPCOES_FILTRO.map((opcao) => (
                 <FilterPillButton
                   key={opcao.tipo}
                   label={opcao.label}
-                  quantidade={opcao.quantidade}
+                  quantidade={contagem[opcao.tipo]}
                   tipo={opcao.tipo}
                   filtroAtual={filtroStatus}
                   onSelect={handleFiltroChange}
@@ -180,29 +188,41 @@ export default function SimuladosHistorico() {
 
             <div className={styles.actionsRight}>
               <select
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
+                value={area}
+                onChange={(e) => handleAreaChange(e.target.value as Area | 'todas')}
                 className={styles.categoriaSelect}
+                aria-label="Filtrar por categoria"
               >
                 <option value="todas">Categoria: todas</option>
-                <option value="matematica">Matemática</option>
-                <option value="fisica">Física</option>
+                {areasPresentes.map((id) => (
+                  <option key={id} value={id}>
+                    {NOME_AREA[id]}
+                  </option>
+                ))}
               </select>
 
-              <button type="button" className={styles.refazerBtn}>
-                Refazer só os erros
+              <button
+                type="button"
+                className={styles.refazerBtn}
+                disabled={semErros || refazer.isPending}
+                title={semErros ? 'Você não errou nenhuma questão neste simulado' : undefined}
+                onClick={refazerErros}
+              >
+                {refazer.isPending ? 'Criando…' : 'Refazer só os erros'}
               </button>
             </div>
           </div>
 
+          {refazer.isError && <AvisoErro>{refazer.error.message}</AvisoErro>}
+
           <div className={styles.questoesBarsRow}>
-            {mockQuestoes.map((q) => (
+            {revisao.questoes.map((q) => (
               <QuestaoBar
-                key={q.numero}
-                numero={q.numero}
-                status={q.status}
-                isAtiva={questaoAtiva === q.numero}
-                onClick={() => setQuestaoAtiva(q.numero)}
+                key={q.ordem}
+                numero={q.ordem}
+                status={q.resultado}
+                isAtiva={questaoAtiva === q.ordem}
+                onClick={() => irParaQuestao(q.ordem)}
               />
             ))}
           </div>
@@ -210,21 +230,49 @@ export default function SimuladosHistorico() {
       </section>
       <section className={styles.questoesListSection}>
         <div className={styles.questoesContainer}>
+          {questoesExibidas.length === 0 && (
+            <p className={styles.vazio}>Nenhuma questão com esses filtros.</p>
+          )}
+
           {questoesExibidas.map((questao) => (
-            <QuestaoCard key={questao.numero} questao={questao} />
+            <QuestaoCard
+              key={questao.ordem}
+              questao={questao}
+              isAtiva={questaoAtiva === questao.ordem}
+            />
           ))}
 
           {restantes > 0 && (
             <button
               type="button"
               className={styles.loadMoreBtn}
-              onClick={() => setVisiveisCount((prev) => prev + 6)}
+              onClick={() => setVisiveisCount((prev) => prev + POR_PAGINA)}
             >
-              Ver as outras {restantes} questões
+              Ver as outras {restantes} {restantes === 1 ? 'questão' : 'questões'}
             </button>
           )}
         </div>
       </section>
     </main>
+  )
+}
+
+export default function SimuladosHistorico() {
+  const { id = '' } = useParams()
+  const consulta = useRevisao(id)
+
+  // Simulado ainda em andamento: não há revisão, volta para as questões
+  if (consulta.error instanceof ErroApi && consulta.error.status === 409) {
+    return <Navigate to={ROTAS.simuladosQuestoes(id)} replace />
+  }
+
+  return (
+    <EstadoConsulta
+      consultas={[consulta]}
+      carregando={<Carregando mensagem="Carregando a revisão…" />}
+      tituloErro="Não foi possível carregar a revisão"
+    >
+      {([revisao]) => <Revisao revisao={revisao} />}
+    </EstadoConsulta>
   )
 }

@@ -81,7 +81,11 @@
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: conic-gradient($color-green 0% 70%, $color-yellow 70% 95%, $color-border-light 95% 100%);
+    background: conic-gradient(
+      $color-green 0 var(--acertos, 0%),
+      $color-error var(--acertos, 0%) var(--ate-erros, 0%),
+      $color-border-light var(--ate-erros, 0%) 100%
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -167,6 +171,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  flex-wrap: wrap;
 
   .categoriaSelect {
     background-color: $color-surface;
@@ -191,8 +196,13 @@
     cursor: pointer;
     transition: opacity 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
       opacity: 0.9;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }
@@ -230,4 +240,10 @@
   &:hover {
     background-color: $color-surface;
   }
+}
+.vazio {
+  margin: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
 }
