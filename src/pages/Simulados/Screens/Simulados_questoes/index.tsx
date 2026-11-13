@@ -1,174 +1,390 @@
-import { useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
-import { useNavigate } from 'react-router-dom'
-import { NavNumberButton, type StatusQuestaoNav } from './components/NavNumberButton/NavNumberButton'
-import { OptionRow, type OpcaoData } from './components/OptionRow/OptionRow'
+import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
+import {
+  ConteudoQuestao,
+  etiquetaQuestao,
+  useFinalizarSimulado,
+  useResponderQuestao,
+  useSimulado,
+  type QuestaoSimulado,
+  type ResponderQuestaoRequest,
+  type SimuladoDetalhe,
+} from '../../../../features/simulados'
+import { formatarCronometro } from '../../../../lib/utils/formatadores'
+import { NavNumberButton } from './components/NavNumberButton/NavNumberButton'
+import { OptionRow } from './components/OptionRow/OptionRow'
+import { SimuladoHeader } from './components/SimuladoHeader/SimuladoHeader'
+import { ModalFinalizar } from './components/ModalFinalizar/ModalFinalizar'
 import styles from './index.module.scss'
 
-import { SimuladoHeader } from './components/SimuladoHeader/SimuladoHeader'
+const SEGUNDOS_ALERTA = 30
+const ATRASO_AVANCO_AUTOMATICO_MS = 1500
 
-// TODO: trocar pelo id real do simulado quando a tela usar a API
-const ID_SIMULADO_MOCK = 'mock'
+type Resposta = Pick<ResponderQuestaoRequest, 'alternativa' | 'situacao'>
 
-interface QuestaoSimulado {
-  id: number
-  materia: string
-  assunto: string
-  vestibularAno: string
-  enunciadoContexto: string
-  pergunta: string
-  opcoes: OpcaoData[]
+interface Falha {
+  mensagem: string
+  tentarDeNovo: () => void
 }
 
-export default function SimuladosQuestoes() {
+// Instante em que a questão atual foi aberta e o tempo que ela já tinha acumulado
+interface Visita {
+  ordem: number
+  inicio: number
+  base: number
+}
+
+function respostaSalva(questao: QuestaoSimulado): Resposta {
+  if (questao.situacao === 'respondida') {
+    return { situacao: 'respondida', alternativa: questao.alternativaMarcada }
+  }
+  if (questao.situacao === 'em_branco') return { situacao: 'em_branco', alternativa: null }
+  return { situacao: 'pendente', alternativa: null }
+}
+
+// Próxima questão pendente depois de `indice`, dando a volta no fim da lista
+function proximaPendente(questoes: QuestaoSimulado[], indice: number) {
+  for (let passo = 1; passo < questoes.length; passo++) {
+    const candidata = (indice + passo) % questoes.length
+    if (questoes[candidata].situacao === 'pendente') return candidata
+  }
+  return -1
+}
+
+const Enunciado = memo(function Enunciado({ questao }: { questao: QuestaoSimulado }) {
+  return (
+    <>
+      {questao.textoBase && (
+        <ConteudoQuestao texto={questao.textoBase} className={styles.enunciadoContexto} />
+      )}
+      <ConteudoQuestao texto={questao.comando} className={styles.perguntaText} />
+    </>
+  )
+})
+
+function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   const navigate = useNavigate()
+  const responder = useResponderQuestao(simulado.id)
+  const finalizar = useFinalizarSimulado(simulado.id)
 
-  const mockQuestoes: QuestaoSimulado[] = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    materia: i % 2 === 0 ? 'Matemática' : 'Física',
-    assunto: i % 2 === 0 ? 'Função quadrática' : 'Eletricidade',
-    vestibularAno: 'ENEM 2024',
-    enunciadoContexto:
-      'Uma empresa de transporte cobra uma taxa fixa de R$ 12,00 por corrida, somada a R$ 2,50 por quilômetro rodado. Um passageiro pagou R$ 37,00 pela viagem.',
-    pergunta: 'Quantos quilômetros foram percorridos nessa corrida?',
-    opcoes: [
-      { letra: 'A', texto: '9 quilômetros' },
-      { letra: 'B', texto: '10 quilômetros' },
-      { letra: 'C', texto: '11 quilômetros' },
-      { letra: 'D', texto: '14 quilômetros' },
-      { letra: 'E', texto: '16 quilômetros' },
-    ],
-  }))
+  const { questoes, cronometrado, totalQuestoes } = simulado
+  const limite = simulado.segundosPorQuestao ?? 0
 
-  const [questaoAtualIndex, setQuestaoAtualIndex] = useState<number>(7) // Exemplo inicia na questão 8 (index 7)
-  
-  const [respostas, setRespostas] = useState<Record<number, string>>({})
-  
-  const [statusMap, setStatusMap] = useState<Record<number, StatusQuestaoNav>>({
-    1: 'respondida', 2: 'respondida', 3: 'em_branco', 4: 'respondida',
-    5: 'respondida', 6: 'respondida', 7: 'respondida',
+  const [visita, setVisita] = useState<Visita>(() => {
+    const primeira = Math.max(
+      0,
+      questoes.findIndex((q) => q.situacao === 'pendente'),
+    )
+    return { ordem: questoes[primeira].ordem, inicio: Date.now(), base: questoes[primeira].tempoSegundos }
   })
+  const [agora, setAgora] = useState(() => Date.now())
+  const [selecionada, setSelecionada] = useState<string | null>(
+    () => questoes.find((q) => q.ordem === visita.ordem)?.alternativaMarcada ?? null,
+  )
+  const [falha, setFalha] = useState<Falha | null>(null)
+  const [modalAberto, setModalAberto] = useState(false)
+  const [avancoAutomatico, setAvancoAutomatico] = useState<number | null>(null)
+  const expirando = useRef(new Set<number>())
 
-  const questaoAtual = mockQuestoes[questaoAtualIndex]
-  const respostaSelecionada = respostas[questaoAtual.id]
+  const indice = Math.max(
+    0,
+    questoes.findIndex((q) => q.ordem === visita.ordem),
+  )
+  const atual = questoes[indice]
+  const ehUltima = indice === questoes.length - 1
+  const outrasPendentes = questoes.filter((q) => q.ordem !== atual.ordem && q.situacao === 'pendente')
+  const modoFinalizar = ehUltima || outrasPendentes.length === 0
 
-  const respondidasCount = Object.values(statusMap).filter((s) => s === 'respondida').length
-  const emBrancoCount = Object.values(statusMap).filter((s) => s === 'em_branco').length
-  const restantesCount = mockQuestoes.length - respondidasCount - emBrancoCount
+  const tempoTotal = visita.base + Math.max(0, Math.floor((agora - visita.inicio) / 1000))
+  const bloqueada = atual.situacao === 'tempo_esgotado' || (cronometrado && tempoTotal >= limite)
+  const restante = Math.max(0, limite - tempoTotal)
+  const ocupado = responder.isPending || finalizar.isPending
 
-  const handleSelecionarOpcao = (letra: string) => {
-    setRespostas((prev) => ({ ...prev, [questaoAtual.id]: letra }))
+  useEffect(() => {
+    const intervalo = setInterval(() => setAgora(Date.now()), 1000)
+    return () => clearInterval(intervalo)
+  }, [])
+
+  function abrirQuestao(novoIndice: number) {
+    const destino = questoes[novoIndice]
+    setVisita({ ordem: destino.ordem, inicio: Date.now(), base: destino.tempoSegundos })
+    setAgora(Date.now())
+    setSelecionada(destino.alternativaMarcada)
+    setFalha(null)
+    setAvancoAutomatico(null)
+    window.scrollTo({ top: 0 })
   }
 
-  const handleAvancar = (salvarComoRespondida = true) => {
-    if (salvarComoRespondida && respostaSelecionada) {
-      setStatusMap((prev) => ({ ...prev, [questaoAtual.id]: 'respondida' }))
-    } else if (!salvarComoRespondida) {
-      setStatusMap((prev) => ({ ...prev, [questaoAtual.id]: 'em_branco' }))
-    }
-
-    if (questaoAtualIndex < mockQuestoes.length - 1) {
-      setQuestaoAtualIndex((prev) => prev + 1)
-    } else {
-      navigate(ROTAS.simuladosRevisao(ID_SIMULADO_MOCK))
-    }
-  }
-
-  const handleVoltar = () => {
-    if (questaoAtualIndex > 0) {
-      setQuestaoAtualIndex((prev) => prev - 1)
+  // Executa uma ação que fala com a API; se falhar, mantém tudo como está e oferece tentar de novo
+  async function executar(acao: () => Promise<void>) {
+    setFalha(null)
+    try {
+      await acao()
+    } catch (erro) {
+      setFalha({
+        mensagem: erro instanceof Error ? erro.message : 'Não foi possível salvar.',
+        tentarDeNovo: () => void executar(acao),
+      })
     }
   }
+
+  // Envia o tempo acumulado da questão atual junto com a resposta (a escolhida ou a que já estava salva)
+  async function salvarAtual(forcada?: Resposta) {
+    if (bloqueada) return
+
+    const resposta: Resposta =
+      forcada ??
+      (selecionada ? { situacao: 'respondida', alternativa: selecionada } : respostaSalva(atual))
+    const segundos = Math.floor((Date.now() - visita.inicio) / 1000)
+    const tempoSegundos = cronometrado ? Math.min(visita.base + segundos, limite) : visita.base + segundos
+
+    const mudou =
+      forcada !== undefined ||
+      resposta.situacao !== respostaSalva(atual).situacao ||
+      resposta.alternativa !== respostaSalva(atual).alternativa
+    if (!mudou && segundos === 0) return
+
+    await responder.mutateAsync({ ordem: atual.ordem, ...resposta, tempoSegundos })
+  }
+
+  // Tempo acabou: o back marca tempo_esgotado ao receber o limite
+  function expirar(ordem: number) {
+    void executar(async () => {
+      await responder.mutateAsync({
+        ordem,
+        alternativa: null,
+        situacao: 'pendente',
+        tempoSegundos: limite,
+      })
+      setAvancoAutomatico(ordem)
+    })
+  }
+
+  useEffect(() => {
+    if (!cronometrado || !bloqueada || atual.situacao === 'tempo_esgotado') return
+    if (expirando.current.has(atual.ordem)) return
+    expirando.current.add(atual.ordem)
+    expirar(atual.ordem)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cronometrado, bloqueada, atual.ordem, atual.situacao])
+
+  const proximaIndice = proximaPendente(questoes, indice)
+
+  useEffect(() => {
+    if (avancoAutomatico !== atual.ordem) return
+    const espera = setTimeout(() => {
+      if (proximaIndice >= 0) abrirQuestao(proximaIndice)
+      else setAvancoAutomatico(null)
+    }, ATRASO_AVANCO_AUTOMATICO_MS)
+    return () => clearTimeout(espera)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [avancoAutomatico, atual.ordem, proximaIndice])
+
+  const irPara = (destino: number) => {
+    if (destino === indice || destino < 0 || destino >= questoes.length) return
+    void executar(async () => {
+      await salvarAtual()
+      abrirQuestao(destino)
+    })
+  }
+
+  const responderEAvancar = () =>
+    void executar(async () => {
+      if (modoFinalizar) {
+        await salvarAtual(selecionada ? { situacao: 'respondida', alternativa: selecionada } : undefined)
+        setModalAberto(true)
+        return
+      }
+      await salvarAtual({ situacao: 'respondida', alternativa: selecionada })
+      abrirQuestao(proximaIndice)
+    })
+
+  const deixarEmBranco = () =>
+    void executar(async () => {
+      await salvarAtual({ situacao: 'em_branco', alternativa: null })
+      if (modoFinalizar) setModalAberto(true)
+      else abrirQuestao(proximaIndice)
+    })
+
+  const continuarBloqueada = () => {
+    if (modoFinalizar) setModalAberto(true)
+    else abrirQuestao(proximaIndice)
+  }
+
+  const pedirFinalizar = () =>
+    void executar(async () => {
+      await salvarAtual()
+      setModalAberto(true)
+    })
+
+  const salvarESair = () =>
+    void executar(async () => {
+      await salvarAtual()
+      navigate(ROTAS.simulados)
+    })
+
+  const confirmarFinalizacao = () => {
+    finalizar.mutate(undefined, {
+      onSuccess: () => navigate(ROTAS.simuladosRevisao(simulado.id)),
+    })
+  }
+
+  const respondidas = questoes.filter((q) => q.situacao === 'respondida').length
+  const emBranco = questoes.filter((q) => q.situacao === 'em_branco').length
+  const esgotadas = questoes.filter((q) => q.situacao === 'tempo_esgotado').length
+  const restantes = questoes.filter((q) => q.situacao === 'pendente').length
+  const concluidas = totalQuestoes - restantes
+  const semResposta = totalQuestoes - questoes.filter((q) => q.situacao === 'respondida').length
+
+  const respondidaAgora = selecionada !== null
 
   return (
     <main className={styles.pageWrapper}>
       <SimuladoHeader
-        tituloSimulado="Simulado ENEM · Matemática e Física"
-        tempoRestanteFormatted="01:42"
+        tituloSimulado={simulado.titulo}
+        tempo={formatarCronometro(cronometrado ? restante : tempoTotal)}
+        rotuloTempo={cronometrado ? 'restantes nesta questão' : 'tempo nesta questão'}
+        alerta={cronometrado && restante <= SEGUNDOS_ALERTA}
+        desabilitado={ocupado}
+        onFinalizar={pedirFinalizar}
+        onSalvarSair={salvarESair}
       />
-      <header className={styles.headerBar}>
+
+      <section className={styles.headerBar} aria-label="Progresso">
         <div className={styles.headerContainer}>
           <div className={styles.progressTopRow}>
             <div className={styles.progressTitle}>
-              <strong>Questão {questaoAtual.id} de {mockQuestoes.length}</strong>
-              <div className={styles.progressBarTrack}>
+              <strong>
+                Questão {indice + 1} de {totalQuestoes}
+              </strong>
+              <div
+                className={styles.progressBarTrack}
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={totalQuestoes}
+                aria-valuenow={concluidas}
+              >
                 <div
                   className={styles.progressBarFill}
-                  style={{ width: `${((respondidasCount + emBrancoCount) / mockQuestoes.length) * 100}%` }}
+                  style={{ width: `${(concluidas / totalQuestoes) * 100}%` }}
                 />
               </div>
             </div>
 
             <div className={styles.legendStats}>
-              <span><span className={`${styles.dot} ${styles.greenDot}`} /> {respondidasCount} respondidas</span>
-              <span><span className={`${styles.dot} ${styles.yellowDot}`} /> {emBrancoCount} em branco</span>
-              <span><span className={`${styles.dot} ${styles.grayDot}`} /> {restantesCount} restantes</span>
+              <span>
+                <span className={`${styles.dot} ${styles.greenDot}`} /> {respondidas} respondidas
+              </span>
+              <span>
+                <span className={`${styles.dot} ${styles.yellowDot}`} /> {emBranco} em branco
+              </span>
+              {esgotadas > 0 && (
+                <span>
+                  <span className={`${styles.dot} ${styles.redDot}`} /> {esgotadas} tempo esgotado
+                </span>
+              )}
+              <span>
+                <span className={`${styles.dot} ${styles.grayDot}`} /> {restantes} restantes
+              </span>
             </div>
           </div>
 
           <div className={styles.numbersNavGrid}>
-            {mockQuestoes.map((q) => (
+            {questoes.map((questao, i) => (
               <NavNumberButton
-                key={q.id}
-                numero={q.id}
-                status={statusMap[q.id] || 'pendente'}
-                isAtiva={q.id === questaoAtual.id}
-                onClick={() => setQuestaoAtualIndex(q.id - 1)}
+                key={questao.ordem}
+                numero={i + 1}
+                status={questao.situacao}
+                isAtiva={questao.ordem === atual.ordem}
+                disabled={ocupado}
+                onClick={() => irPara(i)}
               />
             ))}
           </div>
         </div>
-      </header>
+      </section>
 
       <section className={styles.questionSection}>
         <div className={styles.questionContainer}>
           <div className={styles.tagsRow}>
-            <span className={styles.tag}>{questaoAtual.materia}</span>
-            <span className={styles.tag}>{questaoAtual.assunto}</span>
-            <span className={styles.tag}>{questaoAtual.vestibularAno}</span>
+            <span className={styles.tag}>{etiquetaQuestao(atual.area, atual.ano)}</span>
           </div>
 
-          <p className={styles.enunciadoContexto}>{questaoAtual.enunciadoContexto}</p>
-          <h2 className={styles.perguntaText}>{questaoAtual.pergunta}</h2>
+          <Enunciado questao={atual} />
 
-          <div className={styles.optionsList}>
-            {questaoAtual.opcoes.map((opcao) => (
+          {atual.situacao === 'tempo_esgotado' || bloqueada ? (
+            <p role="status" className={styles.avisoTempo}>
+              Tempo esgotado. Esta questão foi contada como em branco.
+            </p>
+          ) : null}
+
+          <div className={styles.optionsList} role="radiogroup" aria-label="Alternativas">
+            {atual.alternativas.map((alternativa) => (
               <OptionRow
-                key={opcao.letra}
-                opcao={opcao}
-                isSelecionada={respostaSelecionada === opcao.letra}
-                onSelect={() => handleSelecionarOpcao(opcao.letra)}
+                key={alternativa.rotulo}
+                opcao={{ letra: alternativa.rotulo, texto: alternativa.texto }}
+                isSelecionada={!bloqueada && selecionada === alternativa.rotulo}
+                disabled={bloqueada || ocupado}
+                onSelect={() => setSelecionada(alternativa.rotulo)}
               />
             ))}
           </div>
+
+          {falha && (
+            <div className={styles.falha}>
+              <AvisoErro>{falha.mensagem} Sua resposta continua marcada.</AvisoErro>
+              <button type="button" className={styles.whiteBtn} onClick={falha.tentarDeNovo}>
+                Tentar de novo
+              </button>
+            </div>
+          )}
 
           <div className={styles.actionsFooter}>
             <button
               type="button"
               className={styles.prevBtn}
-              onClick={handleVoltar}
-              disabled={questaoAtualIndex === 0}
+              onClick={() => irPara(indice - 1)}
+              disabled={indice === 0 || ocupado}
             >
               ← Questão anterior
             </button>
 
             <div className={styles.rightActions}>
-              <button
-                type="button"
-                className={styles.whiteBtn}
-                onClick={() => handleAvancar(false)}
-              >
-                Deixar em branco
-              </button>
+              {bloqueada ? (
+                <button
+                  type="button"
+                  className={`${styles.nextBtn} ${styles.activeNext}`}
+                  onClick={continuarBloqueada}
+                  disabled={ocupado || atual.situacao !== 'tempo_esgotado'}
+                >
+                  {modoFinalizar ? 'Finalizar simulado' : 'Continuar →'}
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className={styles.whiteBtn}
+                    onClick={deixarEmBranco}
+                    disabled={ocupado}
+                  >
+                    Deixar em branco
+                  </button>
 
-              <button
-                type="button"
-                className={`${styles.nextBtn} ${respostaSelecionada ? styles.activeNext : ''}`}
-                onClick={() => handleAvancar(true)}
-                disabled={!respostaSelecionada}
-              >
-                Responder e avançar →
-              </button>
+                  <button
+                    type="button"
+                    className={`${styles.nextBtn} ${
+                      respondidaAgora || modoFinalizar ? styles.activeNext : ''
+                    }`}
+                    onClick={responderEAvancar}
+                    disabled={ocupado || (!respondidaAgora && !modoFinalizar)}
+                  >
+                    {modoFinalizar ? 'Finalizar simulado' : 'Responder e avançar →'}
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -177,6 +393,37 @@ export default function SimuladosQuestoes() {
           </p>
         </div>
       </section>
+
+      {modalAberto && (
+        <ModalFinalizar
+          totalQuestoes={totalQuestoes}
+          semResposta={semResposta}
+          enviando={finalizar.isPending}
+          erro={finalizar.isError ? finalizar.error.message : null}
+          onConfirmar={confirmarFinalizacao}
+          onCancelar={() => {
+            finalizar.reset()
+            setModalAberto(false)
+          }}
+        />
+      )}
     </main>
+  )
+}
+
+export default function SimuladosQuestoes() {
+  const { id = '' } = useParams()
+  const consulta = useSimulado(id)
+
+  return (
+    <EstadoConsulta consultas={[consulta]} mensagemCarregando="Carregando simulado…">
+      {([simulado]) =>
+        simulado.status === 'concluido' ? (
+          <Navigate to={ROTAS.simuladosRevisao(id)} replace />
+        ) : (
+          <Execucao key={simulado.id} simulado={simulado} />
+        )
+      }
+    </EstadoConsulta>
   )
 }
