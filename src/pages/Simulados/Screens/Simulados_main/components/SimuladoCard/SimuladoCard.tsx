@@ -1,74 +1,73 @@
 import { useNavigate } from 'react-router-dom'
 import { ROTAS } from '../../../../../../routes/paths'
+import { NOME_AREA, type SimuladoResumo } from '../../../../../../features/simulados'
+import { formatarData, formatarDuracao } from '../../../../../../lib/utils/formatadores'
 import styles from './SimuladoCard.module.scss'
 
-// TODO: trocar pelo id real do simulado quando a tela usar a API
-const ID_SIMULADO_MOCK = 'mock'
-
-export interface CategoriaDesempenho {
-  nome: string
-  acertos: number
-  total: number
-}
-
-export interface SimuladoItemData {
-  id: string
-  titulo: string
-  status: 'concluido' | 'em_andamento'
-  data: string
-  dataTimestamp: number
-  vestibular: 'ENEM' | 'UEM' | 'UTFPR' | 'UEL'
-  totalQuestoes: number
-  duracao: string
-  tags: string[]
-  porcentagemAcerto: number
-  acertos: number
-  erros: number
-  categorias: CategoriaDesempenho[]
-}
-
 interface SimuladoCardProps {
-  simulado: SimuladoItemData
+  simulado: SimuladoResumo
 }
 
 export function SimuladoCard({ simulado }: SimuladoCardProps) {
   const navigate = useNavigate()
   const isConcluido = simulado.status === 'concluido'
+  const data = simulado.finalizadoEm ?? simulado.iniciadoEm
+
+  // Abre a Configuração já preenchida com a mesma configuração deste simulado
+  const refazer = () =>
+    navigate(ROTAS.simuladosConfiguracao, {
+      state: {
+        tamanho: simulado.tamanho ?? 'media',
+        areas: simulado.areas,
+        cronometrado: simulado.cronometrado,
+      },
+    })
 
   return (
     <div className={styles.card}>
-      {/* Linha Superior */}
       <div className={styles.topRow}>
-        {/* Esquerda: Badge de % e Informações */}
         <div className={styles.infoGroup}>
           <div className={styles.badgePercent}>
-            <strong>{simulado.porcentagemAcerto}%</strong>
-            <span>ACERTOS</span>
+            {isConcluido && simulado.porcentagemAcerto !== null ? (
+              <>
+                <strong>{Math.round(simulado.porcentagemAcerto)}%</strong>
+                <span>ACERTOS</span>
+              </>
+            ) : (
+              <>
+                <strong>
+                  {simulado.respondidas}/{simulado.totalQuestoes}
+                </strong>
+                <span>RESPONDIDAS</span>
+              </>
+            )}
           </div>
 
           <div className={styles.detailsText}>
             <div className={styles.titleRow}>
               <h3 className={styles.titulo}>{simulado.titulo}</h3>
-              <span className={`${styles.statusTag} ${isConcluido ? styles.tagConcluido : styles.tagAndamento}`}>
+              <span
+                className={`${styles.statusTag} ${isConcluido ? styles.tagConcluido : styles.tagAndamento}`}
+              >
                 {isConcluido ? 'Concluído' : 'Em andamento'}
               </span>
             </div>
 
             <p className={styles.metaData}>
-              {simulado.data} · {simulado.totalQuestoes} questões · {simulado.duracao}
+              {formatarData(data)} · {simulado.totalQuestoes} questões ·{' '}
+              {formatarDuracao(simulado.duracaoSegundos)} de duração
             </p>
 
             <div className={styles.tagsRow}>
-              {simulado.tags.map((tag) => (
-                <span key={tag} className={styles.tagPill}>
-                  {tag}
+              {simulado.areas.map((area) => (
+                <span key={area} className={styles.tagPill}>
+                  {NOME_AREA[area]}
                 </span>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Direita: Estatísticas Rápidas + Botões de Ação */}
         <div className={styles.actionsGroup}>
           {isConcluido && (
             <div className={styles.statsNumbers}>
@@ -93,15 +92,11 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
                 <button
                   type="button"
                   className={styles.revisarBtn}
-                  onClick={() => navigate(ROTAS.simuladosRevisao(ID_SIMULADO_MOCK))}
+                  onClick={() => navigate(ROTAS.simuladosRevisao(simulado.id))}
                 >
                   Revisar questões
                 </button>
-                <button
-                  type="button"
-                  className={styles.refazerBtn}
-                  onClick={() => navigate(ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK))}
-                >
+                <button type="button" className={styles.refazerBtn} onClick={refazer}>
                   Refazer
                 </button>
               </>
@@ -109,7 +104,7 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
               <button
                 type="button"
                 className={styles.revisarBtn}
-                onClick={() => navigate(ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK))}
+                onClick={() => navigate(ROTAS.simuladosQuestoes(simulado.id))}
               >
                 Continuar
               </button>
@@ -118,25 +113,24 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
         </div>
       </div>
 
-      {/* Linha Inferior: Por Categoria */}
-      {simulado.categorias.length > 0 && (
+      {simulado.porArea.length > 0 && (
         <div className={styles.categoriasSection}>
           <span className={styles.categoriasLabel}>POR CATEGORIA</span>
           <div className={styles.categoriasGrid}>
-            {simulado.categorias.map((cat) => {
-              const pct = Math.round((cat.acertos / cat.total) * 100)
-              const isAlerta = pct < 60
+            {simulado.porArea.map((item) => {
+              const pct = item.total > 0 ? Math.round((item.acertos / item.total) * 100) : 0
+
               return (
-                <div key={cat.nome} className={styles.catItem}>
+                <div key={item.area} className={styles.catItem}>
                   <div className={styles.catHeader}>
-                    <span className={styles.catName}>{cat.nome}</span>
+                    <span className={styles.catName}>{NOME_AREA[item.area]}</span>
                     <span className={styles.catRatio}>
-                      {cat.acertos}/{cat.total}
+                      {item.acertos}/{item.total}
                     </span>
                   </div>
                   <div className={styles.track}>
                     <div
-                      className={`${styles.fill} ${isAlerta ? styles.alertaFill : ''}`}
+                      className={`${styles.fill} ${pct < 60 ? styles.alertaFill : ''}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
