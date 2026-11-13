@@ -1,10 +1,10 @@
+import type { Tamanho } from '../../../../../../features/simulados'
 import styles from './TamanhoCard.module.scss'
 
 export interface TamanhoOpcao {
-  id: string
+  id: Tamanho
   titulo: string
   questoes: number
-  tempoEstimadoMinutos: number
   descricaoTempo: string
   subtexto: string
   sugerida?: boolean
@@ -22,6 +22,8 @@ export function TamanhoCard({ opcao, isSelecionado, onSelect }: TamanhoCardProps
   return (
     <button
       type="button"
+      role="radio"
+      aria-checked={isSelecionado}
       className={`${styles.card} ${isSelecionado ? styles.selecionado : ''}`}
       onClick={onSelect}
     >

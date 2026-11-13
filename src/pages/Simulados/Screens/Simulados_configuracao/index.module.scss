@@ -76,6 +76,7 @@
     background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-full;
     padding: 8px $spacing-md; font: 600 0.8125rem $font-sans; color: $color-blue-primary; cursor: pointer;
     &.activePill { background: $color-blue-primary; color: $color-surface; border-color: $color-blue-primary; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
   }
 }
 
@@ -96,7 +97,9 @@
   &.iconActive { background: $color-green; border-color: $color-green; color: $color-surface; }
 }
 
-.catLabel { font-size: 0.8125rem; font-weight: 600; color: $color-blue-primary; }
+.catLabel { font-size: 0.8125rem; font-weight: 600; color: $color-blue-primary; text-align: left; display: flex; flex-direction: column; }
+.catDisponiveis { font-size: 0.6875rem; font-weight: 400; color: $color-text-secondary; }
+.emBreve { font-size: 0.6875rem; font-weight: 700; color: $color-yellow-dark; background: $color-yellow-soft; border-radius: $radius-full; padding: 1px 6px; margin-left: 4px; }
 
 .toggleCard {
   background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-lg;
@@ -136,6 +139,7 @@
   width: 100%; border-radius: $radius-md; font-weight: 700; cursor: pointer; padding: 10px;
 }
 
+.startBtn:disabled, .cancelBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 .startBtn { background: $color-green; color: $color-surface; border: none; font-size: 0.875rem; padding: 12px; }
 .cancelBtn { background: transparent; color: $color-blue-primary; border: 1px solid $color-border-light; font-size: 0.8125rem; }
 
