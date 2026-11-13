@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { Header } from './Header/Header'
 import styles from './MainLayout.module.scss'
 
@@ -7,6 +7,7 @@ export function MainLayout() {
     <div className={styles.layout}>
       <Header />
       <Outlet />
+      <ScrollRestoration />
     </div>
   )
 }

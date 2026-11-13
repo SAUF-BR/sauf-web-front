@@ -104,6 +104,10 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   const ocupado = responder.isPending || finalizar.isPending
 
   useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [])
+
+  useEffect(() => {
     const intervalo = setInterval(() => setAgora(Date.now()), 1000)
     return () => clearInterval(intervalo)
   }, [])

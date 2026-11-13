@@ -18,7 +18,7 @@ import {
   type RevisaoSimulado,
 } from '../../../../features/simulados'
 import { ErroApi } from '../../../../lib/api/erros'
-import { formatarData, formatarDuracao } from '../../../../lib/utils/formatadores'
+import { formatarData, formatarDuracao, formatarQuantidade } from '../../../../lib/utils/formatadores'
 
 export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
 
@@ -134,7 +134,7 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
 
             <Titulo
               titulo={revisao.titulo}
-              subtitulo={`Concluído em ${formatarData(revisao.finalizadoEm)} · ${revisao.totalQuestoes} questões · ${formatarDuracao(revisao.duracaoSegundos)}`}
+              subtitulo={`Concluído em ${formatarData(revisao.finalizadoEm)} · ${formatarQuantidade(revisao.totalQuestoes, 'questão', 'questões')} · ${formatarDuracao(revisao.duracaoSegundos)}`}
               size="Grande"
             />
           </div>
