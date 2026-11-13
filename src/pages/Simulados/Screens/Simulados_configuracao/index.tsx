@@ -13,7 +13,11 @@ import {
   type OpcoesSimulado,
   type Tamanho,
 } from '../../../../features/simulados'
-import { formatarDuracao, formatarInteiro } from '../../../../lib/utils/formatadores'
+import {
+  formatarDuracao,
+  formatarInteiro,
+  formatarTempoPorQuestao,
+} from '../../../../lib/utils/formatadores'
 import { TamanhoCard, type TamanhoOpcao } from './components/TamanhoCard/TamanhoCard'
 import { schemaConfiguracao, type ConfiguracaoSimulado } from './schema'
 import styles from './index.module.scss'
@@ -36,14 +40,15 @@ function descreverTempo(segundos: number) {
   return minutos < 60 ? `${minutos} minutos` : formatarDuracao(segundos)
 }
 
-// 150 → "2m30"
-function formatarLimite(segundos: number) {
-  return `${Math.floor(segundos / 60)}m${String(segundos % 60).padStart(2, '0')}`
-}
+// Selos das opções de tempo por questão
+const SELO_TEMPO: Record<number, string> = { 150: 'sugerido', 180: 'ritmo do ENEM' }
 
 // Valores vindos de outra tela (ex.: repetir a configuração de um simulado anterior)
 function lerConfiguracaoInicial(state: unknown): Partial<ConfiguracaoSimulado> {
-  const resultado = schemaConfiguracao.omit({ banca: true }).safeParse(state)
+  const resultado = schemaConfiguracao
+    .omit({ banca: true })
+    .partial({ segundosPorQuestao: true })
+    .safeParse(state)
   return resultado.success ? resultado.data : {}
 }
 
@@ -64,6 +69,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
       banca: 'enem',
       areas: [...ORDEM_AREAS],
       cronometrado: true,
+      segundosPorQuestao: opcoes.segundosPorQuestao,
       ...lerConfiguracaoInicial(state),
     },
   })
@@ -71,6 +77,12 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
   const tamanho = useWatch({ control, name: 'tamanho' })
   const areasSel = useWatch({ control, name: 'areas' })
   const cronometrado = useWatch({ control, name: 'cronometrado' })
+  const segundosPorQuestao = useWatch({ control, name: 'segundosPorQuestao' })
+  // Sem cronômetro, a estimativa usa o tempo sugerido
+  const segundosEstimados = cronometrado ? segundosPorQuestao : opcoes.segundosPorQuestao
+  const temposPorQuestao = opcoes.temposPorQuestao.includes(segundosPorQuestao)
+    ? opcoes.temposPorQuestao
+    : [...opcoes.temposPorQuestao, segundosPorQuestao].sort((a, b) => a - b)
 
   const tamanhos: TamanhoOpcao[] = opcoes.tamanhos.map((t) => ({
     id: t.id,
@@ -78,12 +90,12 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
     titulo: TEXTO_TAMANHO[t.id].titulo,
     subtexto: TEXTO_TAMANHO[t.id].subtexto,
     sugerida: TEXTO_TAMANHO[t.id].sugerida,
-    descricaoTempo: `Cerca de ${descreverTempo(t.questoes * opcoes.segundosPorQuestao)}.`,
+    descricaoTempo: `Cerca de ${descreverTempo(t.questoes * segundosEstimados)}.`,
   }))
 
   const areas = ORDEM_AREAS.flatMap((id) => opcoes.areas.find((a) => a.id === id) ?? [])
   const tamanhoAtual = tamanhos.find((t) => t.id === tamanho)
-  const limite = formatarLimite(opcoes.segundosPorQuestao)
+  const limite = formatarTempoPorQuestao(segundosPorQuestao)
   const todasMarcadas = areas.length > 0 && areasSel.length === areas.length
   const nomesAreas = areas.filter((a) => areasSel.includes(a.id)).map((a) => NOME_AREA[a.id])
 
@@ -97,7 +109,11 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
   }
 
   const enviar = handleSubmit((dados) => {
-    criar.mutate(dados, {
+    const pedido = {
+      ...dados,
+      segundosPorQuestao: dados.cronometrado ? dados.segundosPorQuestao : null,
+    }
+    criar.mutate(pedido, {
       onSuccess: (simulado) => navigate(ROTAS.simuladosQuestoes(simulado.id)),
     })
   })
@@ -188,7 +204,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
               <strong id="rotulo-cronometro">Cronometrar o simulado</strong>
               <p>
                 {cronometrado
-                  ? `Limite de ${limite} por questão, como na prova real`
+                  ? `Limite de ${limite} por questão. Depois dele dá para responder, mas a resposta fica marcada como fora do tempo`
                   : 'Sem limite de tempo; o tempo gasto é medido mesmo assim'}
               </p>
             </div>
@@ -203,6 +219,34 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
               <span className={styles.switchHandle} />
             </button>
           </div>
+
+          {cronometrado && (
+            <div className={styles.temposBloco}>
+              <span className={styles.temposTitulo} id="rotulo-tempo">
+                Tempo por questão
+              </span>
+              <div className={styles.pillsRow} role="radiogroup" aria-labelledby="rotulo-tempo">
+                {temposPorQuestao.map((segundos) => {
+                  const ativo = segundosPorQuestao === segundos
+                  return (
+                    <button
+                      key={segundos}
+                      type="button"
+                      role="radio"
+                      aria-checked={ativo}
+                      className={`${styles.pillBtn} ${ativo ? styles.activePill : ''}`}
+                      onClick={() => setValue('segundosPorQuestao', segundos)}
+                    >
+                      {formatarTempoPorQuestao(segundos)}
+                      {SELO_TEMPO[segundos] && (
+                        <span className={styles.seloTempo}>{SELO_TEMPO[segundos]}</span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -233,7 +277,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <div className={styles.summaryRow}>
               <span className={styles.label}>Tempo estimado</span>
               <strong className={styles.value}>
-                {tamanhoAtual ? descreverTempo(tamanhoAtual.questoes * opcoes.segundosPorQuestao) : '—'}
+                {tamanhoAtual ? descreverTempo(tamanhoAtual.questoes * segundosEstimados) : '—'}
               </strong>
             </div>
 

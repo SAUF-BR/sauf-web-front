@@ -44,6 +44,17 @@
     }
   }
 
+  &.pillForaDoTempo {
+    border-color: $color-yellow;
+    color: $color-yellow-dark;
+
+    &.active {
+      background-color: $color-yellow-dark;
+      color: $color-surface;
+      border-color: $color-yellow-dark;
+    }
+  }
+
   &.pillEmBranco {
     border-color: $color-border-light;
     color: $color-text-secondary;

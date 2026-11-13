@@ -67,6 +67,11 @@
     background-color: $color-border;
     color: $color-text-secondary;
   }
+
+  &.tagForaDoTempo {
+    background-color: $color-yellow-soft;
+    color: $color-yellow-dark;
+  }
 }
 
 .categoriaTag {
@@ -81,6 +86,11 @@
 .tempo {
   font-size: 0.75rem;
   color: $color-text-secondary;
+
+  &.tempoForaDoTempo {
+    color: $color-yellow-dark;
+    font-weight: 600;
+  }
 }
 
 .enunciado {

@@ -15,26 +15,29 @@ import {
   useRefazerErros,
   useRevisao,
   type Area,
+  type QuestaoRevisao,
   type RevisaoSimulado,
 } from '../../../../features/simulados'
 import { ErroApi } from '../../../../lib/api/erros'
 import { formatarData, formatarDuracao, formatarQuantidade } from '../../../../lib/utils/formatadores'
 
-export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
+export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco' | 'fora_do_tempo'
 
 const POR_PAGINA = 6
 
-const RESULTADO_DO_FILTRO = {
-  acertos: 'acerto',
-  erros: 'erro',
-  em_branco: 'em_branco',
-} as const
+const FILTRO: Record<Exclude<FiltroStatus, 'todas'>, (q: QuestaoRevisao) => boolean> = {
+  acertos: (q) => q.resultado === 'acerto',
+  erros: (q) => q.resultado === 'erro',
+  em_branco: (q) => q.resultado === 'em_branco',
+  fora_do_tempo: (q) => q.foraDoTempo,
+}
 
 const OPCOES_FILTRO: Array<{ label: string; tipo: FiltroStatus }> = [
   { label: 'Todas', tipo: 'todas' },
   { label: 'Acertos', tipo: 'acertos' },
   { label: 'Erros', tipo: 'erros' },
   { label: 'Em branco', tipo: 'em_branco' },
+  { label: 'Fora do tempo', tipo: 'fora_do_tempo' },
 ]
 
 function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
@@ -55,15 +58,18 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
   const dasArea = revisao.questoes.filter((q) => area === 'todas' || q.area === area)
   const contagem: Record<FiltroStatus, number> = {
     todas: dasArea.length,
-    acertos: dasArea.filter((q) => q.resultado === 'acerto').length,
-    erros: dasArea.filter((q) => q.resultado === 'erro').length,
-    em_branco: dasArea.filter((q) => q.resultado === 'em_branco').length,
+    acertos: dasArea.filter(FILTRO.acertos).length,
+    erros: dasArea.filter(FILTRO.erros).length,
+    em_branco: dasArea.filter(FILTRO.em_branco).length,
+    fora_do_tempo: dasArea.filter(FILTRO.fora_do_tempo).length,
   }
+  // O filtro "Fora do tempo" só aparece quando há alguma questão nele
+  const opcoesFiltro = OPCOES_FILTRO.filter(
+    (opcao) => opcao.tipo !== 'fora_do_tempo' || revisao.respondidasForaDoTempo > 0,
+  )
 
   const questoesFiltradas =
-    filtroStatus === 'todas'
-      ? dasArea
-      : dasArea.filter((q) => q.resultado === RESULTADO_DO_FILTRO[filtroStatus])
+    filtroStatus === 'todas' ? dasArea : dasArea.filter(FILTRO[filtroStatus])
   const questoesExibidas = questoesFiltradas.slice(0, visiveisCount)
   const restantes = questoesFiltradas.length - questoesExibidas.length
 
@@ -166,6 +172,15 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
                 <span className={styles.statLabel}>EM BRANCO</span>
                 <span className={`${styles.statValue} ${styles.grayValue}`}>{revisao.emBranco}</span>
               </div>
+
+              {revisao.respondidasForaDoTempo > 0 && (
+                <div className={styles.statItem}>
+                  <span className={styles.statLabel}>FORA DO TEMPO</span>
+                  <span className={`${styles.statValue} ${styles.amberValue}`}>
+                    {revisao.respondidasForaDoTempo}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -174,7 +189,7 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
         <div className={styles.filterBarContainer}>
           <div className={styles.controlsRow}>
             <div className={styles.statusPills}>
-              {OPCOES_FILTRO.map((opcao) => (
+              {opcoesFiltro.map((opcao) => (
                 <FilterPillButton
                   key={opcao.tipo}
                   label={opcao.label}

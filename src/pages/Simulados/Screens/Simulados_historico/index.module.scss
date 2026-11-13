@@ -110,8 +110,10 @@
 
   .statsGroup {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: $spacing-lg;
+    gap: $spacing-sm $spacing-lg;
+    min-width: 0;
   }
 
   .statItem {
@@ -141,6 +143,10 @@
 
       &.grayValue {
         color: $color-text-secondary;
+      }
+
+      &.amberValue {
+        color: $color-yellow-dark;
       }
     }
   }
