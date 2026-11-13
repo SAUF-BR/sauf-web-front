@@ -30,10 +30,12 @@
   justify-content: space-between;
   align-items: center;
   gap: $spacing-md;
+  flex-wrap: wrap;
 }
 
 .titleGroup {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: $spacing-sm;
 }
@@ -90,7 +92,7 @@
 
 .respostasRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: $spacing-md;
 }
 
@@ -151,3 +153,40 @@
 .checkIcon { background-color: $color-green; color: $color-white; }
 .erroIcon { background-color: $color-error; color: $color-white; }
 .circleIcon { border: 2px solid $color-border-light; }
+
+.ativa {
+  box-shadow: 0 0 0 2px $color-blue-primary;
+}
+
+.textoBaseBloco {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  width: 100%;
+}
+
+.textoRecolhido {
+  max-height: 7.5rem;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+
+.verTexto {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-green;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.altTexto {
+  gap: $spacing-xs;
+  min-width: 0;
+}

@@ -1,10 +1,9 @@
+import type { ResultadoQuestao } from '../../../../../../features/simulados'
 import styles from './QuestaoBar.module.scss'
-
-export type StatusQuestao = 'acerto' | 'erro' | 'em_branco'
 
 interface QuestaoBarProps {
   numero: number
-  status: StatusQuestao
+  status: ResultadoQuestao
   isAtiva?: boolean
   onClick?: () => void
 }
@@ -14,6 +13,8 @@ export function QuestaoBar({ numero, status, isAtiva = false, onClick }: Questao
     <button
       type="button"
       title={`Questão ${numero}`}
+      aria-label={`Ir para a questão ${numero}`}
+      aria-current={isAtiva ? 'true' : undefined}
       className={`${styles.bar} ${styles[status]} ${isAtiva ? styles.ativa : ''}`}
       onClick={onClick}
     />
