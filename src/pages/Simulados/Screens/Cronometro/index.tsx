@@ -45,8 +45,8 @@ export default function Cronometro() {
       )}
 
       {!carregando && (erro || !dados) && (
-        <p className={styles.estado}>
-          Não foi possível carregar seus tempos. Tente novamente em instantes.
+        <p className={styles.estado} role="alert">
+          {erro?.message ?? 'Não foi possível carregar seus tempos. Tente novamente em instantes.'}
         </p>
       )}
 
