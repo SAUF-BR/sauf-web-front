@@ -122,6 +122,7 @@ export interface SimuladoResumo {
   banca: Banca
   status: StatusSimulado
   tamanho: Tamanho | null
+  cronometrado: boolean
   iniciadoEm: string
   finalizadoEm: string | null
   totalQuestoes: number
