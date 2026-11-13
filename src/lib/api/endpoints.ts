@@ -35,7 +35,15 @@ export const endpoints = {
     resultado: '/teste-vocacional/resultado',
   },
   simulados: {
-    list: '/simulados',
+    opcoes: '/simulados/opcoes',
+    lista: '/simulados',
+    detalhe: (id: string) => `/simulados/${id}`,
+    questao: (id: string, ordem: number) => `/simulados/${id}/questoes/${ordem}`,
+    finalizar: (id: string) => `/simulados/${id}/finalizar`,
+    revisao: (id: string) => `/simulados/${id}/revisao`,
+    refazerErros: (id: string) => `/simulados/${id}/refazer-erros`,
+    resumo: '/simulados/resumo',
+    cronometro: '/simulados/cronometro',
   },
   assinatura: {
     atual: '/assinatura',

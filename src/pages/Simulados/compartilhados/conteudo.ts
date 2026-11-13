@@ -1,4 +1,8 @@
 import { ROTAS } from '../../../routes/paths'
+import type { Comparativo, DiaEstudo, Periodo } from '../../../features/simulados/types'
+
+// Tipos únicos, definidos junto do contrato da API
+export type { Comparativo, DiaEstudo, Periodo }
 
 // Tipos, constantes e formatações comuns às abas de Simulados
 // (Simulados, Meu acompanhamento, Cronômetro e Ranking)
@@ -14,8 +18,6 @@ export const Abas_simulados: { id: AbaSimulados; rotulo: string; rota: string }[
 
 export const Selo_plano = 'Plano premium'
 
-export type Periodo = 'semana' | 'mes' | 'ano'
-
 export const Ordem_periodos: Periodo[] = ['semana', 'mes', 'ano']
 
 export const Periodos: Record<Periodo, { rotulo: string; rotuloAnterior: string; dias: number }> = {
@@ -25,8 +27,6 @@ export const Periodos: Record<Periodo, { rotulo: string; rotuloAnterior: string;
 }
 
 export const Periodo_padrao: Periodo = 'mes'
-
-export type Comparativo = { atual: number; anterior: number | null }
 
 export type Variacao = {
   texto: string
@@ -75,8 +75,6 @@ export function formatarMinutosSegundos(segundos: number) {
 export function formatarDias(dias: number) {
   return `${dias} ${dias === 1 ? 'dia' : 'dias'}`
 }
-
-export type DiaEstudo = { data: string; segundos: number }
 
 export type Sequencia = { dias: number; fim: string | null }
 

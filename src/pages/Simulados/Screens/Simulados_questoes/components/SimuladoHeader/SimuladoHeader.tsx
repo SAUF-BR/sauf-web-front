@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { ROTAS } from '../../../../../../routes/paths'
 import { Logo } from '../../../../../../components/logo/Logo'
 import styles from './SimuladoHeader.module.scss'
 
@@ -17,7 +18,7 @@ export function SimuladoHeader({
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.leftGroup}>
-          <Link to="/simulados/main" className={styles.logoLink}>
+          <Link to={ROTAS.simulados} className={styles.logoLink}>
             <span className={styles.whiteLogo}>
               <Logo variant="clara" />
             </span>
@@ -34,7 +35,7 @@ export function SimuladoHeader({
           <button
             type="button"
             className={styles.salvarSairBtn}
-            onClick={() => navigate('/simulados/main')}
+            onClick={() => navigate(ROTAS.simulados)}
           >
             Salvar e sair
           </button>

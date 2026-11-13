@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ROTAS } from '../../../../routes/paths'
 import styles from './index.module.scss'
 import { useState } from 'react'
 import { StatCard } from './components/StatCard'
@@ -143,12 +144,12 @@ const mockConstancia = {
           </div>
 
           <nav className={styles.tabs}>
-            <Link to="/simulados">Simulados</Link>
-            <Link to="/simulados/acompanhamento" className={styles.activeTab}>
+            <Link to={ROTAS.simulados}>Simulados</Link>
+            <Link to={ROTAS.simuladosAcompanhamento} className={styles.activeTab}>
               Meu acompanhamento
             </Link>
-            <Link to="/simulados/cronometro">Cronômetro</Link>
-            <Link to="/simulados/ranking">Ranking</Link>
+            <Link to={ROTAS.simuladosCronometro}>Cronômetro</Link>
+            <Link to={ROTAS.simuladosRanking}>Ranking</Link>
           </nav>
         </header>
       </div>

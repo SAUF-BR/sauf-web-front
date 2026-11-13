@@ -1,2 +1,4 @@
-// Feature: simulados (recurso pago, exige assinatura ativa). Lógica a ser implementada.
-export {}
+// Feature: simulados do ENEM (recurso pago, exige assinatura ativa).
+export * from './types'
+export * from './hooks'
+export { ConteudoQuestao } from './components/ConteudoQuestao/ConteudoQuestao'

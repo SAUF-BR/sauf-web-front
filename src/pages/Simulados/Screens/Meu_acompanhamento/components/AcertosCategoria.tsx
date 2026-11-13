@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom'
+import { ROTAS } from '../../../../../routes/paths'
 import styles from './AcertosCategoria.module.scss'
+
+// TODO: trocar pelo id real do simulado quando a tela usar a API
+const ID_SIMULADO_MOCK = 'mock'
 
 interface CategoriaItem {
   materia: string
@@ -23,7 +27,7 @@ export function AcertosCategoria({ categorias }: AcertosCategoriaProps) {
             Aproveitamento no período e variação em relação ao mês anterior
           </p>
         </div>
-        <Link to="/simulados/questoes" className={styles.linkAction}>
+        <Link to={ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK)} className={styles.linkAction}>
           Ver questões erradas →
         </Link>
       </div>

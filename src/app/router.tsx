@@ -1,4 +1,5 @@
 import {
+  Navigate,
   Route,
   RouterProvider,
   createBrowserRouter,
@@ -22,12 +23,11 @@ import Calendario from '../pages/Calendario'
 import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
 import ResultadoTeste from '../pages/TesteVocacional/Resultado'
-import Simulados from '../pages/Simulados'
 import Paywall from '../pages/Simulados/Paywall'
 import SimuladosMain from '../pages/Simulados/Screens/Simulados_main'
 import SimuladosConfiguracao from '../pages/Simulados/Screens/Simulados_configuracao'
-import SimuladosQuestões from '../pages/Simulados/Screens/Simulados_questoes'
-import SimuladosHistórico from '../pages/Simulados/Screens/Simulados_historico'
+import SimuladosQuestoes from '../pages/Simulados/Screens/Simulados_questoes'
+import SimuladosRevisao from '../pages/Simulados/Screens/Simulados_historico'
 import SimuladosMeuAcompanhamento from '../pages/Simulados/Screens/Meu_acompanhamento'
 import Cronometro from '../pages/Simulados/Screens/Cronometro'
 import Ranking from '../pages/Simulados/Screens/Ranking'
@@ -46,7 +46,7 @@ const router = createBrowserRouter(
 
       {/* Simulado em andamento: header próprio, mas exige assinatura */}
       <Route element={<SubscriberRoute />}>
-        <Route path={ROTAS.simuladosQuestoes} element={<SimuladosQuestões />} />      
+        <Route path={ROTAS.simuladosQuestoes(':id')} element={<SimuladosQuestoes />} />
       </Route>
 
       <Route element={<MainLayout />}>
@@ -74,10 +74,10 @@ const router = createBrowserRouter(
         {/* Simulados: a tela principal exige assinatura ativa; quem não assina vê o
             paywall (e quem assina é redirecionado dele para os simulados). */}
         <Route element={<SubscriberRoute />}>
-          <Route path={ROTAS.simulados} element={<Simulados />} />
-          <Route path={ROTAS.simuladosMain} element={<SimuladosMain />} />
+          <Route path={ROTAS.simulados} element={<SimuladosMain />} />
+          <Route path={ROTAS.simuladosMain} element={<Navigate to={ROTAS.simulados} replace />} />
           <Route path={ROTAS.simuladosConfiguracao} element={<SimuladosConfiguracao />} />
-          <Route path={ROTAS.simuladosHistorico} element={<SimuladosHistórico />} />
+          <Route path={ROTAS.simuladosRevisao(':id')} element={<SimuladosRevisao />} />
           <Route path={ROTAS.simuladosAcompanhamento} element={<SimuladosMeuAcompanhamento />} />
           <Route path={ROTAS.simuladosCronometro} element={<Cronometro />} />
           <Route path={ROTAS.simuladosRanking} element={<Ranking />} />

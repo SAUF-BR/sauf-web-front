@@ -1,10 +1,14 @@
 import { useState } from 'react'
+import { ROTAS } from '../../../../routes/paths'
 import { useNavigate } from 'react-router-dom'
 import { NavNumberButton, type StatusQuestaoNav } from './components/NavNumberButton/NavNumberButton'
 import { OptionRow, type OpcaoData } from './components/OptionRow/OptionRow'
 import styles from './index.module.scss'
 
 import { SimuladoHeader } from './components/SimuladoHeader/SimuladoHeader'
+
+// TODO: trocar pelo id real do simulado quando a tela usar a API
+const ID_SIMULADO_MOCK = 'mock'
 
 interface QuestaoSimulado {
   id: number
@@ -66,7 +70,7 @@ export default function SimuladosQuestoes() {
     if (questaoAtualIndex < mockQuestoes.length - 1) {
       setQuestaoAtualIndex((prev) => prev + 1)
     } else {
-      navigate('/simulados/historico')
+      navigate(ROTAS.simuladosRevisao(ID_SIMULADO_MOCK))
     }
   }
 
