@@ -21,6 +21,14 @@
   white-space: pre-line;
 }
 
+.lista {
+  margin: 0;
+  padding-left: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
 .imagem {
   display: block;
   max-width: 100%;
@@ -40,6 +48,8 @@
 
   th,
   td {
+    // A tabela cresce e o wrapper rola, em vez de quebrar palavras no meio
+    overflow-wrap: normal;
     padding: $spacing-sm $spacing-md;
     border: 1px solid $color-border-light;
     text-align: left;
