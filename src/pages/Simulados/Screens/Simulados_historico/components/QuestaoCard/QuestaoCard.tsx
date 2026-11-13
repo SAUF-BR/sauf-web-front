@@ -32,6 +32,7 @@ export function QuestaoCard({ questao, isAtiva = false }: QuestaoCardProps) {
     alternativas,
     resultado,
     tempoEsgotado,
+    foraDoTempo,
     alternativaMarcada,
     alternativaCorreta,
     tempoSegundos,
@@ -51,14 +52,22 @@ export function QuestaoCard({ questao, isAtiva = false }: QuestaoCardProps) {
           <h3 className={styles.numero}>Questão {ordem}</h3>
 
           <span className={`${styles.statusTag} ${styles[`tag_${resultado}`]}`}>
-            {tempoEsgotado ? 'Tempo esgotado' : ROTULO_STATUS[resultado]}
+            {ROTULO_STATUS[resultado]}
           </span>
+
+          {foraDoTempo && (
+            <span className={`${styles.statusTag} ${styles.tagForaDoTempo}`}>Fora do tempo</span>
+          )}
+          {!foraDoTempo && tempoEsgotado && resultado === 'em_branco' && (
+            <span className={`${styles.statusTag} ${styles.tagForaDoTempo}`}>Tempo esgotado</span>
+          )}
 
           <span className={styles.categoriaTag}>{etiquetaQuestao(area, ano)}</span>
         </div>
 
-        <span className={styles.tempo}>
-          {tempoEsgotado ? 'tempo esgotado' : formatarTempoQuestao(tempoSegundos)}
+        <span className={`${styles.tempo} ${foraDoTempo ? styles.tempoForaDoTempo : ''}`}>
+          {formatarTempoQuestao(tempoSegundos)}
+          {foraDoTempo && ' · respondida fora do tempo'}
         </span>
       </div>
 

@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
@@ -21,7 +21,9 @@ import { ModalFinalizar } from './components/ModalFinalizar/ModalFinalizar'
 import styles from './index.module.scss'
 
 const SEGUNDOS_ALERTA = 30
-const ATRASO_AVANCO_AUTOMATICO_MS = 1500
+
+// Relógio lido só em handlers e no intervalo do cronômetro, nunca durante a renderização
+const agoraEmMs = () => Date.now()
 
 type Resposta = Pick<ResponderQuestaoRequest, 'alternativa' | 'situacao'>
 
@@ -78,16 +80,14 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
       0,
       questoes.findIndex((q) => q.situacao === 'pendente'),
     )
-    return { ordem: questoes[primeira].ordem, inicio: Date.now(), base: questoes[primeira].tempoSegundos }
+    return { ordem: questoes[primeira].ordem, inicio: agoraEmMs(), base: questoes[primeira].tempoSegundos }
   })
-  const [agora, setAgora] = useState(() => Date.now())
+  const [agora, setAgora] = useState(() => agoraEmMs())
   const [selecionada, setSelecionada] = useState<string | null>(
     () => questoes.find((q) => q.ordem === visita.ordem)?.alternativaMarcada ?? null,
   )
   const [falha, setFalha] = useState<Falha | null>(null)
   const [modalAberto, setModalAberto] = useState(false)
-  const [avancoAutomatico, setAvancoAutomatico] = useState<number | null>(null)
-  const expirando = useRef(new Set<number>())
 
   const indice = Math.max(
     0,
@@ -99,7 +99,8 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   const modoFinalizar = ehUltima || outrasPendentes.length === 0
 
   const tempoTotal = visita.base + Math.max(0, Math.floor((agora - visita.inicio) / 1000))
-  const bloqueada = atual.situacao === 'tempo_esgotado' || (cronometrado && tempoTotal >= limite)
+  // Esgotado não bloqueia: a questão aceita resposta, que a API marca como fora do tempo
+  const esgotado = cronometrado && tempoTotal >= limite
   const restante = Math.max(0, limite - tempoTotal)
   const ocupado = responder.isPending || finalizar.isPending
 
@@ -108,17 +109,16 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   }, [])
 
   useEffect(() => {
-    const intervalo = setInterval(() => setAgora(Date.now()), 1000)
+    const intervalo = setInterval(() => setAgora(agoraEmMs()), 1000)
     return () => clearInterval(intervalo)
   }, [])
 
   function abrirQuestao(novoIndice: number) {
     const destino = questoes[novoIndice]
-    setVisita({ ordem: destino.ordem, inicio: Date.now(), base: destino.tempoSegundos })
-    setAgora(Date.now())
+    setVisita({ ordem: destino.ordem, inicio: agoraEmMs(), base: destino.tempoSegundos })
+    setAgora(agoraEmMs())
     setSelecionada(destino.alternativaMarcada)
     setFalha(null)
-    setAvancoAutomatico(null)
     window.scrollTo({ top: 0 })
   }
 
@@ -137,13 +137,11 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
 
   // Envia o tempo acumulado da questão atual junto com a resposta (a escolhida ou a que já estava salva)
   async function salvarAtual(forcada?: Resposta) {
-    if (bloqueada) return
-
     const resposta: Resposta =
       forcada ??
       (selecionada ? { situacao: 'respondida', alternativa: selecionada } : respostaSalva(atual))
-    const segundos = Math.floor((Date.now() - visita.inicio) / 1000)
-    const tempoSegundos = cronometrado ? Math.min(visita.base + segundos, limite) : visita.base + segundos
+    const segundos = Math.floor((agoraEmMs() - visita.inicio) / 1000)
+    const tempoSegundos = visita.base + segundos
 
     const mudou =
       forcada !== undefined ||
@@ -154,38 +152,7 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
     await responder.mutateAsync({ ordem: atual.ordem, ...resposta, tempoSegundos })
   }
 
-  // Tempo acabou: o back marca tempo_esgotado ao receber o limite
-  function expirar(ordem: number) {
-    void executar(async () => {
-      await responder.mutateAsync({
-        ordem,
-        alternativa: null,
-        situacao: 'pendente',
-        tempoSegundos: limite,
-      })
-      setAvancoAutomatico(ordem)
-    })
-  }
-
-  useEffect(() => {
-    if (!cronometrado || !bloqueada || atual.situacao === 'tempo_esgotado') return
-    if (expirando.current.has(atual.ordem)) return
-    expirando.current.add(atual.ordem)
-    expirar(atual.ordem)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cronometrado, bloqueada, atual.ordem, atual.situacao])
-
   const proximaIndice = proximaPendente(questoes, indice)
-
-  useEffect(() => {
-    if (avancoAutomatico !== atual.ordem) return
-    const espera = setTimeout(() => {
-      if (proximaIndice >= 0) abrirQuestao(proximaIndice)
-      else setAvancoAutomatico(null)
-    }, ATRASO_AVANCO_AUTOMATICO_MS)
-    return () => clearTimeout(espera)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [avancoAutomatico, atual.ordem, proximaIndice])
 
   const irPara = (destino: number) => {
     if (destino === indice || destino < 0 || destino >= questoes.length) return
@@ -213,11 +180,6 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
       else abrirQuestao(proximaIndice)
     })
 
-  const continuarBloqueada = () => {
-    if (modoFinalizar) setModalAberto(true)
-    else abrirQuestao(proximaIndice)
-  }
-
   const pedirFinalizar = () =>
     void executar(async () => {
       await salvarAtual()
@@ -238,19 +200,29 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
 
   const respondidas = questoes.filter((q) => q.situacao === 'respondida').length
   const emBranco = questoes.filter((q) => q.situacao === 'em_branco').length
-  const esgotadas = questoes.filter((q) => q.situacao === 'tempo_esgotado').length
+  const foraDoTempo = questoes.filter((q) => q.foraDoTempo).length
   const restantes = questoes.filter((q) => q.situacao === 'pendente').length
   const concluidas = totalQuestoes - restantes
   const semResposta = totalQuestoes - questoes.filter((q) => q.situacao === 'respondida').length
 
   const respondidaAgora = selecionada !== null
 
+  let tempo = formatarCronometro(tempoTotal)
+  let rotuloTempo = 'tempo nesta questão'
+  if (esgotado) {
+    tempo = `+${formatarCronometro(tempoTotal - limite)}`
+    rotuloTempo = 'fora do tempo'
+  } else if (cronometrado) {
+    tempo = formatarCronometro(restante)
+    rotuloTempo = 'restantes nesta questão'
+  }
+
   return (
     <main className={styles.pageWrapper}>
       <SimuladoHeader
         tituloSimulado={simulado.titulo}
-        tempo={formatarCronometro(cronometrado ? restante : tempoTotal)}
-        rotuloTempo={cronometrado ? 'restantes nesta questão' : 'tempo nesta questão'}
+        tempo={tempo}
+        rotuloTempo={rotuloTempo}
         alerta={cronometrado && restante <= SEGUNDOS_ALERTA}
         desabilitado={ocupado}
         onFinalizar={pedirFinalizar}
@@ -285,9 +257,9 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
               <span>
                 <span className={`${styles.dot} ${styles.yellowDot}`} /> {emBranco} em branco
               </span>
-              {esgotadas > 0 && (
+              {foraDoTempo > 0 && (
                 <span>
-                  <span className={`${styles.dot} ${styles.redDot}`} /> {esgotadas} tempo esgotado
+                  <span className={`${styles.dot} ${styles.foraDot}`} /> {foraDoTempo} fora do tempo
                 </span>
               )}
               <span>
@@ -302,6 +274,7 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
                 key={questao.ordem}
                 numero={i + 1}
                 status={questao.situacao}
+                foraDoTempo={questao.foraDoTempo}
                 isAtiva={questao.ordem === atual.ordem}
                 disabled={ocupado}
                 onClick={() => irPara(i)}
@@ -319,19 +292,25 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
 
           <Enunciado questao={atual} />
 
-          {atual.situacao === 'tempo_esgotado' || bloqueada ? (
+          {atual.foraDoTempo ? (
             <p role="status" className={styles.avisoTempo}>
-              Tempo esgotado. Esta questão foi contada como em branco.
+              Esta resposta foi dada fora do tempo e fica marcada assim na revisão.
             </p>
-          ) : null}
+          ) : (
+            esgotado && (
+              <p role="status" className={styles.avisoTempo}>
+                Tempo esgotado: sua resposta será marcada como fora do tempo.
+              </p>
+            )
+          )}
 
           <div className={styles.optionsList} role="radiogroup" aria-label="Alternativas">
             {atual.alternativas.map((alternativa) => (
               <OptionRow
                 key={alternativa.rotulo}
                 opcao={{ letra: alternativa.rotulo, texto: alternativa.texto }}
-                isSelecionada={!bloqueada && selecionada === alternativa.rotulo}
-                disabled={bloqueada || ocupado}
+                isSelecionada={selecionada === alternativa.rotulo}
+                disabled={ocupado}
                 onSelect={() => setSelecionada(alternativa.rotulo)}
               />
             ))}
@@ -357,38 +336,25 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
             </button>
 
             <div className={styles.rightActions}>
-              {bloqueada ? (
-                <button
-                  type="button"
-                  className={`${styles.nextBtn} ${styles.activeNext}`}
-                  onClick={continuarBloqueada}
-                  disabled={ocupado || atual.situacao !== 'tempo_esgotado'}
-                >
-                  {modoFinalizar ? 'Finalizar simulado' : 'Continuar →'}
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    className={styles.whiteBtn}
-                    onClick={deixarEmBranco}
-                    disabled={ocupado}
-                  >
-                    Deixar em branco
-                  </button>
+              <button
+                type="button"
+                className={styles.whiteBtn}
+                onClick={deixarEmBranco}
+                disabled={ocupado}
+              >
+                Deixar em branco
+              </button>
 
-                  <button
-                    type="button"
-                    className={`${styles.nextBtn} ${
-                      respondidaAgora || modoFinalizar ? styles.activeNext : ''
-                    }`}
-                    onClick={responderEAvancar}
-                    disabled={ocupado || (!respondidaAgora && !modoFinalizar)}
-                  >
-                    {modoFinalizar ? 'Finalizar simulado' : 'Responder e avançar →'}
-                  </button>
-                </>
-              )}
+              <button
+                type="button"
+                className={`${styles.nextBtn} ${
+                  respondidaAgora || modoFinalizar ? styles.activeNext : ''
+                }`}
+                onClick={responderEAvancar}
+                disabled={ocupado || (!respondidaAgora && !modoFinalizar)}
+              >
+                {modoFinalizar ? 'Finalizar simulado' : 'Responder e avançar →'}
+              </button>
             </div>
           </div>
 

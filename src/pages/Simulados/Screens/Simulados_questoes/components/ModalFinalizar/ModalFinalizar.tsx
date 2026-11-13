@@ -4,7 +4,7 @@ import styles from './ModalFinalizar.module.scss'
 
 interface ModalFinalizarProps {
   totalQuestoes: number
-  // Questões que ficarão em branco (pendentes, em branco e com tempo esgotado)
+  // Questões que ficarão em branco (pendentes e em branco)
   semResposta: number
   enviando: boolean
   erro: string | null

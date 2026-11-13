@@ -108,6 +108,17 @@
   p { font-size: 0.75rem; color: $color-text-secondary; margin: 2px 0 0; }
 }
 
+.temposBloco {
+  display: flex; flex-direction: column; gap: $spacing-sm; margin-top: $spacing-md;
+}
+
+.temposTitulo { font-size: 0.8125rem; font-weight: 600; color: $color-blue-primary; }
+
+.seloTempo {
+  font-size: 0.6875rem; font-weight: 700; color: $color-yellow-dark; background: $color-yellow-soft;
+  border-radius: $radius-full; padding: 1px 6px; margin-left: 6px;
+}
+
 .switchBtn {
   width: 44px; height: 24px; background: $color-border-light; border-radius: $radius-full; border: none;
   padding: 2px; cursor: pointer;

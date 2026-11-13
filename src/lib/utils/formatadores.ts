@@ -102,6 +102,15 @@ export function formatarQuantidade(valor: number, singular: string, plural: stri
   return `${formatarInteiro(valor)} ${valor === 1 ? singular : plural}`
 }
 
+// 150 → "2min30" · 120 → "2min" · 45 → "45s"
+export function formatarTempoPorQuestao(segundos: number) {
+  const minutos = Math.floor(segundos / 60)
+  const resto = segundos % 60
+
+  if (minutos === 0) return `${resto}s`
+  return resto === 0 ? `${minutos}min` : `${minutos}min${String(resto).padStart(2, '0')}`
+}
+
 // 150 → "02:30"
 export function formatarCronometro(segundos: number) {
   const total = Math.max(0, Math.round(segundos))

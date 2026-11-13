@@ -9,7 +9,7 @@ export type Banca = 'enem'
 
 export type StatusSimulado = 'em_andamento' | 'concluido'
 
-export type SituacaoQuestao = 'pendente' | 'respondida' | 'em_branco' | 'tempo_esgotado'
+export type SituacaoQuestao = 'pendente' | 'respondida' | 'em_branco'
 
 export type ResultadoQuestao = 'acerto' | 'erro' | 'em_branco'
 
@@ -29,7 +29,9 @@ export interface Alternativa {
 
 export interface OpcoesSimulado {
   tamanhos: { id: Tamanho; questoes: number }[]
+  // Padrão sugerido e as opções que a tela oferece (a API aceita de 60 a 600, de 30 em 30)
   segundosPorQuestao: number
+  temposPorQuestao: number[]
   bancas: { id: Banca; nome: string }[]
   areas: { id: Area; nome: string; questoesDisponiveis: number }[]
 }
@@ -39,6 +41,8 @@ export interface CriarSimuladoRequest {
   tamanho: Tamanho
   areas: Area[]
   cronometrado: boolean
+  // Obrigatório no cronometrado; nulo sem cronômetro
+  segundosPorQuestao: number | null
 }
 
 export interface QuestaoSimulado {
@@ -52,6 +56,8 @@ export interface QuestaoSimulado {
   situacao: SituacaoQuestao
   alternativaMarcada: string | null
   tempoSegundos: number
+  // Resposta dada com o tempo do simulado cronometrado já esgotado
+  foraDoTempo: boolean
 }
 
 export interface SimuladoDetalhe {
@@ -91,7 +97,9 @@ export interface QuestaoRevisao {
   comando: string
   alternativas: Alternativa[]
   resultado: ResultadoQuestao
+  // Ficou o limite inteiro na questão (respondida ou não)
   tempoEsgotado: boolean
+  foraDoTempo: boolean
   alternativaMarcada: string | null
   alternativaCorreta: string
   tempoSegundos: number
@@ -110,6 +118,7 @@ export interface RevisaoSimulado {
   acertos: number
   erros: number
   emBranco: number
+  respondidasForaDoTempo: number
   porcentagemAcerto: number
   duracaoSegundos: number
   porArea: DesempenhoArea[]
@@ -123,10 +132,12 @@ export interface SimuladoResumo {
   status: StatusSimulado
   tamanho: Tamanho | null
   cronometrado: boolean
+  segundosPorQuestao: number | null
   iniciadoEm: string
   finalizadoEm: string | null
   totalQuestoes: number
   respondidas: number
+  respondidasForaDoTempo: number
   acertos: number
   erros: number
   emBranco: number

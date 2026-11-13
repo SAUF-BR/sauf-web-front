@@ -20,6 +20,7 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
         tamanho: simulado.tamanho ?? 'media',
         areas: simulado.areas,
         cronometrado: simulado.cronometrado,
+        ...(simulado.segundosPorQuestao !== null && { segundosPorQuestao: simulado.segundosPorQuestao }),
       },
     })
 
@@ -56,6 +57,12 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
             <p className={styles.metaData}>
               {formatarData(data)} · {formatarQuantidade(simulado.totalQuestoes, 'questão', 'questões')} ·{' '}
               {formatarDuracao(simulado.duracaoSegundos)} de duração
+              {simulado.respondidasForaDoTempo > 0 && (
+                <span className={styles.foraDoTempo}>
+                  {' · '}
+                  {simulado.respondidasForaDoTempo} fora do tempo
+                </span>
+              )}
             </p>
 
             <div className={styles.tagsRow}>
