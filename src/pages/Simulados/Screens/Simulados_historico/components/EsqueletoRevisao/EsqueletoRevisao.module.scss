@@ -1,0 +1,23 @@
+@use '../../../../../../styles/variables' as *;
+
+.titulo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.resumo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.numeros {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.questao {
+  gap: $spacing-md;
+  padding: $spacing-lg;
+}

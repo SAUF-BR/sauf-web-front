@@ -248,8 +248,18 @@
   }
 }
 .vazio {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-xl $spacing-lg;
   text-align: center;
   font-size: 0.875rem;
   color: $color-text-secondary;
+  border: 1px dashed $color-border-light;
+  border-radius: $radius-lg;
+
+  p {
+    margin: 0;
+  }
 }

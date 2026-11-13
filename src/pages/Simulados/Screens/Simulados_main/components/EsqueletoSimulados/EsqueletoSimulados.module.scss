@@ -1,0 +1,45 @@
+@use '../../../../../../styles/variables' as *;
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cartao {
+  flex-direction: row;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+}
+
+.selo {
+  flex-shrink: 0;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: $radius-md;
+}
+
+.textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.etiquetas {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.botoes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  width: 9.5rem;
+
+  @media (max-width: $breakpoint-sm) {
+    display: none;
+  }
+}

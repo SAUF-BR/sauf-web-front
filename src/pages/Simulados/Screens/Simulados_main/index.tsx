@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ClipboardList } from 'lucide-react'
 import { ROTAS } from '../../../../routes/paths'
 import { useNavigate } from 'react-router-dom'
 import { StatCard } from './components/StatCard/StatCard'
@@ -6,7 +7,7 @@ import { SimuladoCard } from './components/SimuladoCard/SimuladoCard'
 import styles from './index.module.scss'
 import { CabecalhoSimulados } from '../../compartilhados/CabecalhoSimulados/CabecalhoSimulados'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
-import { Carregando } from '../../../../components/ui/Carregando/Carregando'
+import { EsqueletoLista, EsqueletoResumo } from './components/EsqueletoSimulados/EsqueletoSimulados'
 import {
   NOME_AREA,
   useResumoSimulados,
@@ -27,6 +28,8 @@ export default function SimuladosMain() {
   const simulados = useSimulados({ ordem, page: pagina, size: POR_PAGINA })
 
   const criarSimulado = () => navigate(ROTAS.simuladosConfiguracao)
+  // Sem nenhum simulado, o estado vazio já convida a criar; o banner do rodapé sairia repetido
+  const semSimulados = simulados.data?.totalElements === 0
 
   return (
     <main className={styles.pageWrapper}>
@@ -46,7 +49,7 @@ export default function SimuladosMain() {
           <EstadoConsulta
             consultas={[resumo]}
             compacto
-            carregando={<Carregando compacto mensagem="Carregando seu resumo…" />}
+            carregando={<EsqueletoResumo className={styles.statsGrid} />}
             tituloErro="Não foi possível carregar seu resumo"
           >
             {([dados]) => (
@@ -121,16 +124,22 @@ export default function SimuladosMain() {
           <EstadoConsulta
             consultas={[simulados]}
             compacto
-            carregando={<Carregando compacto mensagem="Carregando seus simulados…" />}
+            carregando={<EsqueletoLista />}
             tituloErro="Não foi possível carregar seus simulados"
           >
             {([lista]) =>
               lista.content.length === 0 ? (
                 <div className={styles.vazio}>
+                  <span className={styles.vazioIcone} aria-hidden="true">
+                    <ClipboardList size={28} />
+                  </span>
                   <h3>Você ainda não fez nenhum simulado</h3>
-                  <p>Monte o primeiro e acompanhe seu desempenho por área do ENEM.</p>
+                  <p>
+                    Monte o primeiro em menos de um minuto: escolha o tamanho, as áreas do ENEM e
+                    se quer cronômetro. Depois é só acompanhar seu desempenho por aqui.
+                  </p>
                   <button type="button" className={styles.bannerBtn} onClick={criarSimulado}>
-                    + Criar novo simulado
+                    + Criar meu primeiro simulado
                   </button>
                 </div>
               ) : (
@@ -167,16 +176,18 @@ export default function SimuladosMain() {
             }
           </EstadoConsulta>
 
-          <div className={styles.bannerCta}>
-            <div>
-              <h3>Monte um simulado do jeito que você precisa</h3>
-              <p>Escolha o vestibular, as categorias, a quantidade de questões e se quer tempo cronometrado.</p>
-            </div>
+          {!semSimulados && (
+            <div className={styles.bannerCta}>
+              <div>
+                <h3>Monte um simulado do jeito que você precisa</h3>
+                <p>Escolha o vestibular, as categorias, a quantidade de questões e se quer tempo cronometrado.</p>
+              </div>
 
-            <button type="button" className={styles.bannerBtn} onClick={criarSimulado}>
-              + Criar novo simulado
-            </button>
-          </div>
+              <button type="button" className={styles.bannerBtn} onClick={criarSimulado}>
+                + Criar novo simulado
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </main>
