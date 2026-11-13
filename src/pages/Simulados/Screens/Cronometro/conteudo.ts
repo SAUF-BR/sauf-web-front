@@ -1,12 +1,7 @@
 import {
-    diasEstudoMock,
     maiorSequencia,
-    Periodos,
-    resumirJanelaMock,
-    sequenciaAtual,
     type Comparativo,
     type DiaEstudo,
-    type Periodo,
   } from '../../compartilhados/conteudo'
   import type {
     DadosCronometro,
@@ -106,71 +101,5 @@ import {
         : null,
       diaMaisProdutivo:
         maiorTempo > 0 ? Nomes_dias_semana[tempoPorDiaSemana.indexOf(maiorTempo)] : null,
-    }
-  }
-
-  // Mock 
-  const Tempo_medio_questao_mock: Record<Periodo, Comparativo> = {
-    semana: { atual: 161, anterior: 172 },
-    mes: { atual: 168, anterior: 190 },
-    ano: { atual: 175, anterior: null },
-  }
-  
-  const Por_configuracao_mock: TempoConfiguracao[] = [
-    {
-      tamanho: 'rapida',
-      questoes: 10,
-      simulados: 4,
-      mediaSegundos: 1440,
-      totalSegundos: 5760,
-      segundosPorQuestao: 144,
-      observacao: null,
-    },
-    {
-      tamanho: 'media',
-      questoes: 20,
-      simulados: 7,
-      mediaSegundos: 2940,
-      totalSegundos: 20580,
-      segundosPorQuestao: 147,
-      observacao: null,
-    },
-    {
-      tamanho: 'longa',
-      questoes: 30,
-      simulados: 3,
-      mediaSegundos: 5040,
-      totalSegundos: 15120,
-      segundosPorQuestao: 168,
-      observacao: 'ritmo mais lento no fim da prova',
-    },
-  ]
-  
-  const Ritmo_por_categoria_mock: RitmoCategoria[] = [
-    { categoria: 'Física', segundosPorQuestao: 221 },
-    { categoria: 'Química', segundosPorQuestao: 182 },
-    { categoria: 'Matemática', segundosPorQuestao: 156 },
-    { categoria: 'Português', segundosPorQuestao: 118 },
-  ]
-  
-  export function montarCronometroMock(periodo: Periodo): DadosCronometro {
-    const dias = diasEstudoMock
-    const duracao = Periodos[periodo].dias
-  
-    const atual = resumirJanelaMock(dias, 0, duracao)
-    const anterior = periodo === 'ano' ? null : resumirJanelaMock(dias, duracao, duracao * 2)
-  
-    return {
-      tempoTotal: { atual: atual.segundos, anterior: anterior?.segundos ?? null },
-      tempoMedioQuestao: Tempo_medio_questao_mock[periodo],
-      diasAtivos: { atual: atual.diasAtivos, anterior: anterior?.diasAtivos ?? null },
-      ofensiva: { atual: sequenciaAtual(dias), recorde: maiorSequencia(dias).dias },
-      dias,
-      porConfiguracao: Por_configuracao_mock,
-      horasPorSemana: [3, 2, 1, 0].map((semanasAtras, indice) => ({
-        rotulo: `S${indice + 1}`,
-        segundos: resumirJanelaMock(dias, semanasAtras * 7, semanasAtras * 7 + 7).segundos,
-      })),
-      ritmoPorCategoria: Ritmo_por_categoria_mock,
     }
   }
