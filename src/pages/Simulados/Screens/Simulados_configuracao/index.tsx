@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ROTAS } from '../../../../routes/paths'
@@ -41,9 +41,16 @@ function formatarLimite(segundos: number) {
   return `${Math.floor(segundos / 60)}m${String(segundos % 60).padStart(2, '0')}`
 }
 
+// Valores vindos de outra tela (ex.: repetir a configuração de um simulado anterior)
+function lerConfiguracaoInicial(state: unknown): Partial<ConfiguracaoSimulado> {
+  const resultado = schemaConfiguracao.omit({ banca: true }).safeParse(state)
+  return resultado.success ? resultado.data : {}
+}
+
 function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
   const navigate = useNavigate()
   const criar = useCriarSimulado()
+  const { state } = useLocation()
 
   const {
     control,
@@ -52,7 +59,13 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
     formState: { errors },
   } = useForm<ConfiguracaoSimulado>({
     resolver: zodResolver(schemaConfiguracao),
-    defaultValues: { tamanho: 'media', banca: 'enem', areas: [...ORDEM_AREAS], cronometrado: true },
+    defaultValues: {
+      tamanho: 'media',
+      banca: 'enem',
+      areas: [...ORDEM_AREAS],
+      cronometrado: true,
+      ...lerConfiguracaoInicial(state),
+    },
   })
 
   const tamanho = useWatch({ control, name: 'tamanho' })
