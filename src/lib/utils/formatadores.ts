@@ -65,3 +65,47 @@ export function obterIniciais(nomeCompleto: string) {
 export function obterPrimeiroNome(nomeCompleto: string) {
   return nomeCompleto.trim().split(/\s+/)[0] ?? ''
 }
+
+// "2026-09-02T14:30:00Z" → "2 de setembro de 2026" (no fuso do navegador)
+export function formatarData(dataHoraIso: string) {
+  return new Intl.DateTimeFormat(LOCALE, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(dataHoraIso))
+}
+
+// 8280 → "2h18" · 2820 → "47 min" · 45 → "45s"
+export function formatarDuracao(segundos: number) {
+  const total = Math.max(0, Math.round(segundos))
+
+  if (total < 60) return `${total}s`
+
+  const minutos = Math.round(total / 60)
+  if (minutos < 60) return `${minutos} min`
+
+  return `${Math.floor(minutos / 60)}h${String(minutos % 60).padStart(2, '0')}`
+}
+
+// 62 → "1m02s" · 45 → "45s"
+export function formatarTempoQuestao(segundos: number) {
+  const total = Math.max(0, Math.round(segundos))
+  const minutos = Math.floor(total / 60)
+  const resto = total % 60
+
+  if (minutos === 0) return `${resto}s`
+  return `${minutos}m${String(resto).padStart(2, '0')}s`
+}
+
+// 150 → "02:30"
+export function formatarCronometro(segundos: number) {
+  const total = Math.max(0, Math.round(segundos))
+  const minutos = Math.floor(total / 60)
+
+  return `${String(minutos).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+}
+
+// 72 → "72%" · 72.5 → "72,5%"
+export function formatarPorcentagem(valor: number) {
+  return `${new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 }).format(valor)}%`
+}

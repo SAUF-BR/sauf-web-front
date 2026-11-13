@@ -1,5 +1,9 @@
 import { useNavigate } from 'react-router-dom'
+import { ROTAS } from '../../../../../../routes/paths'
 import styles from './SimuladoCard.module.scss'
+
+// TODO: trocar pelo id real do simulado quando a tela usar a API
+const ID_SIMULADO_MOCK = 'mock'
 
 export interface CategoriaDesempenho {
   nome: string
@@ -89,14 +93,14 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
                 <button
                   type="button"
                   className={styles.revisarBtn}
-                  onClick={() => navigate('/simulados/historico')}
+                  onClick={() => navigate(ROTAS.simuladosRevisao(ID_SIMULADO_MOCK))}
                 >
                   Revisar questões
                 </button>
                 <button
                   type="button"
                   className={styles.refazerBtn}
-                  onClick={() => navigate('/simulados/questoes')}
+                  onClick={() => navigate(ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK))}
                 >
                   Refazer
                 </button>
@@ -105,7 +109,7 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
               <button
                 type="button"
                 className={styles.revisarBtn}
-                onClick={() => navigate('/simulados/questoes')}
+                onClick={() => navigate(ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK))}
               >
                 Continuar
               </button>

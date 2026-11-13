@@ -52,6 +52,14 @@ Boot)** desenvolvida separadamente.
 | Variável | Descrição | Exemplo |
 |---|---|---|
 | `VITE_API_URL` | URL base da API Java | `http://localhost:8080/api` |
+| `VITE_MOCK_ASSINATURA` | `true` simula assinatura ativa (só desenvolvimento) | `true` |
+
+### Assinatura simulada
+
+Enquanto login e pagamento não estão integrados, o `.env.development` (versionado) define
+`VITE_MOCK_ASSINATURA=true`, o que libera as rotas de assinante (Simulados) no `npm run dev`.
+Para testar o paywall, mude o valor para `false` (ou crie um `.env.development.local` com
+`VITE_MOCK_ASSINATURA=false`) e reinicie o servidor. O build de produção não lê esse arquivo.
 
 ## Scripts disponíveis
 

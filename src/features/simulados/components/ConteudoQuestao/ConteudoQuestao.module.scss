@@ -1,0 +1,52 @@
+@use '../../../../styles/variables' as *;
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  color: $color-text;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.paragrafo {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.imagem {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: $radius-sm;
+}
+
+.tabelaWrapper {
+  overflow-x: auto;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+
+  th,
+  td {
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $color-border-light;
+    text-align: left;
+  }
+
+  th {
+    background: $color-fundo-lateral;
+    font-weight: 600;
+  }
+}

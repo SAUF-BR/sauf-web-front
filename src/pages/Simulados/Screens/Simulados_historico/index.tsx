@@ -1,18 +1,13 @@
 import { Link } from 'react-router-dom'
+import { ROTAS } from '../../../../routes/paths'
 import { useState } from 'react'
 import styles from './index.module.scss'
-import { QuestaoBar, type StatusQuestao } from './components/QuestaoBar/QuestaoBar'
+import { QuestaoBar } from './components/QuestaoBar/QuestaoBar'
 import { QuestaoCard, type QuestaoData } from './components/QuestaoCard/QuestaoCard'
 import { Titulo } from '../../../../components/ui/Titulo/Titulo'
 import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
 
 export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
-
-interface QuestaoMock {
-  numero: number
-  status: StatusQuestao
-}
-
 
 export default function SimuladosHistorico() {
   const mockHeader = {
@@ -123,7 +118,7 @@ export default function SimuladosHistorico() {
         <div className={styles.headerContainer}>
          <div className={styles.leftInfo}>
             <div className={styles.breadcrumb}>
-              <Link to="/simulados">Simulados</Link>
+              <Link to={ROTAS.simulados}>Simulados</Link>
               <span>/</span>
               <span className={styles.currentBreadcrumb}>Revisão</span>
             </div>

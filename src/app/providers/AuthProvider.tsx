@@ -13,6 +13,9 @@ interface AuthContextValue {
   logout: () => void
 }
 
+// Só em desenvolvimento (.env.development): libera as telas de assinante sem login nem pagamento
+const ASSINATURA_SIMULADA = import.meta.env.VITE_MOCK_ASSINATURA === 'true'
+
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -31,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, assinaturaAtiva, login, logout }),
+    () => ({ user, assinaturaAtiva: assinaturaAtiva || ASSINATURA_SIMULADA, login, logout }),
     [user, assinaturaAtiva],
   )
 

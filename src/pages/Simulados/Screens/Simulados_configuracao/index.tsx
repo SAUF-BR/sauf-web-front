@@ -1,7 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { ROTAS } from '../../../../routes/paths'
 import styles from './index.module.scss'
 import { TamanhoCard, type TamanhoOpcao } from './components/TamanhoCard/TamanhoCard'
 import { useState } from 'react'
+
+// TODO: trocar pelo id real do simulado quando a tela usar a API
+const ID_SIMULADO_MOCK = 'mock'
 
 export default function SimuladosConfiguracao() {
 
@@ -81,7 +85,7 @@ export default function SimuladosConfiguracao() {
       <header className={styles.headerSection}>
         <div className={styles.headerContainer}>
           <div className={styles.breadcrumb}>
-            <Link to="/simulados">Simulados</Link>
+            <Link to={ROTAS.simulados}>Simulados</Link>
             <span>/</span>
             <span className={styles.currentBreadcrumb}>Novo simulado</span>
           </div>
@@ -222,7 +226,7 @@ export default function SimuladosConfiguracao() {
               <button
                 type="button"
                 className={styles.startBtn}
-                onClick={() => navigate('/simulados/questoes')}
+                onClick={() => navigate(ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK))}
               >
                 Começar simulado
               </button>
@@ -230,7 +234,7 @@ export default function SimuladosConfiguracao() {
               <button
                 type="button"
                 className={styles.cancelBtn}
-                onClick={() => navigate('/simulados')}
+                onClick={() => navigate(ROTAS.simulados)}
               >
                 Cancelar
               </button>

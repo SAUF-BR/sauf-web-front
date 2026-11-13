@@ -8,33 +8,16 @@ import {
     type DiaEstudo,
     type Periodo,
   } from '../../compartilhados/conteudo'
-  
-  export type TamanhoSimulado = 'rapida' | 'media' | 'longa'
-  
-  export type TempoConfiguracao = {
-    tamanho: TamanhoSimulado
-    questoes: number
-    simulados: number
-    mediaSegundos: number
-    totalSegundos: number
-    segundosPorQuestao: number
-    observacao: string | null
-  }
-  
-  export type HorasSemana = { rotulo: string; segundos: number }
-  
-  export type RitmoCategoria = { categoria: string; segundosPorQuestao: number }
-  
-  export type DadosCronometro = {
-    tempoTotal: Comparativo
-    tempoMedioQuestao: Comparativo
-    diasAtivos: Comparativo
-    ofensiva: { atual: number; recorde: number }
-    dias: DiaEstudo[]
-    porConfiguracao: TempoConfiguracao[]
-    horasPorSemana: HorasSemana[]
-    ritmoPorCategoria: RitmoCategoria[]
-  }
+  import type {
+    DadosCronometro,
+    HorasSemana,
+    RitmoCategoria,
+    TamanhoSimulado,
+    TempoConfiguracao,
+  } from '../../../../features/simulados/types'
+
+  // Tipos únicos, definidos junto do contrato da API
+  export type { DadosCronometro, HorasSemana, RitmoCategoria, TamanhoSimulado, TempoConfiguracao }
   
   export const Rotulo_tamanho: Record<TamanhoSimulado, string> = {
     rapida: 'Rápida',

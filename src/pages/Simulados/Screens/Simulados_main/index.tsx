@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ROTAS } from '../../../../routes/paths'
 import { Link, useNavigate } from 'react-router-dom'
 import { StatCard } from './components/StatCard/StatCard'
 import { SimuladoCard, type SimuladoItemData } from './components/SimuladoCard/SimuladoCard'
@@ -112,23 +113,23 @@ export default function SimuladosMain() {
             <button
               type="button"
               className={styles.createBtn}
-              onClick={() => navigate('/simulados/configuracao')}
+              onClick={() => navigate(ROTAS.simuladosConfiguracao)}
             >
               + Criar novo simulado
             </button>
           </div>
 
           <nav className={styles.tabsNav}>
-            <Link to="/simulados/main" className={`${styles.tabLink} ${styles.activeTab}`}>
+            <Link to={ROTAS.simulados} className={`${styles.tabLink} ${styles.activeTab}`}>
               Simulados
             </Link>
-            <Link to="/simulados/acompanhamento" className={styles.tabLink}>
+            <Link to={ROTAS.simuladosAcompanhamento} className={styles.tabLink}>
               Meu acompanhamento
             </Link>
-            <Link to="/simulados/cronometro" className={styles.tabLink}>
+            <Link to={ROTAS.simuladosCronometro} className={styles.tabLink}>
               Cronômetro
             </Link>
-            <Link to="/simulados/ranking" className={styles.tabLink}>
+            <Link to={ROTAS.simuladosRanking} className={styles.tabLink}>
               Ranking
             </Link>
           </nav>
@@ -193,7 +194,7 @@ export default function SimuladosMain() {
             <button
               type="button"
               className={styles.bannerBtn}
-              onClick={() => navigate('/simulados/configuracao')}
+              onClick={() => navigate(ROTAS.simuladosConfiguracao)}
             >
               + Criar novo simulado
             </button>
