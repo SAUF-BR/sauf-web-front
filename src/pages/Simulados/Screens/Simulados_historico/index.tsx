@@ -6,7 +6,7 @@ import { QuestaoBar } from './components/QuestaoBar/QuestaoBar'
 import { QuestaoCard } from './components/QuestaoCard/QuestaoCard'
 import { Titulo } from '../../../../components/ui/Titulo/Titulo'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
-import { Carregando } from '../../../../components/ui/Carregando/Carregando'
+import { EsqueletoRevisao } from './components/EsqueletoRevisao/EsqueletoRevisao'
 import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
 import {
@@ -56,12 +56,19 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
   )
 
   const dasArea = revisao.questoes.filter((q) => area === 'todas' || q.area === area)
+  // Uma passada só pela lista para contar todos os filtros
   const contagem: Record<FiltroStatus, number> = {
     todas: dasArea.length,
-    acertos: dasArea.filter(FILTRO.acertos).length,
-    erros: dasArea.filter(FILTRO.erros).length,
-    em_branco: dasArea.filter(FILTRO.em_branco).length,
-    fora_do_tempo: dasArea.filter(FILTRO.fora_do_tempo).length,
+    acertos: 0,
+    erros: 0,
+    em_branco: 0,
+    fora_do_tempo: 0,
+  }
+  for (const questao of dasArea) {
+    if (questao.resultado === 'acerto') contagem.acertos++
+    else if (questao.resultado === 'erro') contagem.erros++
+    else contagem.em_branco++
+    if (questao.foraDoTempo) contagem.fora_do_tempo++
   }
   // O filtro "Fora do tempo" só aparece quando há alguma questão nele
   const opcoesFiltro = OPCOES_FILTRO.filter(
@@ -89,6 +96,12 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
 
   const handleAreaChange = (novaArea: Area | 'todas') => {
     setArea(novaArea)
+    setVisiveisCount(POR_PAGINA)
+  }
+
+  const limparFiltros = () => {
+    setFiltroStatus('todas')
+    setArea('todas')
     setVisiveisCount(POR_PAGINA)
   }
 
@@ -128,15 +141,17 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
   } as CSSProperties
 
   return (
-    <main className={styles.page}>
+    <main className={styles.pageWrapper}>
       <div className={styles.headerSection}>
         <div className={styles.headerContainer}>
           <div className={styles.leftInfo}>
-            <div className={styles.breadcrumb}>
+            <nav className={styles.breadcrumb} aria-label="Você está em">
               <Link to={ROTAS.simulados}>Simulados</Link>
-              <span>/</span>
-              <span className={styles.currentBreadcrumb}>Revisão</span>
-            </div>
+              <span aria-hidden="true">/</span>
+              <span className={styles.currentBreadcrumb} aria-current="page">
+                Revisão
+              </span>
+            </nav>
 
             <Titulo
               titulo={revisao.titulo}
@@ -246,7 +261,12 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
       <section className={styles.questoesListSection}>
         <div className={styles.questoesContainer}>
           {questoesExibidas.length === 0 && (
-            <p className={styles.vazio}>Nenhuma questão com esses filtros.</p>
+            <div className={styles.vazio} role="status">
+              <p>Nenhuma questão com esses filtros.</p>
+              <button type="button" className={styles.loadMoreBtn} onClick={limparFiltros}>
+                Limpar filtros
+              </button>
+            </div>
           )}
 
           {questoesExibidas.map((questao) => (
@@ -263,7 +283,7 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
               className={styles.loadMoreBtn}
               onClick={() => setVisiveisCount((prev) => prev + POR_PAGINA)}
             >
-              Ver as outras {restantes} {restantes === 1 ? 'questão' : 'questões'}
+              Ver {restantes === 1 ? 'a outra questão' : `as outras ${restantes} questões`}
             </button>
           )}
         </div>
@@ -284,7 +304,7 @@ export default function SimuladosHistorico() {
   return (
     <EstadoConsulta
       consultas={[consulta]}
-      carregando={<Carregando mensagem="Carregando a revisão…" />}
+      carregando={<EsqueletoRevisao />}
       tituloErro="Não foi possível carregar a revisão"
     >
       {([revisao]) => <Revisao revisao={revisao} />}
