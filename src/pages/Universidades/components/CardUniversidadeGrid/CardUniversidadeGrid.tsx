@@ -4,14 +4,17 @@ import { Imagem } from '../../../../components/ui/Imagem/Imagem'
 import { Tag } from '../../../../components/ui/Tag/Tag'
 import { ROTULO_MODALIDADE } from '../../../../features/cursos'
 import { BotaoFavorito } from '../../../../features/favoritos'
-import { obterNomeCurto, ROTULO_TIPO_UNIVERSIDADE } from '../../../../features/universidades'
-import type { UniversidadeListagem } from '../../../../features/universidades/mockUniversidades'
+import {
+  obterNomeCurto,
+  ROTULO_TIPO_UNIVERSIDADE,
+  type UniversidadeListagemApi,
+} from '../../../../features/universidades'
 import { formatarInteiro } from '../../../../lib/utils'
 import { ROTAS } from '../../../../routes/paths'
 import styles from './CardUniversidadeGrid.module.scss'
 
 type CardUniversidadeGridProps = {
-  universidade: UniversidadeListagem
+  universidade: UniversidadeListagemApi
   favorito: boolean
   onAlternarFavorito: () => void
 }
@@ -51,9 +54,11 @@ export function CardUniversidadeGrid({
       </div>
 
       <ul className={styles.badges} aria-label="Características da universidade">
-        <li>
-          <span className={styles.notaMec}>Nota MEC {universidade.notaMec}</span>
-        </li>
+        {universidade.notaMec !== null && (
+          <li>
+            <span className={styles.notaMec}>Nota MEC {universidade.notaMec}</span>
+          </li>
+        )}
         {universidade.modalidades.map((modalidade) => (
           <li key={modalidade}>
             <Tag>{ROTULO_MODALIDADE[modalidade]}</Tag>
