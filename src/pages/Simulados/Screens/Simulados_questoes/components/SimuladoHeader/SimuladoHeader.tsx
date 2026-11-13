@@ -1,19 +1,29 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ROTAS } from '../../../../../../routes/paths'
 import { Logo } from '../../../../../../components/logo/Logo'
 import styles from './SimuladoHeader.module.scss'
 
 interface SimuladoHeaderProps {
   tituloSimulado: string
-  tempoRestanteFormatted?: string
+  // "01:42" e o rótulo que o acompanha ("restantes nesta questão" / "tempo nesta questão")
+  tempo: string
+  rotuloTempo: string
+  // Poucos segundos restantes: destaca o cronômetro
+  alerta: boolean
+  desabilitado: boolean
+  onFinalizar: () => void
+  onSalvarSair: () => void
 }
 
 export function SimuladoHeader({
   tituloSimulado,
-  tempoRestanteFormatted = '01:42',
+  tempo,
+  rotuloTempo,
+  alerta,
+  desabilitado,
+  onFinalizar,
+  onSalvarSair,
 }: SimuladoHeaderProps) {
-  const navigate = useNavigate()
-
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -27,15 +37,27 @@ export function SimuladoHeader({
         </div>
 
         <div className={styles.rightGroup}>
-          <div className={styles.timerBadge}>
+          <div className={`${styles.timerBadge} ${alerta ? styles.timerAlerta : ''}`} role="timer">
             <span className={styles.yellowDot} />
-            <span>{tempoRestanteFormatted} restantes nesta questão</span>
+            <span>
+              {tempo} {rotuloTempo}
+            </span>
           </div>
 
           <button
             type="button"
             className={styles.salvarSairBtn}
-            onClick={() => navigate(ROTAS.simulados)}
+            onClick={onFinalizar}
+            disabled={desabilitado}
+          >
+            Finalizar
+          </button>
+
+          <button
+            type="button"
+            className={styles.salvarSairBtn}
+            onClick={onSalvarSair}
+            disabled={desabilitado}
           >
             Salvar e sair
           </button>

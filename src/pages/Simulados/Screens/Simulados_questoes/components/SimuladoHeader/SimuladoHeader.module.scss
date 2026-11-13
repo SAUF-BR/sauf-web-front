@@ -75,3 +75,27 @@
     border-color: $color-surface;
   }
 }
+
+.salvarSairBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.timerBadge.timerAlerta {
+  background: $color-error;
+
+  .yellowDot {
+    background-color: $color-surface;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-wrap: wrap;
+  }
+
+  .leftGroup,
+  .rightGroup {
+    flex-wrap: wrap;
+  }
+}
