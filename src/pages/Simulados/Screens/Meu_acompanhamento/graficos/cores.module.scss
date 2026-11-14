@@ -1,0 +1,14 @@
+@use '../../../../../styles/variables' as *;
+
+// Cores dos gráficos (o Recharts recebe as cores por props, não por CSS)
+:export {
+  verde: $color-green;
+  verdeSuave: $color-green-soft;
+  amarelo: $color-yellow;
+  vazio: $color-placeholder;
+  nivel2: #d3e2db;
+  nivel3: #96baac;
+  texto: $color-text-secondary;
+  borda: $color-border-light;
+  media: $color-grey;
+}

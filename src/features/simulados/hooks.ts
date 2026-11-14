@@ -2,8 +2,10 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import {
   criarSimulado,
   finalizarSimulado,
+  getAcompanhamento,
   getCronometro,
   getOpcoes,
+  getRanking,
   getResumo,
   getRevisao,
   getSimulado,
@@ -29,6 +31,10 @@ export const simuladosKeys = {
   resumo: () => [...simuladosKeys.all, 'resumo'] as const,
   cronometros: () => [...simuladosKeys.all, 'cronometro'] as const,
   cronometro: (periodo: Periodo) => [...simuladosKeys.cronometros(), periodo] as const,
+  acompanhamentos: () => [...simuladosKeys.all, 'acompanhamento'] as const,
+  acompanhamento: (periodo: Periodo) => [...simuladosKeys.acompanhamentos(), periodo] as const,
+  rankings: () => [...simuladosKeys.all, 'ranking'] as const,
+  ranking: (periodo: Periodo) => [...simuladosKeys.rankings(), periodo] as const,
 }
 
 export function useOpcoesSimulado() {
@@ -79,6 +85,24 @@ export function useCronometroSimulados(periodo: Periodo) {
   })
 }
 
+export function useAcompanhamento(periodo: Periodo) {
+  return useQuery({
+    queryKey: simuladosKeys.acompanhamento(periodo),
+    queryFn: () => getAcompanhamento(periodo),
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useRanking(periodo: Periodo) {
+  return useQuery({
+    queryKey: simuladosKeys.ranking(periodo),
+    queryFn: () => getRanking(periodo),
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+  })
+}
+
 export function useCriarSimulado() {
   const queryClient = useQueryClient()
 
@@ -125,6 +149,8 @@ export function useFinalizarSimulado(id: string) {
       void queryClient.invalidateQueries({ queryKey: simuladosKeys.listas() })
       void queryClient.invalidateQueries({ queryKey: simuladosKeys.resumo() })
       void queryClient.invalidateQueries({ queryKey: simuladosKeys.cronometros() })
+      void queryClient.invalidateQueries({ queryKey: simuladosKeys.acompanhamentos() })
+      void queryClient.invalidateQueries({ queryKey: simuladosKeys.rankings() })
     },
   })
 }

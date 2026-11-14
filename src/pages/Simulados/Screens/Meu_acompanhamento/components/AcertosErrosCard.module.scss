@@ -1,4 +1,5 @@
 @use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
 
 .card {
   background: $color-surface;
@@ -31,16 +32,19 @@
 }
 
 .donutContainer {
+  position: relative;
   width: 110px;
   height: 110px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: conic-gradient($color-green 0% 68%, $color-yellow 68% 92%, $color-placeholder 92% 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // Fundo da rosca enquanto o gráfico carrega (e quando não há questões)
+  box-shadow: inset 0 0 0 17px $color-placeholder;
 }
 
 .donutCenter {
+  position: absolute;
+  inset: 0;
+  margin: auto;
   width: 76px;
   height: 76px;
   background: $color-surface;
@@ -66,6 +70,7 @@
 }
 
 .legendList {
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
@@ -78,10 +83,15 @@
   font-size: 0.8125rem;
   color: $color-blue-primary;
 
-  span {
+  dt {
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
   }
 }
 
@@ -114,4 +124,7 @@
   strong {
     color: $color-blue-primary;
   }
+}
+.somenteLeitor {
+  @include visually-hidden;
 }

@@ -28,18 +28,34 @@ export const Periodos: Record<Periodo, { rotulo: string; rotuloAnterior: string;
 
 export const Periodo_padrao: Periodo = 'mes'
 
+// ?periodo=ano → 'ano'; ausente ou inválido → o padrão
+export function lerPeriodo(valor: string | null): Periodo {
+  return Ordem_periodos.find((periodo) => periodo === valor) ?? Periodo_padrao
+}
+
+// 68.5 → "68,5%" · 70 → "70%"
+export function formatarPorcentagem(valor: number) {
+  return `${valor.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`
+}
+
+// Diferença entre porcentagens, em pontos percentuais: 6.5 → "6,5 p.p."
+export function formatarPontos(valor: number) {
+  return `${valor.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} p.p.`
+}
+
 export type Variacao = {
   texto: string
   tendencia: 'alta' | 'baixa' | 'estavel'
   sentido: 'positivo' | 'negativo' | 'neutro'
 }
 
+// Sem um dos lados (período sem dados), não há variação para mostrar
 export function calcularVariacao(
-  { atual, anterior }: Comparativo,
+  { atual, anterior }: { atual: number | null; anterior: number | null },
   formatar: (valor: number) => string,
   menorEhMelhor = false,
 ): Variacao | null {
-  if (anterior === null) return null
+  if (atual === null || anterior === null) return null
 
   const diferenca = atual - anterior
   if (diferenca === 0) return { texto: formatar(0), tendencia: 'estavel', sentido: 'neutro' }
@@ -88,64 +104,4 @@ export function maiorSequencia(dias: DiaEstudo[]): Sequencia {
   }
 
   return melhor
-}
-export function sequenciaAtual(dias: DiaEstudo[]) {
-  let indice = dias.length - 1
-  if (dias[indice]?.segundos === 0) indice--
-
-  let total = 0
-  while (indice >= 0 && dias[indice].segundos > 0) {
-    total++
-    indice--
-  }
-
-  return total
-}
-
-// Mock 
-
-function dataIsoDiasAtras(dias: number) {
-  const hoje = new Date()
-  const data = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - dias))
-
-  return data.toISOString().slice(0, 10)
-}
-function criarSorteio(semente: number) {
-  let valor = semente
-
-  return () => {
-    valor = (valor * 1664525 + 1013904223) % 4294967296
-    return valor / 4294967296
-  }
-}
-
-function gerarDiasEstudoMock(): DiaEstudo[] {
-  const sortear = criarSorteio(595)
-  const minutosSorteados = () => 15 + Math.round(sortear() * 65)
-
-  const minutos = Array.from({ length: 365 }, () => (sortear() < 0.22 ? minutosSorteados() : 0))
-
-  const preencher = (de: number, ate: number) => {
-    for (let i = de; i <= ate; i++) minutos[i] = minutos[i] || minutosSorteados()
-    if (de > 0) minutos[de - 1] = 0
-    minutos[ate + 1] = 0
-  }
-
-  preencher(0, 5)
-  preencher(50, 61)
-
-  return minutos
-    .map((min, diasAtras) => ({ data: dataIsoDiasAtras(diasAtras), segundos: min * 60 }))
-    .reverse()
-}
-
-export const diasEstudoMock = gerarDiasEstudoMock()
-
-export function resumirJanelaMock(dias: DiaEstudo[], inicio: number, fim: number) {
-  const janela = dias.slice(Math.max(dias.length - fim, 0), dias.length - inicio)
-
-  return {
-    segundos: janela.reduce((soma, dia) => soma + dia.segundos, 0),
-    diasAtivos: janela.filter((dia) => dia.segundos > 0).length,
-  }
 }

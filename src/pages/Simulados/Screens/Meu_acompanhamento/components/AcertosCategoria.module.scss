@@ -1,4 +1,5 @@
 @use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
 
 .card {
   background: $color-surface;
@@ -12,6 +13,8 @@
 
 .header {
   display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
   justify-content: space-between;
   align-items: flex-start;
 }
@@ -41,6 +44,9 @@
 }
 
 .list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
@@ -48,7 +54,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 110px 1fr 45px 45px;
+  grid-template-columns: 9.5rem minmax(0, 1fr) 2.75rem 4.75rem;
   align-items: center;
   gap: $spacing-md;
   font-size: 0.8125rem;
@@ -87,7 +93,22 @@
   text-align: right;
   font-size: 0.75rem;
 
-  &.pos { color: $color-green; }
-  &.neg { color: $color-error; }
+  &.positivo { color: $color-green; }
+  &.negativo { color: $color-error; }
   &.neutro { color: $color-text-secondary; }
+}
+@media (max-width: $breakpoint-sm) {
+  // Nome da área em cima, barra e números embaixo
+  .row {
+    grid-template-columns: minmax(0, 1fr) 2.75rem 4.75rem;
+    row-gap: 4px;
+  }
+
+  .materiaName {
+    grid-column: 1 / -1;
+  }
+}
+
+.somenteLeitor {
+  @include visually-hidden;
 }

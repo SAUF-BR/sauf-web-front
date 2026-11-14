@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ROTAS } from '../../../../routes/paths'
@@ -53,10 +53,17 @@ function lerConfiguracaoInicial(state: unknown): Partial<ConfiguracaoSimulado> {
   return resultado.success ? resultado.data : {}
 }
 
+// ?area=cn (vindo do "Onde focar agora") já deixa só essa área marcada
+function lerAreaDaUrl(valor: string | null): Partial<ConfiguracaoSimulado> {
+  const area = ORDEM_AREAS.find((id) => id === valor)
+  return area ? { areas: [area] } : {}
+}
+
 function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
   const navigate = useNavigate()
   const criar = useCriarSimulado()
   const { state } = useLocation()
+  const [parametros] = useSearchParams()
 
   const {
     control,
@@ -72,6 +79,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
       cronometrado: true,
       segundosPorQuestao: opcoes.segundosPorQuestao,
       ...lerConfiguracaoInicial(state),
+      ...lerAreaDaUrl(parametros.get('area')),
     },
   })
 

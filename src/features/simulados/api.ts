@@ -3,7 +3,9 @@ import { endpoints } from '../../lib/api/endpoints'
 import type { Paginado } from '../../types'
 import type {
   CriarSimuladoRequest,
+  DadosAcompanhamento,
   DadosCronometro,
+  DadosRanking,
   FiltroSimulados,
   OpcoesSimulado,
   Periodo,
@@ -74,6 +76,20 @@ export async function getResumo(): Promise<ResumoSimulados> {
 export async function getCronometro(periodo: Periodo): Promise<DadosCronometro> {
   const { data } = await apiClient.get<DadosCronometro>(endpoints.simulados.cronometro, {
     params: { periodo },
+  })
+  return data
+}
+
+export async function getAcompanhamento(periodo: Periodo): Promise<DadosAcompanhamento> {
+  const { data } = await apiClient.get<DadosAcompanhamento>(endpoints.simulados.acompanhamento, {
+    params: { periodo, vestibular: 'enem' },
+  })
+  return data
+}
+
+export async function getRanking(periodo: Periodo): Promise<DadosRanking> {
+  const { data } = await apiClient.get<DadosRanking>(endpoints.simulados.ranking, {
+    params: { periodo, vestibular: 'enem' },
   })
   return data
 }
