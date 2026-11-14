@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { StatCard } from './components/StatCard/StatCard'
 import { SimuladoCard } from './components/SimuladoCard/SimuladoCard'
 import styles from './index.module.scss'
+import { Seletor, type OpcaoSeletor } from '../../compartilhados/Seletor/Seletor'
 import { CabecalhoSimulados } from '../../compartilhados/CabecalhoSimulados/CabecalhoSimulados'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
 import { EsqueletoLista, EsqueletoResumo } from './components/EsqueletoSimulados/EsqueletoSimulados'
@@ -17,6 +18,23 @@ import {
 import { formatarPorcentagem } from '../../../../lib/utils/formatadores'
 
 const POR_PAGINA = 12
+
+// Só o ENEM tem questões por enquanto; os outros aparecem como "em breve"
+const OPCOES_VESTIBULAR: OpcaoSeletor<string>[] = [
+  { valor: 'enem', rotulo: 'ENEM' },
+  { valor: 'uem', rotulo: 'UEM', desabilitada: true, detalhe: 'em breve' },
+  { valor: 'utfpr', rotulo: 'UTFPR', desabilitada: true, detalhe: 'em breve' },
+  { valor: 'uel', rotulo: 'UEL', desabilitada: true, detalhe: 'em breve' },
+]
+
+const OPCOES_ORDEM: OpcaoSeletor<OrdemSimulados>[] = [
+  { valor: 'recente', rotulo: 'Mais recente' },
+  { valor: 'antigo', rotulo: 'Mais antigo' },
+  { valor: 'maior_nota', rotulo: 'Maior nota' },
+  { valor: 'menor_nota', rotulo: 'Menor nota' },
+]
+
+const NADA = () => {}
 
 export default function SimuladosMain() {
   const navigate = useNavigate()
@@ -86,38 +104,22 @@ export default function SimuladosMain() {
             </div>
 
             <div className={styles.filterControls}>
-              <select
-                defaultValue="enem"
-                className={styles.selectFilter}
-                aria-label="Vestibular"
-              >
-                <option value="todos">Vestibular: todos</option>
-                <option value="enem">Vestibular: ENEM</option>
-                <option value="uem" disabled>
-                  UEM (em breve)
-                </option>
-                <option value="utfpr" disabled>
-                  UTFPR (em breve)
-                </option>
-                <option value="uel" disabled>
-                  UEL (em breve)
-                </option>
-              </select>
+              <Seletor
+                rotulo="Vestibular"
+                valor="enem"
+                opcoes={OPCOES_VESTIBULAR}
+                onMudar={NADA}
+              />
 
-              <select
-                value={ordem}
-                onChange={(e) => {
-                  setOrdem(e.target.value as OrdemSimulados)
+              <Seletor
+                rotulo="Ordenar"
+                valor={ordem}
+                opcoes={OPCOES_ORDEM}
+                onMudar={(novaOrdem) => {
+                  setOrdem(novaOrdem)
                   setPagina(0)
                 }}
-                className={styles.selectFilter}
-                aria-label="Ordenação"
-              >
-                <option value="recente">Ordenar: Mais recente</option>
-                <option value="antigo">Ordenar: Mais antigo</option>
-                <option value="maior_nota">Ordenar: Maior nota</option>
-                <option value="menor_nota">Ordenar: Menor nota</option>
-              </select>
+              />
             </div>
           </div>
 

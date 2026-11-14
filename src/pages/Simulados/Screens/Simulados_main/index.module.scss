@@ -70,18 +70,6 @@
   display: flex;
   gap: $spacing-sm;
   flex-wrap: wrap;
-
-  .selectFilter {
-    background-color: #ffffff;
-    border: 1px solid $color-border-light;
-    border-radius: $radius-md;
-    padding: 8px $spacing-md;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: $color-blue-primary;
-    cursor: pointer;
-    outline: none;
-  }
 }
 
 .simuladosList {

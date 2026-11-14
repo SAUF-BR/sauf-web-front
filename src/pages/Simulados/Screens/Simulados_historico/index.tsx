@@ -8,6 +8,7 @@ import { Titulo } from '../../../../components/ui/Titulo/Titulo'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
 import { EsqueletoRevisao } from './components/EsqueletoRevisao/EsqueletoRevisao'
 import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
+import { Seletor } from '../../compartilhados/Seletor/Seletor'
 import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
 import {
   NOME_AREA,
@@ -217,19 +218,15 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
             </div>
 
             <div className={styles.actionsRight}>
-              <select
-                value={area}
-                onChange={(e) => handleAreaChange(e.target.value as Area | 'todas')}
-                className={styles.categoriaSelect}
-                aria-label="Filtrar por categoria"
-              >
-                <option value="todas">Categoria: todas</option>
-                {areasPresentes.map((id) => (
-                  <option key={id} value={id}>
-                    {NOME_AREA[id]}
-                  </option>
-                ))}
-              </select>
+              <Seletor
+                rotulo="Categoria"
+                valor={area}
+                opcoes={[
+                  { valor: 'todas', rotulo: 'Todas' },
+                  ...areasPresentes.map((id) => ({ valor: id, rotulo: NOME_AREA[id] })),
+                ]}
+                onMudar={handleAreaChange}
+              />
 
               <button
                 type="button"
