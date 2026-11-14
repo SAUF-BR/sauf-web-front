@@ -112,3 +112,26 @@
     color: $color-blue-primary;
   }
 }
+
+.semColocacao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  font-size: 0.9375rem;
+  color: $color-blue-primary;
+}
+
+.acao {
+  padding: 8px $spacing-md;
+  border-radius: $radius-md;
+  background: $color-green;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
