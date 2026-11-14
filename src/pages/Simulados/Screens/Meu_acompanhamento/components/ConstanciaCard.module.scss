@@ -1,4 +1,5 @@
 @use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
 .card {
   background: $color-surface;
   border: 1px solid $color-border-light;
@@ -22,24 +23,13 @@
   margin-top: 2px;
 }
 
-.barsRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: $spacing-xs;
-
-  .block {
-    height: 36px;
-    border-radius: $radius-sm;
-
-    &.level1 { background: $color-placeholder; }
-    &.level2 { background: #d3e2db; }
-    &.level3 { background: #96baac; }
-    &.level4 { background: $color-green; }
-  }
+.chartArea {
+  height: 96px;
 }
 
 .footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 6px;
   font-size: 0.8125rem;
@@ -49,4 +39,7 @@
     font-size: 1.25rem;
     color: $color-blue-primary;
   }
+}
+.somenteLeitor {
+  @include visually-hidden;
 }

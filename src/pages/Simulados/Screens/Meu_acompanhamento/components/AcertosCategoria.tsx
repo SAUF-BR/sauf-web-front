@@ -1,65 +1,78 @@
 import { Link } from 'react-router-dom'
 import { ROTAS } from '../../../../../routes/paths'
+import { NOME_AREA, type AproveitamentoArea } from '../../../../../features/simulados'
+import { cn } from '../../../../../lib/utils'
+import { calcularVariacao, formatarPontos, formatarPorcentagem } from '../../../compartilhados/conteudo'
 import styles from './AcertosCategoria.module.scss'
 
-// TODO: trocar pelo id real do simulado quando a tela usar a API
-const ID_SIMULADO_MOCK = 'mock'
+// Abaixo disso a barra fica amarela
+const Limite_alerta = 50
 
-interface CategoriaItem {
-  materia: string
-  percentual: number
-  variacao: string
-  tipoVariacao: 'positivo' | 'negativo' | 'neutro' | string
-  alerta?: boolean
-}
+const Leitura_tendencia = { alta: 'subiu', baixa: 'caiu', estavel: 'sem variação' } as const
 
 interface AcertosCategoriaProps {
-  categorias: CategoriaItem[]
+  areas: AproveitamentoArea[]
 }
 
-export function AcertosCategoria({ categorias }: AcertosCategoriaProps) {
+export function AcertosCategoria({ areas }: AcertosCategoriaProps) {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <div>
-          <h3 className={styles.title}>Acertos por categoria</h3>
+          <h3 className={styles.title}>Acertos por área</h3>
           <p className={styles.subtitle}>
-            Aproveitamento no período e variação em relação ao mês anterior
+            Aproveitamento no período e variação em relação ao período anterior
           </p>
         </div>
-        <Link to={ROTAS.simuladosQuestoes(ID_SIMULADO_MOCK)} className={styles.linkAction}>
-          Ver questões erradas →
+        <Link to={ROTAS.simulados} className={styles.linkAction}>
+          Ver meus simulados →
         </Link>
       </div>
 
-      <div className={styles.list}>
-        {categorias.map((item) => (
-          <div key={item.materia} className={styles.row}>
-            <span className={styles.materiaName}>{item.materia}</span>
+      <ul className={styles.list}>
+        {areas.map(({ area, aproveitamento }) => {
+          const atual = aproveitamento.atual
+          const variacao = calcularVariacao(aproveitamento, formatarPontos)
 
-            <div className={styles.track}>
-              <div
-                className={`${styles.fill} ${item.alerta ? styles.alertaFill : ''}`}
-                style={{ width: `${item.percentual}%` }}
-              />
-            </div>
+          return (
+            <li key={area} className={styles.row}>
+              <span className={styles.materiaName}>{NOME_AREA[area]}</span>
 
-            <span className={styles.percentual}>{item.percentual}%</span>
+              <div className={styles.track} aria-hidden="true">
+                {atual !== null && (
+                  <div
+                    className={cn(styles.fill, atual < Limite_alerta && styles.alertaFill)}
+                    style={{ width: `${atual}%` }}
+                  />
+                )}
+              </div>
 
-            <span
-              className={`${styles.variacao} ${
-                item.tipoVariacao === 'positivo'
-                  ? styles.pos
-                  : item.tipoVariacao === 'negativo'
-                  ? styles.neg
-                  : styles.neutro
-              }`}
-            >
-              {item.variacao}
-            </span>
-          </div>
-        ))}
-      </div>
+              <span className={styles.percentual}>
+                {atual === null ? (
+                  <>
+                    <span aria-hidden="true">—</span>
+                    <span className={styles.somenteLeitor}>sem questões no período</span>
+                  </>
+                ) : (
+                  formatarPorcentagem(Math.round(atual))
+                )}
+              </span>
+
+              <span className={cn(styles.variacao, variacao && styles[variacao.sentido])}>
+                {variacao && (
+                  <>
+                    <span aria-hidden="true">
+                      {variacao.tendencia === 'alta' ? '▲' : variacao.tendencia === 'baixa' ? '▼' : '='}{' '}
+                    </span>
+                    <span className={styles.somenteLeitor}>{Leitura_tendencia[variacao.tendencia]} </span>
+                    {variacao.texto}
+                  </>
+                )}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }

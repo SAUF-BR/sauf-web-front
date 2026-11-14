@@ -162,6 +162,50 @@ export type Comparativo = { atual: number; anterior: number | null }
 
 export type DiaEstudo = { data: string; segundos: number }
 
+// Meu acompanhamento: nulo quando a janela não teve simulado concluído
+export type ComparativoOpcional = { atual: number | null; anterior: number | null }
+
+export type ComparativoContagem = { atual: number; anterior: number }
+
+export type ResultadosQuestoes = { acertos: number; erros: number; emBranco: number }
+
+export type PontoEvolucao = { id: string; finalizadoEm: string; aproveitamento: number }
+
+export type AproveitamentoArea = {
+  area: Area
+  aproveitamento: ComparativoOpcional
+  respondidas: number
+}
+
+// Sem habilidade quando o foco é a área inteira
+export type FocoEstudo = {
+  ordem: number
+  area: Area
+  habilidade: string | null
+  descricao: string
+  erros: number
+  respondidas: number
+}
+
+// Um dia (semana), 7 dias (mês) ou um mês (ano)
+export type BlocoConstancia = { inicio: string; dias: number; diasAtivos: number }
+
+export type DadosAcompanhamento = {
+  periodo: Periodo
+  janela: { inicio: string; fim: string }
+  resumo: {
+    aproveitamento: ComparativoOpcional
+    questoesRespondidas: ComparativoContagem
+    simuladosConcluidos: ComparativoContagem
+    acertos: ComparativoContagem
+  }
+  evolucao: { mediaPlataforma: number | null; simulados: PontoEvolucao[] }
+  distribuicao: { atual: ResultadosQuestoes; anterior: ResultadosQuestoes }
+  areas: AproveitamentoArea[]
+  focos: FocoEstudo[]
+  constancia: { diasAtivos: number; diasNaJanela: number; ofensiva: number; semanas: BlocoConstancia[] }
+}
+
 export type TamanhoSimulado = Tamanho
 
 export type TempoConfiguracao = {
@@ -187,6 +231,31 @@ export type DadosCronometro = {
   porConfiguracao: TempoConfiguracao[]
   horasPorSemana: HorasSemana[]
   ritmoPorCategoria: RitmoCategoria[]
+}
+
+// Ranking por tempo em simulados (semana, mês ou ano do calendário)
+
+// Posição real: o pódio pode ter o 1º e o 3º sem o 2º (quem não aceitou aparecer ou é menor de idade)
+export type ParticipantePodio = {
+  posicao: number
+  nome: string
+  cidade: string
+  uf: string
+  fotoUrl: string | null
+  segundos: number
+  simulados: number
+}
+
+export type DadosRanking = {
+  periodo: Periodo
+  janela: { inicio: string; fim: string }
+  totalParticipantes: number
+  podio: ParticipantePodio[]
+  // Nula quando o aluno não tem tempo no período
+  colocacao: { posicao: number; anterior: number | null } | null
+  // regiao: sigla da UF do perfil ou "Brasil"
+  percentil: { percentual: number; regiao: string } | null
+  estatisticas: { segundos: number; simulados: number; ofensiva: number }
 }
 
 // Exibição

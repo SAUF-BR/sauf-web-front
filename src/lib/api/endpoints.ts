@@ -44,6 +44,8 @@ export const endpoints = {
     refazerErros: (id: string) => `/simulados/${id}/refazer-erros`,
     resumo: '/simulados/resumo',
     cronometro: '/simulados/cronometro',
+    acompanhamento: '/simulados/acompanhamento',
+    ranking: '/simulados/ranking',
   },
   assinatura: {
     atual: '/assinatura',

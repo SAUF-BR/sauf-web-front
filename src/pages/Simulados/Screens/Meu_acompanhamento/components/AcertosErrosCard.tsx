@@ -1,73 +1,77 @@
+import { Suspense } from 'react'
+import type { ResultadosQuestoes } from '../../../../../features/simulados'
+import { formatarPorcentagem } from '../../../compartilhados/conteudo'
+import { GraficoDistribuicao } from '../graficos'
 import styles from './AcertosErrosCard.module.scss'
 
 interface AcertosErrosProps {
-  totalQuestoes: number
-  porcentagemAcertos: number
-  acertos: number
-  erros: number
-  emBranco: number
-  comparativo: {
-    acertosAnterior: number
-    errosAnterior: number
-    emBrancoAnterior: number
-  }
+  atual: ResultadosQuestoes
+  anterior: ResultadosQuestoes
 }
 
-export function AcertosErrosCard({
-  totalQuestoes,
-  porcentagemAcertos,
-  acertos,
-  erros,
-  emBranco,
-  comparativo,
-}: AcertosErrosProps) {
+const Linhas: { chave: keyof ResultadosQuestoes; rotulo: string; ponto: string }[] = [
+  { chave: 'acertos', rotulo: 'Acertos', ponto: 'dotAcerto' },
+  { chave: 'erros', rotulo: 'Erros', ponto: 'dotErro' },
+  { chave: 'emBranco', rotulo: 'Em branco', ponto: 'dotBranco' },
+]
+
+export function AcertosErrosCard({ atual, anterior }: AcertosErrosProps) {
+  const total = atual.acertos + atual.erros + atual.emBranco
+  const porcentagem = total === 0 ? 0 : Math.round((atual.acertos * 100) / total)
+
   return (
     <div className={styles.card}>
       <div>
         <h3 className={styles.title}>Acertos e erros</h3>
-        <p className={styles.subtitle}>Total de {totalQuestoes} questões no período</p>
+        <p className={styles.subtitle}>
+          Total de {total} {total === 1 ? 'questão' : 'questões'} nos simulados concluídos
+        </p>
       </div>
 
       <div className={styles.chartSection}>
-        {/* Rosca construída com conic-gradient CSS */}
-        <div className={styles.donutContainer}>
-          <div className={styles.donutCenter}>
-            <span className={styles.percentage}>{porcentagemAcertos}%</span>
+        <div
+          className={styles.donutContainer}
+          role="img"
+          aria-label={`${formatarPorcentagem(porcentagem)} de acertos`}
+        >
+          {total > 0 && (
+            <Suspense fallback={null}>
+              <GraficoDistribuicao resultados={atual} />
+            </Suspense>
+          )}
+          <div className={styles.donutCenter} aria-hidden="true">
+            <span className={styles.percentage}>{porcentagem}%</span>
             <span className={styles.label}>ACERTOS</span>
           </div>
         </div>
 
-        <div className={styles.legendList}>
-          <div className={styles.legendRow}>
-            <span><span className={styles.dotAcerto} /> Acertos</span>
-            <strong>{acertos}</strong>
-          </div>
-          <div className={styles.legendRow}>
-            <span><span className={styles.dotErro} /> Erros</span>
-            <strong>{erros}</strong>
-          </div>
-          <div className={styles.legendRow}>
-            <span><span className={styles.dotBranco} /> Em branco</span>
-            <strong>{emBranco}</strong>
-          </div>
-        </div>
+        <dl className={styles.legendList}>
+          {Linhas.map((linha) => (
+            <div key={linha.chave} className={styles.legendRow}>
+              <dt>
+                <span className={styles[linha.ponto]} aria-hidden="true" /> {linha.rotulo}
+              </dt>
+              <dd>{atual[linha.chave]}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       <div className={styles.comparativoBox}>
-        <span className={styles.comparativoTitle}>COMPARADO AO MÊS ANTERIOR</span>
-        
-        <div className={styles.comparativoRow}>
-          <span>Acertos</span>
-          <span>{comparativo.acertosAnterior} → <strong>{acertos}</strong></span>
-        </div>
-        <div className={styles.comparativoRow}>
-          <span>Erros</span>
-          <span>{comparativo.errosAnterior} → <strong>{erros}</strong></span>
-        </div>
-        <div className={styles.comparativoRow}>
-          <span>Em branco</span>
-          <span>{comparativo.emBrancoAnterior} → <strong>{emBranco}</strong></span>
-        </div>
+        <span className={styles.comparativoTitle}>COMPARADO AO PERÍODO ANTERIOR</span>
+
+        {Linhas.map((linha) => (
+          <div key={linha.chave} className={styles.comparativoRow}>
+            <span>{linha.rotulo}</span>
+            <span>
+              <span className={styles.somenteLeitor}>de </span>
+              {anterior[linha.chave]}
+              <span aria-hidden="true"> → </span>
+              <span className={styles.somenteLeitor}> para </span>
+              <strong>{atual[linha.chave]}</strong>
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   )
