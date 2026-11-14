@@ -73,16 +73,20 @@ $cor-texto-claro: rgba($color-surface, 0.7);
   min-width: 0;
 }
 
+// Coluna fixa por posição: um lugar privado ou vazio não empurra os outros
 .lugar1 {
-  order: 2;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .lugar2 {
-  order: 1;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .lugar3 {
-  order: 3;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .pessoa {
@@ -190,4 +194,26 @@ $cor-texto-claro: rgba($color-surface, 0.7);
 
 .somenteLeitor {
   @include visually-hidden;
+}
+
+.privada .nome,
+.privada .local {
+  color: rgba($color-surface, 0.8);
+}
+
+.avatarPrivado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  color: $color-surface;
+  background: rgba($color-surface, 0.15);
+  border: 3px dashed rgba($color-surface, 0.35);
+
+  @media (min-width: $breakpoint-md) {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
 }
