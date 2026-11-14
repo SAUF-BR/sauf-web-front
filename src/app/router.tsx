@@ -1,3 +1,4 @@
+import { lazy, Suspense, type ReactNode } from 'react'
 import {
   Navigate,
   Route,
@@ -24,18 +25,26 @@ import TesteVocacional from '../pages/TesteVocacional'
 import Perguntas from '../pages/TesteVocacional/Perguntas'
 import ResultadoTeste from '../pages/TesteVocacional/Resultado'
 import Paywall from '../pages/Simulados/Paywall'
-import SimuladosMain from '../pages/Simulados/Screens/Simulados_main'
-import SimuladosConfiguracao from '../pages/Simulados/Screens/Simulados_configuracao'
-import SimuladosQuestoes from '../pages/Simulados/Screens/Simulados_questoes'
-import SimuladosRevisao from '../pages/Simulados/Screens/Simulados_historico'
-import SimuladosMeuAcompanhamento from '../pages/Simulados/Screens/Meu_acompanhamento'
-import Cronometro from '../pages/Simulados/Screens/Cronometro'
-import Ranking from '../pages/Simulados/Screens/Ranking'
 import Favoritos from '../pages/Favoritos'
 import Notificacoes from '../pages/Notificacoes'
 import Perfil from '../pages/Perfil'
 import GerenciarAssinatura from '../pages/GerenciarAssinatura'
 import NotFound from '../pages/NotFound'
+import { Carregando } from '../components/ui/Carregando/Carregando'
+
+// Telas de simulados (só para assinantes, com o react-markdown) em arquivos separados:
+// quem não assina não baixa esse código
+const SimuladosMain = lazy(() => import('../pages/Simulados/Screens/Simulados_main'))
+const SimuladosConfiguracao = lazy(() => import('../pages/Simulados/Screens/Simulados_configuracao'))
+const SimuladosQuestoes = lazy(() => import('../pages/Simulados/Screens/Simulados_questoes'))
+const SimuladosRevisao = lazy(() => import('../pages/Simulados/Screens/Simulados_historico'))
+const SimuladosMeuAcompanhamento = lazy(() => import('../pages/Simulados/Screens/Meu_acompanhamento'))
+const Cronometro = lazy(() => import('../pages/Simulados/Screens/Cronometro'))
+const Ranking = lazy(() => import('../pages/Simulados/Screens/Ranking'))
+
+function SobDemanda({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<Carregando mensagem="Abrindo…" />}>{children}</Suspense>
+}
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,7 +55,7 @@ const router = createBrowserRouter(
 
       {/* Simulado em andamento: header próprio, mas exige assinatura */}
       <Route element={<SubscriberRoute />}>
-        <Route path={ROTAS.simuladosQuestoes(':id')} element={<SimuladosQuestoes />} />
+        <Route path={ROTAS.simuladosQuestoes(':id')} element={<SobDemanda><SimuladosQuestoes /></SobDemanda>} />
       </Route>
 
       <Route element={<MainLayout />}>
@@ -74,13 +83,13 @@ const router = createBrowserRouter(
         {/* Simulados: a tela principal exige assinatura ativa; quem não assina vê o
             paywall (e quem assina é redirecionado dele para os simulados). */}
         <Route element={<SubscriberRoute />}>
-          <Route path={ROTAS.simulados} element={<SimuladosMain />} />
+          <Route path={ROTAS.simulados} element={<SobDemanda><SimuladosMain /></SobDemanda>} />
           <Route path={ROTAS.simuladosMain} element={<Navigate to={ROTAS.simulados} replace />} />
-          <Route path={ROTAS.simuladosConfiguracao} element={<SimuladosConfiguracao />} />
-          <Route path={ROTAS.simuladosRevisao(':id')} element={<SimuladosRevisao />} />
-          <Route path={ROTAS.simuladosAcompanhamento} element={<SimuladosMeuAcompanhamento />} />
-          <Route path={ROTAS.simuladosCronometro} element={<Cronometro />} />
-          <Route path={ROTAS.simuladosRanking} element={<Ranking />} />
+          <Route path={ROTAS.simuladosConfiguracao} element={<SobDemanda><SimuladosConfiguracao /></SobDemanda>} />
+          <Route path={ROTAS.simuladosRevisao(':id')} element={<SobDemanda><SimuladosRevisao /></SobDemanda>} />
+          <Route path={ROTAS.simuladosAcompanhamento} element={<SobDemanda><SimuladosMeuAcompanhamento /></SobDemanda>} />
+          <Route path={ROTAS.simuladosCronometro} element={<SobDemanda><Cronometro /></SobDemanda>} />
+          <Route path={ROTAS.simuladosRanking} element={<SobDemanda><Ranking /></SobDemanda>} />
         </Route>
         <Route element={<SemAssinaturaRoute />}>
           <Route path={ROTAS.simuladosPaywall} element={<Paywall />} />
