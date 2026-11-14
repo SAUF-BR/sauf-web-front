@@ -1,0 +1,36 @@
+@use '../../../../../../styles/variables' as *;
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.tamanhos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: $spacing-md;
+}
+
+.pilulas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.categorias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: $spacing-md;
+}
+
+.resumo {
+  gap: $spacing-md;
+  padding: $spacing-lg;
+}

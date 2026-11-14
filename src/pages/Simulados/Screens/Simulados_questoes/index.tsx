@@ -17,6 +17,7 @@ import { formatarCronometro } from '../../../../lib/utils/formatadores'
 import { NavNumberButton } from './components/NavNumberButton/NavNumberButton'
 import { OptionRow } from './components/OptionRow/OptionRow'
 import { SimuladoHeader } from './components/SimuladoHeader/SimuladoHeader'
+import { EsqueletoQuestao } from './components/EsqueletoQuestao/EsqueletoQuestao'
 import { ModalFinalizar } from './components/ModalFinalizar/ModalFinalizar'
 import styles from './index.module.scss'
 
@@ -386,7 +387,11 @@ export default function SimuladosQuestoes() {
   const consulta = useSimulado(id)
 
   return (
-    <EstadoConsulta consultas={[consulta]} mensagemCarregando="Carregando simulado…">
+    <EstadoConsulta
+      consultas={[consulta]}
+      carregando={<EsqueletoQuestao />}
+      tituloErro="Não foi possível carregar o simulado"
+    >
       {([simulado]) =>
         simulado.status === 'concluido' ? (
           <Navigate to={ROTAS.simuladosRevisao(id)} replace />
