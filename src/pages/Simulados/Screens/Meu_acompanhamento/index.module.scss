@@ -38,7 +38,8 @@
   padding-bottom: $spacing-xl;
 
   @media (max-width: $breakpoint-md) {
-    grid-template-columns: 1fr;
+    // minmax(0, 1fr): o card encolhe com a tela em vez de empurrar a página para o lado
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .bottomSection {
@@ -49,11 +50,13 @@
   padding-bottom: $spacing-2xl;
 
   @media (max-width: $breakpoint-md) {
-    grid-template-columns: 1fr;
+    // minmax(0, 1fr): o card encolhe com a tela em vez de empurrar a página para o lado
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .rightStack {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-md;

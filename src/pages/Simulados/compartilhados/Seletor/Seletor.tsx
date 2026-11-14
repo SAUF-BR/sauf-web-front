@@ -48,7 +48,10 @@ export function Seletor<V extends string>({
       className={cn(styles.seletor, className)}
     >
       <Button className={styles.gatilho}>
-        <span className={styles.rotulo}>{rotulo}:</span>
+        {/* O nome para o leitor de tela vem do aria-label do Select; aqui é só visual */}
+        <span className={styles.rotulo} aria-hidden="true">
+          {rotulo}:
+        </span>
         <SelectValue className={styles.valor} />
         <ChevronDown size={16} aria-hidden="true" className={styles.seta} />
       </Button>
