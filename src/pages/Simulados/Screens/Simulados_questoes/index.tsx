@@ -207,6 +207,11 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   const semResposta = totalQuestoes - questoes.filter((q) => q.situacao === 'respondida').length
 
   const respondidaAgora = selecionada !== null
+  // Aviso para leitor de tela: o texto só muda ao cruzar os 30 s, então é lido uma vez por questão
+  const avisoRestante =
+    cronometrado && !esgotado && restante <= SEGUNDOS_ALERTA
+      ? `Faltam ${SEGUNDOS_ALERTA} segundos ou menos nesta questão.`
+      : ''
 
   let tempo = formatarCronometro(tempoTotal)
   let rotuloTempo = 'tempo nesta questão'
@@ -229,6 +234,10 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
         onFinalizar={pedirFinalizar}
         onSalvarSair={salvarESair}
       />
+
+      <p className={styles.somenteLeitor} aria-live="polite">
+        {avisoRestante}
+      </p>
 
       <section className={styles.headerBar} aria-label="Progresso">
         <div className={styles.headerContainer}>
@@ -305,17 +314,19 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
             )
           )}
 
-          <div className={styles.optionsList} role="radiogroup" aria-label="Alternativas">
+          <fieldset className={styles.optionsList}>
+            <legend className={styles.somenteLeitor}>Alternativas da questão {indice + 1}</legend>
             {atual.alternativas.map((alternativa) => (
               <OptionRow
                 key={alternativa.rotulo}
+                grupo={`alternativa-${atual.ordem}`}
                 opcao={{ letra: alternativa.rotulo, texto: alternativa.texto }}
                 isSelecionada={selecionada === alternativa.rotulo}
                 disabled={ocupado}
                 onSelect={() => setSelecionada(alternativa.rotulo)}
               />
             ))}
-          </div>
+          </fieldset>
 
           {falha && (
             <div className={styles.falha}>

@@ -1,6 +1,8 @@
 @use '../../../../../../styles/variables' as *;
+@use '../../../../../../styles/mixins' as *;
 
 .row {
+  position: relative;
   width: 100%;
   background: $color-surface;
   border: 1px solid $color-border-light;
@@ -56,7 +58,17 @@
   font-weight: 700;
   color: $color-green;
 }
-.row:disabled {
+.radio {
+  @include visually-hidden;
+}
+
+// O foco do teclado fica no radio escondido; o anel aparece no card
+.row:has(.radio:focus-visible) {
+  border-color: $color-green;
+  @include focus-ring;
+}
+
+.desabilitada {
   cursor: not-allowed;
   opacity: 0.7;
 

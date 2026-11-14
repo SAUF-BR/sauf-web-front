@@ -53,3 +53,12 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+// Contorno de foco do teclado para todos os botões e links de uma área;
+// componentes com foco próprio (:focus-visible na classe) continuam com o deles
+@mixin foco-visivel-na-area($color: $color-green) {
+  :where(button, a, summary):focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}

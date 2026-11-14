@@ -4,6 +4,7 @@
 .pageWrapper {
   background-color: $color-placeholder;
   min-height: 100vh;
+  @include foco-visivel-na-area;
 }
 
 .createBtn {
