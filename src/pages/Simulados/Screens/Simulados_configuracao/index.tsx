@@ -18,6 +18,7 @@ import {
   formatarInteiro,
   formatarTempoPorQuestao,
 } from '../../../../lib/utils/formatadores'
+import { EsqueletoConfiguracao } from './components/EsqueletoConfiguracao/EsqueletoConfiguracao'
 import { TamanhoCard, type TamanhoOpcao } from './components/TamanhoCard/TamanhoCard'
 import { schemaConfiguracao, type ConfiguracaoSimulado } from './schema'
 import styles from './index.module.scss'
@@ -335,7 +336,11 @@ export default function SimuladosConfiguracao() {
       </header>
 
       <section className={styles.contentSection}>
-        <EstadoConsulta consultas={[consulta]} mensagemCarregando="Carregando opções…">
+        <EstadoConsulta
+          consultas={[consulta]}
+          carregando={<EsqueletoConfiguracao />}
+          tituloErro="Não foi possível carregar as opções do simulado"
+        >
           {([opcoes]) => <Formulario opcoes={opcoes} />}
         </EstadoConsulta>
       </section>
