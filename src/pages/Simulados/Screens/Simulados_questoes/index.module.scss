@@ -4,6 +4,7 @@
 .pageWrapper {
   background-color: $color-placeholder;
   min-height: 100vh;
+  @include foco-visivel-na-area;
 }
 
 .headerBar {
@@ -131,7 +132,14 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
-  margin-top: $spacing-xs;
+  min-width: 0;
+  margin: $spacing-xs 0 0;
+  padding: 0;
+  border: none;
+}
+
+.somenteLeitor {
+  @include visually-hidden;
 }
 
 // Botões da Barra Inferior

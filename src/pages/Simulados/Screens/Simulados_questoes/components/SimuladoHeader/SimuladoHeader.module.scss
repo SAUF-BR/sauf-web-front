@@ -5,6 +5,7 @@
   background-color: $color-blue-primary;
   color: $color-surface;
   padding: 12px 0;
+  @include foco-visivel-na-area($color-yellow);
 }
 
 .container {

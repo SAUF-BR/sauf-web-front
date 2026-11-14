@@ -128,7 +128,8 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <span className={styles.badgeObrigatorio}>obrigatório</span>
           </div>
 
-          <div className={styles.tamanhosGrid} role="radiogroup" aria-label="Tamanho do simulado">
+          <fieldset className={styles.tamanhosGrid}>
+            <legend className={styles.somenteLeitor}>Tamanho do simulado</legend>
             {tamanhos.map((opcao) => (
               <TamanhoCard
                 key={opcao.id}
@@ -137,7 +138,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
                 onSelect={() => setValue('tamanho', opcao.id)}
               />
             ))}
-          </div>
+          </fieldset>
         </div>
 
         <div className={styles.sectionBlock}>
@@ -169,33 +170,46 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             </button>
           </div>
 
-          <div className={styles.categoriasGrid}>
+          <fieldset className={styles.categoriasGrid} aria-describedby={errors.areas ? 'erro-areas' : undefined}>
+            <legend className={styles.somenteLeitor}>Categorias</legend>
             {areas.map((area) => {
               const marcada = areasSel.includes(area.id)
+              const semQuestoes = area.questoesDisponiveis === 0
               return (
-                <button
+                <label
                   key={area.id}
-                  type="button"
-                  role="checkbox"
-                  aria-checked={marcada}
-                  disabled={area.questoesDisponiveis === 0}
-                  className={`${styles.checkboxCard} ${marcada ? styles.checkedCard : ''}`}
-                  onClick={() => alternarArea(area.id)}
+                  className={`${styles.checkboxCard} ${marcada ? styles.checkedCard : ''} ${
+                    semQuestoes ? styles.cardDesabilitado : ''
+                  }`}
                 >
-                  <div className={`${styles.checkIcon} ${marcada ? styles.iconActive : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={marcada}
+                    disabled={semQuestoes}
+                    onChange={() => alternarArea(area.id)}
+                    className={styles.inputEscondido}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`${styles.checkIcon} ${marcada ? styles.iconActive : ''}`}
+                  >
                     {marcada && '✓'}
-                  </div>
+                  </span>
                   <span className={styles.catLabel}>
                     {NOME_AREA[area.id]}
                     <span className={styles.catDisponiveis}>
                       {formatarInteiro(area.questoesDisponiveis)} questões
                     </span>
                   </span>
-                </button>
+                </label>
               )
             })}
-          </div>
-          {errors.areas && <AvisoErro>{errors.areas.message}</AvisoErro>}
+          </fieldset>
+          {errors.areas && (
+            <div id="erro-areas">
+              <AvisoErro>{errors.areas.message}</AvisoErro>
+            </div>
+          )}
         </div>
 
         <div className={styles.sectionBlock}>
@@ -230,19 +244,23 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
                 {temposPorQuestao.map((segundos) => {
                   const ativo = segundosPorQuestao === segundos
                   return (
-                    <button
+                    <label
                       key={segundos}
-                      type="button"
-                      role="radio"
-                      aria-checked={ativo}
                       className={`${styles.pillBtn} ${ativo ? styles.activePill : ''}`}
-                      onClick={() => setValue('segundosPorQuestao', segundos)}
                     >
+                      <input
+                        type="radio"
+                        name="segundosPorQuestao"
+                        value={segundos}
+                        checked={ativo}
+                        onChange={() => setValue('segundosPorQuestao', segundos)}
+                        className={styles.inputEscondido}
+                      />
                       {formatarTempoPorQuestao(segundos)}
                       {SELO_TEMPO[segundos] && (
                         <span className={styles.seloTempo}>{SELO_TEMPO[segundos]}</span>
                       )}
-                    </button>
+                    </label>
                   )
                 })}
               </div>

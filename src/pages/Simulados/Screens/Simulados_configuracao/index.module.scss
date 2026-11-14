@@ -1,7 +1,7 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
-.pageWrapper { background: $color-surface; min-height: 100vh; }
+.pageWrapper { background: $color-surface; min-height: 100vh; @include foco-visivel-na-area; }
 
 .headerSection {
   background: $color-white;
@@ -65,6 +65,7 @@
 
 /* Grids e Seletores */
 .tamanhosGrid {
+  min-width: 0; margin: 0; padding: 0; border: none;
   display: grid; grid-template-columns: repeat(3, 1fr); gap: $spacing-md;
   @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr; }
 }
@@ -75,12 +76,15 @@
   .pillBtn {
     background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-full;
     padding: 8px $spacing-md; font: 600 0.8125rem $font-sans; color: $color-blue-primary; cursor: pointer;
+    display: inline-flex; align-items: center; position: relative;
+    &:has(input:focus-visible) { @include focus-ring; }
     &.activePill { background: $color-blue-primary; color: $color-surface; border-color: $color-blue-primary; }
     &:disabled { opacity: 0.6; cursor: not-allowed; }
   }
 }
 
 .categoriasGrid {
+  min-width: 0; margin: 0; padding: 0; border: none;
   display: grid; grid-template-columns: repeat(4, 1fr); gap: $spacing-sm;
   @media (max-width: $breakpoint-sm) { grid-template-columns: repeat(2, 1fr); }
 }
@@ -88,7 +92,10 @@
 .checkboxCard {
   background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-md;
   padding: 10px $spacing-md; display: flex; align-items: center; gap: $spacing-sm; cursor: pointer;
-  &.checkedCard { background: #f0fdf4; border-color: $color-green; }
+  position: relative;
+  &.checkedCard { background: $color-background-light-green; border-color: $color-green; }
+  &:has(input:focus-visible) { border-color: $color-green; @include focus-ring; }
+  &.cardDesabilitado { opacity: 0.6; cursor: not-allowed; }
 }
 
 .checkIcon {
@@ -155,3 +162,19 @@
 .cancelBtn { background: transparent; color: $color-blue-primary; border: 1px solid $color-border-light; font-size: 0.8125rem; }
 
 .footerInfo { font-size: 0.75rem; color: $color-text-secondary; margin: 0; line-height: 1.4; }
+
+.inputEscondido,
+.somenteLeitor {
+  @include visually-hidden;
+}
+
+// Foco do teclado visível nos botões da tela
+.linkAction,
+.pillBtn,
+.switchBtn,
+.startBtn,
+.cancelBtn {
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
