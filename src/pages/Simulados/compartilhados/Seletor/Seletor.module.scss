@@ -1,0 +1,156 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.seletor {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 $spacing-md;
+  font: inherit;
+  font-size: 0.8125rem;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+
+  &[data-hovered] {
+    border-color: $color-grey;
+  }
+
+  &[data-focus-visible] {
+    border-color: $color-green;
+    @include focus-ring;
+  }
+
+  [data-open] > & {
+    border-color: $color-green;
+  }
+}
+
+.rotulo {
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.valor {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  color: $color-blue-primary;
+  text-align: left;
+  @include truncate;
+}
+
+.seta {
+  flex-shrink: 0;
+  color: $color-text-secondary;
+  transition: transform 0.15s;
+
+  [data-open] & {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.popover {
+  min-width: var(--trigger-width);
+  max-width: calc(100vw - #{$spacing-lg});
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  box-shadow: 0 10px 30px rgba($color-blue-primary, 0.14);
+  overflow: auto;
+
+  &[data-entering] {
+    animation: abrir 0.12s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-entering] {
+      animation: none;
+    }
+  }
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-xs;
+  outline: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  font-size: 0.875rem;
+  color: $color-blue-primary;
+  border-radius: $radius-sm;
+  outline: none;
+  cursor: pointer;
+
+  &[data-focused],
+  &[data-hovered] {
+    background: $color-green-soft;
+  }
+
+  &[data-focus-visible] {
+    box-shadow: inset 0 0 0 2px $color-green;
+  }
+
+  &[data-selected] {
+    font-weight: 700;
+  }
+
+  &[data-disabled] {
+    color: $color-text-secondary;
+    cursor: not-allowed;
+    background: transparent;
+  }
+}
+
+.itemRotulo {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.itemDetalhe {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: $color-yellow-dark;
+  background: $color-yellow-soft;
+  padding: 2px 6px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+}
+
+.marca {
+  flex-shrink: 0;
+  color: $color-green;
+}
+
+@keyframes abrir {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
