@@ -2,3 +2,4 @@
 export * from './types'
 export * from './hooks'
 export { ConteudoQuestao } from './components/ConteudoQuestao/ConteudoQuestao'
+export { urlsDeImagens } from './components/ConteudoQuestao/imagens'
