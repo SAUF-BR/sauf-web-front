@@ -1,10 +1,14 @@
 @use '../../../../../../styles/variables' as *;
 @use '../../../../../../styles/mixins' as *;
 
+// Fica preso no topo enquanto a questão rola
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   background-color: $color-blue-primary;
   color: $color-surface;
-  padding: 12px 0;
+  padding: 10px 0;
   @include foco-visivel-na-area($color-yellow);
 }
 
@@ -19,46 +23,118 @@
 .leftGroup {
   display: flex;
   align-items: center;
-  gap: $spacing-lg;
+  gap: $spacing-md;
+  min-width: 0;
 }
-.logoLink { 
+
+.voltarBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid $color-transparent-white;
+  border-radius: $radius-full;
+  background: transparent;
+  color: $color-surface;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: $color-transparent-white;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.logoLink {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   text-decoration: none;
-
 }
 
 .simuladoTitle {
+  min-width: 0;
   font-size: 0.875rem;
   color: $color-surface;
   font-weight: 500;
+  @include truncate;
 }
 
 .rightGroup {
   display: flex;
   align-items: center;
   gap: $spacing-md;
+  flex-shrink: 0;
+}
+
+.timers {
+  display: flex;
+  align-items: stretch;
+  gap: $spacing-xs;
+}
+
+.timerBadge,
+.timerTotal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: $radius-md;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  color: $color-surface;
+  white-space: nowrap;
 }
 
 .timerBadge {
   background: $color-transparent-white;
-  border-radius: $radius-md;
-  padding: 6px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: $color-surface;
 
-  .yellowDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: $color-yellow;
+  svg {
+    color: $color-yellow;
+  }
+
+  &.timerAlerta {
+    background: $color-error;
+
+    svg {
+      color: $color-surface;
+    }
+  }
+
+  // Passou da referência: tom de aviso suave, sem alarme
+  &.timerPassou {
+    background: $color-yellow-soft;
+    color: $color-yellow-dark;
+
+    svg {
+      color: $color-yellow-dark;
+    }
   }
 }
 
+.timerTotal {
+  border: 1px solid $color-transparent-white;
+}
+
+.timerValor {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.timerRotulo {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.botoes {
+  display: flex;
+  gap: $spacing-sm;
+}
 
 .salvarSairBtn {
   background: transparent;
@@ -69,34 +145,59 @@
   font-weight: 600;
   color: $color-surface;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.2s ease;
 
   &:hover {
     background: $color-transparent-white;
     border-color: $color-surface;
   }
-}
 
-.salvarSairBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.timerBadge.timerAlerta {
-  background: $color-error;
-
-  .yellowDot {
-    background-color: $color-surface;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-lg) {
+  .simuladoTitle {
+    display: none;
+  }
+}
+
+// No celular: voltar + logo + botões na primeira linha, cronômetros embaixo
+@media (max-width: $breakpoint-md) {
   .container {
     flex-wrap: wrap;
+    row-gap: $spacing-sm;
   }
 
-  .leftGroup,
   .rightGroup {
-    flex-wrap: wrap;
+    display: contents;
+  }
+
+  .botoes {
+    margin-left: auto;
+  }
+
+  .timers {
+    order: 3;
+    width: 100%;
+
+    > * {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+
+  .salvarSairBtn {
+    padding: 6px 12px;
+  }
+}
+
+// Celular estreito: a seta de voltar já leva para fora, o logo sai para caber numa linha
+@media (max-width: $breakpoint-sm) {
+  .logoLink {
+    display: none;
   }
 }
