@@ -1,5 +1,13 @@
-import { useId, useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
+import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
+import { useUsuarioAtual } from '../../features/auth'
+import {
+  useAlternarUniversidadeFavorita,
+  useUniversidadesFavoritas,
+  type UniversidadeFavoritaApi,
+} from '../../features/favoritos'
 import { cn } from '../../lib/utils'
+import { ConviteLogin } from './components/ConviteLogin/ConviteLogin'
 import { SeletorOrdenacao } from './components/SeletorOrdenacao/SeletorOrdenacao'
 import { AbaCursos } from './Cursos/AbaCursos'
 import {
@@ -14,14 +22,59 @@ import {
   Comparadores_universidades,
   Opcoes_ordenacao_universidades,
   Ordenacao_padrao_universidades,
-  universidadesFavoritasMock,
-  universidadesSelecionadasIniciaisMock,
 } from './Universidades/conteudo'
 import type { AbaFavoritos } from './conteudo'
 import { useFavoritos } from './useFavoritos'
 import styles from './index.module.scss'
 
+const Sem_universidades: UniversidadeFavoritaApi[] = []
+
+function CabecalhoFavoritos({ acoes }: { acoes?: ReactNode }) {
+  return (
+    <header className={styles.cabecalho}>
+      <div>
+        <h1 className={styles.titulo}>Meus favoritos</h1>
+        <p className={styles.subtitulo}>Salve, compare e acompanhe os prazos das suas opções</p>
+      </div>
+
+      {acoes && <div className={styles.acoes}>{acoes}</div>}
+    </header>
+  )
+}
+
 export default function Favoritos() {
+  const { data: usuario, isPending, isError, error, isFetching, refetch } = useUsuarioAtual()
+
+  if (isPending) {
+    return <main className={styles.pagina} aria-busy="true" />
+  }
+
+  if (isError && usuario === undefined) {
+    return (
+      <main className={styles.pagina}>
+        <EstadoErro
+          titulo="Não foi possível carregar sua conta"
+          descricao={error?.message}
+          onTentarDeNovo={() => void refetch()}
+          tentando={isFetching}
+        />
+      </main>
+    )
+  }
+
+  if (!usuario) {
+    return (
+      <main className={styles.pagina}>
+        <CabecalhoFavoritos />
+        <ConviteLogin />
+      </main>
+    )
+  }
+
+  return <FavoritosLogado />
+}
+
+function FavoritosLogado() {
   const idBase = useId()
   const [aba, setAba] = useState<AbaFavoritos>('cursos')
   const [alertaCursosAtivo, setAlertaCursosAtivo] = useState(true)
@@ -34,11 +87,16 @@ export default function Favoritos() {
     selecionadosIniciais: cursosSelecionadosIniciaisMock,
   })
 
+  const universidadesApi = useUniversidadesFavoritas()
+  const alternarUniversidade = useAlternarUniversidadeFavorita()
+
   const universidades = useFavoritos({
-    iniciais: universidadesFavoritasMock,
+    iniciais: universidadesApi.data ?? Sem_universidades,
     comparadores: Comparadores_universidades,
     ordenacaoPadrao: Ordenacao_padrao_universidades,
-    selecionadosIniciais: universidadesSelecionadasIniciaisMock,
+    aoRemover: (item) => alternarUniversidade.mutate({ universidadeId: item.id, favoritar: false }),
+    aoDesfazerRemocao: (item) =>
+      alternarUniversidade.mutate({ universidadeId: item.id, favoritar: true }),
   })
 
   const abas: { id: AbaFavoritos; rotulo: string; total: number }[] = [
@@ -48,29 +106,26 @@ export default function Favoritos() {
 
   return (
     <main className={styles.pagina}>
-      <header className={styles.cabecalho}>
-        <div>
-          <h1 className={styles.titulo}>Meus favoritos</h1>
-          <p className={styles.subtitulo}>Salve, compare e acompanhe os prazos das suas opções</p>
-        </div>
-
-        <div className={styles.acoes}>
-          {aba === 'cursos' && cursos.total > 0 && (
-            <SeletorOrdenacao
-              valor={cursos.ordenacao}
-              opcoes={Opcoes_ordenacao_cursos}
-              onMudar={cursos.ordenar}
-            />
-          )}
-          {aba === 'universidades' && universidades.total > 0 && (
-            <SeletorOrdenacao
-              valor={universidades.ordenacao}
-              opcoes={Opcoes_ordenacao_universidades}
-              onMudar={universidades.ordenar}
-            />
-          )}
-        </div>
-      </header>
+      <CabecalhoFavoritos
+        acoes={
+          <>
+            {aba === 'cursos' && cursos.total > 0 && (
+              <SeletorOrdenacao
+                valor={cursos.ordenacao}
+                opcoes={Opcoes_ordenacao_cursos}
+                onMudar={cursos.ordenar}
+              />
+            )}
+            {aba === 'universidades' && universidades.total > 0 && (
+              <SeletorOrdenacao
+                valor={universidades.ordenacao}
+                opcoes={Opcoes_ordenacao_universidades}
+                onMudar={universidades.ordenar}
+              />
+            )}
+          </>
+        }
+      />
 
       <div role="tablist" aria-label="Tipo de favorito" className={styles.abas}>
         {abas.map((item) => (
@@ -104,6 +159,11 @@ export default function Favoritos() {
         ) : (
           <AbaUniversidades
             favoritos={universidades}
+            carregando={universidadesApi.isPending}
+            erro={universidadesApi.isError && !universidadesApi.data}
+            mensagemErro={universidadesApi.error?.message}
+            tentando={universidadesApi.isFetching}
+            onTentarDeNovo={() => void universidadesApi.refetch()}
             alertaAtivo={alertaUniversidadesAtivo}
             onAlternarAlerta={() => setAlertaUniversidadesAtivo((atual) => !atual)}
           />
