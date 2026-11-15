@@ -1,4 +1,3 @@
-
 @use 'sass:color';
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
@@ -100,8 +99,10 @@ $fundo-lateral: color.mix($color-surface, $color-white, 60%);
   border-radius: $radius-lg;
 }
 
-.tentarDeNovo {
-  margin-top: $spacing-md;
+.atualizando {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.15s;
 }
 
 .rodapeLista {

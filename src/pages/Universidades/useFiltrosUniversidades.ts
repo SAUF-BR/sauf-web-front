@@ -49,11 +49,15 @@ export function useFiltrosUniversidades() {
       ? { quantidade: somarTipos(totalEstado.data), local: formatarLocalEstado(filtros.estado) }
       : null,
     carregando: lista.isPending,
-    erro: lista.isError,
-    tentarDeNovo: () => lista.refetch(),
+    erro: lista.isError && !lista.data,
+    mensagemErro: lista.error?.message,
+    tentando: lista.isFetching,
+    tentarDeNovo: () => void lista.refetch(),
+    atualizando: lista.isPlaceholderData,
     temMais: lista.hasNextPage,
     carregandoMais: lista.isFetchingNextPage,
-    carregarMais: () => lista.fetchNextPage(),
+    erroCarregarMais: lista.isFetchNextPageError,
+    carregarMais: () => void lista.fetchNextPage(),
     buscar: setBusca,
     atualizar: (parcial: Partial<Filtros>) => setFiltros((atual) => ({ ...atual, ...parcial })),
     alternarCategoria: (categoria: Filtros['categorias'][number]) =>
