@@ -4,6 +4,7 @@ import {
   getContagensUniversidades,
   getUniversidades,
   getUniversidadesEmDestaque,
+  limparFiltros,
 } from './api'
 import type { FiltrosUniversidadesApi } from './types'
 
@@ -24,9 +25,11 @@ export function useUniversidadesEmDestaque() {
 }
 
 export function useUniversidades(filtros: FiltrosUniversidadesApi) {
+  const limpos = limparFiltros(filtros)
+
   return useInfiniteQuery({
-    queryKey: universidadesKeys.lista(filtros),
-    queryFn: ({ pageParam }) => getUniversidades(filtros, pageParam),
+    queryKey: universidadesKeys.lista(limpos),
+    queryFn: ({ pageParam }) => getUniversidades(limpos, pageParam),
     initialPageParam: 0,
     getNextPageParam: (ultima) => (ultima.page + 1 < ultima.totalPages ? ultima.page + 1 : undefined),
     placeholderData: keepPreviousData,
@@ -34,9 +37,11 @@ export function useUniversidades(filtros: FiltrosUniversidadesApi) {
 }
 
 export function useContagensUniversidades(filtros: FiltrosUniversidadesApi) {
+  const limpos = limparFiltros(filtros)
+
   return useQuery({
-    queryKey: universidadesKeys.contagens(filtros),
-    queryFn: () => getContagensUniversidades(filtros),
+    queryKey: universidadesKeys.contagens(limpos),
+    queryFn: () => getContagensUniversidades(limpos),
     placeholderData: keepPreviousData,
   })
 }
