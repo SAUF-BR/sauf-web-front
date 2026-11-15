@@ -1,10 +1,9 @@
-@use 'sass:color';
 @use '../../../../styles/variables' as *;
 
 .lista {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: $spacing-lg;
   padding: $spacing-lg;
   background: $color-surface;
   border: 1px solid $color-border-light;
@@ -13,28 +12,24 @@
 
 .item {
   display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr) auto;
-  align-items: center;
-  gap: $spacing-md;
-
-  @media (min-width: $breakpoint-md) {
-    grid-template-columns: 8rem minmax(0, 1fr) 5.5rem;
-    gap: $spacing-lg;
-  }
-
-  &:nth-child(4n + 1) .barra { background: $color-green; }
-  &:nth-child(4n + 2) .barra { background: $color-blue-primary; }
-  &:nth-child(4n + 3) .barra { background: $color-blue-secondary; }
-  &:nth-child(4n + 4) .barra { background: color.mix($color-green, $color-surface, 45%); }
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'area total'
+    'trilho trilho';
+  align-items: baseline;
+  column-gap: $spacing-md;
+  row-gap: $spacing-xs;
 }
 
 .area {
+  grid-area: area;
   font-size: 0.9375rem;
   font-weight: 600;
   color: $color-blue-primary;
 }
 
 .trilho {
+  grid-area: trilho;
   display: block;
   height: 0.5rem;
   background: $color-white;
@@ -45,10 +40,12 @@
 .barra {
   display: block;
   height: 100%;
+  background: $color-green;
   border-radius: $radius-full;
 }
 
 .total {
+  grid-area: total;
   font-size: 0.875rem;
   font-weight: 700;
   color: $color-blue-primary;

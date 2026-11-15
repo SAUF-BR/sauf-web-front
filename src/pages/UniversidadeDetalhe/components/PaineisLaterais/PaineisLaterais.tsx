@@ -1,6 +1,10 @@
 import { Check, Minus } from 'lucide-react'
 import { Imagem } from '../../../../components/ui/Imagem/Imagem'
-import type { FormaIngresso, ProximoPrazo, UniversidadeDetalhe } from '../../conteudo'
+import type {
+  EnderecoSede,
+  FormaIngresso,
+  ProximoPrazo,
+} from '../../../../features/universidades'
 import styles from './PaineisLaterais.module.scss'
 
 const Um_dia_ms = 24 * 60 * 60 * 1000
@@ -26,10 +30,25 @@ function textoContagem(dias: number) {
   return `Encerra em ${dias} dias`
 }
 
-type PainelOndeFicaProps = Pick<UniversidadeDetalhe, 'nome' | 'cidade' | 'uf' | 'endereco' | 'distanciaKm'>
+function formatarCep(cep: string) {
+  return cep.length === 8 ? `${cep.slice(0, 5)}-${cep.slice(5)}` : cep
+}
 
-export function PainelOndeFica({ nome, cidade, uf, endereco, distanciaKm }: PainelOndeFicaProps) {
-  const busca = [nome, endereco?.logradouro, `${cidade} - ${uf}`].filter(Boolean).join(', ')
+function linhaEndereco({ logradouro, numero, complemento, bairro }: EnderecoSede) {
+  const rua = [logradouro, numero].filter(Boolean).join(', ')
+
+  return [rua, complemento, bairro].filter(Boolean).join(' · ')
+}
+
+type PainelOndeFicaProps = {
+  nome: string
+  endereco: EnderecoSede
+}
+
+export function PainelOndeFica({ nome, endereco }: PainelOndeFicaProps) {
+  const { cidade, uf, cep } = endereco
+  const rua = linhaEndereco(endereco)
+  const busca = [nome, rua, `${cidade} - ${uf}`].filter(Boolean).join(', ')
   const linkMapa = `https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query: busca })}`
 
   return (
@@ -42,24 +61,17 @@ export function PainelOndeFica({ nome, cidade, uf, endereco, distanciaKm }: Pain
         </h2>
 
         <address className={styles.endereco}>
-          {endereco ? (
+          {rua && (
             <>
-              {endereco.logradouro}
+              {rua}
               <br />
-              {cidade}, {uf} · CEP {endereco.cep}
             </>
-          ) : (
-            `${cidade}, ${uf}`
           )}
+          {cidade}, {uf}
+          {cep && ` · CEP ${formatarCep(cep)}`}
         </address>
 
         <div className={styles.rodape}>
-          {distanciaKm !== null && (
-            <p className={styles.distancia}>
-              <span className={styles.ponto} aria-hidden="true" />A {distanciaKm} km de você
-            </p>
-          )}
-
           <a href={linkMapa} target="_blank" rel="noreferrer" className={styles.link}>
             Abrir no mapa ›
           </a>
