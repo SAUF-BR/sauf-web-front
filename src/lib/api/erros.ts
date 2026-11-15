@@ -10,12 +10,13 @@ interface ErroResposta {
 
 export type TipoErroApi = 'sem-internet' | 'conexao' | 'tempo-esgotado' | 'servidor' | 'requisicao'
 
-const MENSAGENS: Record<Exclude<TipoErroApi, 'requisicao'>, string> = {
+const MENSAGENS = {
   'sem-internet': 'Você está sem internet. Verifique sua conexão e tente novamente.',
   conexao: 'Não foi possível conectar ao servidor. Tente novamente em instantes.',
   'tempo-esgotado': 'O servidor demorou para responder. Tente novamente.',
   servidor: 'Tivemos um problema no servidor. Tente novamente em instantes.',
-}
+  indisponivel: 'O SAUF está temporariamente indisponível. Tente novamente em instantes.',
+} as const
 
 const MENSAGEM_PADRAO = 'Algo deu errado. Tente novamente.'
 
@@ -64,7 +65,10 @@ export function converterErro(erro: unknown): ErroApi {
 
   const { status, data } = erro.response
 
-  // 5xx: a mensagem da API ("Erro interno") não ajuda o usuário
+  // 503: a API está no ar, mas sem banco (fora do ar por instantes)
+  if (status === 503) return new ErroApi(MENSAGENS.indisponivel, 'servidor', status)
+
+  // Outros 5xx: a mensagem da API ("Erro interno") não ajuda o usuário
   if (status >= 500) return new ErroApi(MENSAGENS.servidor, 'servidor', status)
 
   // 4xx: a API já manda a mensagem em português (ex.: "Você já está no plano Plus")

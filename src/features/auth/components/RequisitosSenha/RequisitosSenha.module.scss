@@ -1,0 +1,39 @@
+@use '../../../../styles/variables' as *;
+
+// Em linha (quebra se faltar espaço) para não aumentar a altura dos formulários
+.regras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.875rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.regra,
+.regraCumprida {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: $color-text-secondary;
+  transition: color 0.15s;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.regraCumprida {
+  font-weight: 600;
+  color: $color-green;
+}
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

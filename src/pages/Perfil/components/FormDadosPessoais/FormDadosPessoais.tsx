@@ -19,6 +19,8 @@ type FormDadosPessoaisProps = {
   register: UseFormRegister<CamposPerfil>
   errors: FieldErrors<CamposPerfil>
   onSubmit: (evento?: BaseSyntheticEvent) => Promise<void>
+  alterandoSenha: boolean
+  onAlterarSenha: () => void
 }
 
 export function FormDadosPessoais({
@@ -27,6 +29,8 @@ export function FormDadosPessoais({
   register,
   errors,
   onSubmit,
+  alterandoSenha,
+  onAlterarSenha,
 }: FormDadosPessoaisProps) {
   return (
     <form id={id} className={styles.grade} onSubmit={onSubmit} noValidate>
@@ -40,13 +44,14 @@ export function FormDadosPessoais({
         })}
       />
 
-      {/* Somente leitura: trocar o e-mail exige verificar o novo endereço (fluxo futuro) */}
+      {/* O e-mail da conta não pode ser trocado (decisão do time, D-82 da API) */}
       <TextInput
         label="E-mail"
         type="email"
         value={usuario.email}
         readOnly
         className={`${styles.comAcao} ${styles.somenteLeitura}`}
+        hint="O e-mail da conta não pode ser alterado."
         rightElement={
           <Tag variant={usuario.emailVerificado ? 'destaque' : 'neutro'}>
             {usuario.emailVerificado ? 'Verificado' : 'Não verificado'}
@@ -63,10 +68,20 @@ export function FormDadosPessoais({
         tabIndex={-1}
         autoComplete="off"
         className={`${styles.comAcao} ${styles.somenteLeitura}`}
-        hint={`Última alteração em ${formatarDataExtenso(usuario.senhaAlteradaEm, { comAno: true })}`}
+        hint={
+          usuario.senhaAlteradaEm
+            ? `Última alteração em ${formatarDataExtenso(usuario.senhaAlteradaEm, { comAno: true })}`
+            : undefined
+        }
         rightElement={
-          // TODO: abrir o fluxo de alteração de senha (pede a senha atual) quando existir
-          <button type="button" className={styles.acaoCampo} disabled title="Em breve">
+          // Abre o formulário de troca (FormAlterarSenha), que pede a senha atual
+          <button
+            type="button"
+            className={styles.acaoCampo}
+            onClick={onAlterarSenha}
+            disabled={alterandoSenha}
+            aria-expanded={alterandoSenha}
+          >
             Alterar senha
           </button>
         }

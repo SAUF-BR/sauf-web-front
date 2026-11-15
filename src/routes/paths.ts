@@ -6,6 +6,7 @@ export const ROTAS = {
   inicio: '/',
   login: '/login',
   cadastro: '/cadastro',
+  esqueciSenha: '/esqueci-senha',
   cursos: '/cursos',
   // TODO: apontar para a busca geral (cursos, universidades e formas de ingresso) quando existir
   busca: (termo: string) => `/cursos?${new URLSearchParams({ busca: termo })}`,

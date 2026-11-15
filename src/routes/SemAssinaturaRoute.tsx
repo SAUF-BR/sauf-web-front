@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '../app/providers/AuthProvider'
+import { useTemAssinaturaAtiva } from '../features/assinatura'
 import { ROTAS } from './paths'
 
 /**
@@ -7,9 +7,11 @@ import { ROTAS } from './paths'
  * Quem já assina é levado direto à tela de Simulados.
  */
 export function SemAssinaturaRoute() {
-  const { assinaturaAtiva } = useAuth()
+  const { ativa, isPending } = useTemAssinaturaAtiva()
 
-  if (assinaturaAtiva) {
+  if (isPending) return null
+
+  if (ativa) {
     return <Navigate to={ROTAS.simulados} replace />
   }
 

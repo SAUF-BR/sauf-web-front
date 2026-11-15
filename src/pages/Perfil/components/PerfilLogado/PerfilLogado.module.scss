@@ -2,6 +2,15 @@
 
 .erroFoto {
   margin-top: $spacing-sm;
+}
+
+.erroSalvar {
+  margin-top: $spacing-md;
+}
+
+.sucesso {
+  margin: $spacing-md 0 0;
   font-size: 0.875rem;
-  color: $color-error;
+  font-weight: 600;
+  color: $color-green;
 }

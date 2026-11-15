@@ -2,8 +2,10 @@ import { ESTADOS_BR } from '../../lib/utils'
 import { ROTULO_MODALIDADE } from '../cursos/utils'
 import type { PreferenciasEstudante } from './types'
 
-/** Preferências em lista legível, ex.: ["Saúde", "Presencial", "Paraná"]. */
-export function listarPreferencias(preferencias: PreferenciasEstudante) {
+/** Preferências em lista legível, ex.: ["Saúde", "Presencial", "Paraná"]. Sem preferências: []. */
+export function listarPreferencias(preferencias?: PreferenciasEstudante) {
+  if (!preferencias) return []
+
   return [
     ...preferencias.areas,
     ...preferencias.modalidades.map((modalidade) => ROTULO_MODALIDADE[modalidade]),
@@ -32,6 +34,38 @@ export function validarNotaEnem(texto: string): true | string {
   }
 
   return true
+}
+
+/**
+ * Regras da senha — as mesmas da API (SenhaValidaValidator, D-86). A tela de cadastro
+ * mostra a lista e marca cada item conforme a pessoa digita.
+ */
+export const REGRAS_SENHA = [
+  { id: 'tamanho', texto: '8 caracteres ou mais', cumpre: (senha: string) => senha.length >= 8 },
+  { id: 'letra', texto: '1 letra', cumpre: (senha: string) => /\p{L}/u.test(senha) },
+  {
+    id: 'especial',
+    texto: '1 caractere especial (@ # ! ?)',
+    cumpre: (senha: string) => /[^\p{L}\p{N}\s]/u.test(senha),
+  },
+] as const
+
+const TAMANHO_MAXIMO_SENHA = 72
+
+/** Validação do campo senha do cadastro: true, ou a mensagem do primeiro problema. */
+export function validarSenha(senha: string): true | string {
+  const pendente = REGRAS_SENHA.find((regra) => !regra.cumpre(senha))
+  if (pendente) return `A senha precisa ter ${pendente.texto}`
+  if (senha.length > TAMANHO_MAXIMO_SENHA) return 'A senha deve ter no máximo 72 caracteres'
+  return true
+}
+
+const PADRAO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Validação simples de e-mail (a API confere de novo). */
+export function validarEmail(email: string): true | string {
+  if (!email.trim()) return 'Informe seu e-mail'
+  return PADRAO_EMAIL.test(email.trim()) || 'Informe um e-mail válido'
 }
 
 export const TAMANHO_MAXIMO_FOTO_MB = 2

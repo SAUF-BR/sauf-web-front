@@ -1,13 +1,20 @@
+import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import type { UseFormRegister } from 'react-hook-form'
+import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { Logo } from '../../../../components/logo/Logo'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Button } from '../../../../components/ui/Botao/Botao'
+import { CampoSenha } from '../../../../components/ui/CampoSenha/CampoSenha'
 import { TextInput } from '../../../../components/ui/TextInput/TextInput'
 import { Titulo } from '../../../../components/ui/Titulo/Titulo'
+import { validarEmail, validarSenha } from '../../../../features/auth'
+import { AcessarComoVisitante } from '../../../../features/auth/components/AcessarComoVisitante/AcessarComoVisitante'
+import { RequisitosSenha } from '../../../../features/auth/components/RequisitosSenha/RequisitosSenha'
+import { ROTAS } from '../../../../routes/paths'
 import { BarraProgresso } from '../BarraProgresso/BarraProgresso'
 import styles from './EtapaDados.module.scss'
 
-export type DadosCadastro = {
+export type CamposCadastro = {
   nome: string
   email: string
   senha: string
@@ -15,11 +22,31 @@ export type DadosCadastro = {
 
 type EtapaDadosProps = {
   etapaAtual: number
-  register: UseFormRegister<DadosCadastro>
+  register: UseFormRegister<CamposCadastro>
+  errors: FieldErrors<CamposCadastro>
+  senha: string
+  // Conferindo se o e-mail já tem conta (antes da etapa dos termos)
+  conferindo: boolean
+  // Falha ao conferir (conexão ou servidor)
+  erro: string | null
   onContinuar: () => void
 }
 
-export function EtapaDados({ etapaAtual, register, onContinuar }: EtapaDadosProps) {
+export function EtapaDados({
+  etapaAtual,
+  register,
+  errors,
+  senha,
+  conferindo,
+  erro,
+  onContinuar,
+}: EtapaDadosProps) {
+  // Enter em qualquer campo também continua
+  function aoEnviar(evento: FormEvent) {
+    evento.preventDefault()
+    onContinuar()
+  }
+
   return (
     <div className={styles.conteudo}>
       <header className={styles.topo}>
@@ -37,34 +64,48 @@ export function EtapaDados({ etapaAtual, register, onContinuar }: EtapaDadosProp
         size="Medio"
       />
 
-      <div className={styles.form}>
+      <form className={styles.form} onSubmit={aoEnviar} noValidate>
         <TextInput
           label="Nome Completo"
           type="text"
           autoComplete="name"
-          {...register('nome')}
+          error={errors.nome?.message}
+          {...register('nome', {
+            validate: (nome) => nome.trim().length >= 3 || 'Informe seu nome completo',
+          })}
         />
         <TextInput
           label="E-mail"
           type="email"
           autoComplete="email"
-          {...register('email')}
+          error={errors.email?.message}
+          {...register('email', { validate: validarEmail })}
         />
-        <TextInput
-          label="Senha"
-          type="password"
-          autoComplete="new-password"
-          {...register('senha')}
-        />
-      </div>
+        <div>
+          <CampoSenha
+            label="Senha"
+            autoComplete="new-password"
+            error={errors.senha?.message}
+            {...register('senha', { validate: validarSenha })}
+          />
+          {/* Os requisitos ficam sempre à vista e são marcados conforme a pessoa digita */}
+          <RequisitosSenha senha={senha} />
+        </div>
 
-      <Button fullWidth className={styles.botaoContinuar} onClick={onContinuar}>
-        Continuar
-      </Button>
+        {erro && <AvisoErro>{erro}</AvisoErro>}
+
+        <Button type="submit" fullWidth className={styles.botaoContinuar} disabled={conferindo}>
+          {conferindo ? 'Conferindo…' : 'Continuar'}
+        </Button>
+      </form>
 
       <div className={styles.acessar}>
         <span>Já tem conta?</span>
-        <Link to="/login" viewTransition className={styles.acessarLink}>Entrar</Link>
+        <Link to={ROTAS.login} viewTransition className={styles.acessarLink}>Entrar</Link>
+      </div>
+      {/* Só uma linha de texto, sem separador, para o cartão caber na tela */}
+      <div className={styles.visitante}>
+        <AcessarComoVisitante compacto />
       </div>
     </div>
   )
