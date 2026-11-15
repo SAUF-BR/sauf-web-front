@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { ROTAS } from '../../../../routes/paths'
 import { cn } from '../../../../lib/utils'
+import { Trilha } from '../Trilha/Trilha'
 import { Abas_simulados, Selo_plano, type AbaSimulados } from '../conteudo'
 import styles from './CabecalhoSimulados.module.scss'
 
@@ -17,9 +19,20 @@ export function CabecalhoSimulados({
   descricao,
   acoes,
 }: CabecalhoSimuladosProps) {
+  const aba = Abas_simulados.find((item) => item.id === abaAtiva)
+  const naPrincipal = abaAtiva === 'simulados'
+  const trilha = naPrincipal
+    ? [{ rotulo: 'Início', para: ROTAS.inicio }, { rotulo: 'Simulados' }]
+    : [{ rotulo: 'Simulados', para: ROTAS.simulados }, { rotulo: aba?.rotulo ?? titulo }]
+
   return (
     <header className={styles.faixa}>
       <div className={styles.conteudo}>
+        <Trilha
+          itens={trilha}
+          voltarPara={naPrincipal ? ROTAS.inicio : ROTAS.simulados}
+          className={styles.trilha}
+        />
         <div className={styles.topo}>
           <div>
             <p className={styles.contexto}>
