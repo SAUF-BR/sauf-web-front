@@ -1,9 +1,10 @@
-import { useState, type SyntheticEvent } from 'react'
+import type { SyntheticEvent } from 'react'
 import { AvisoErro } from '../../components/ui/AvisoErro/AvisoErro'
 import { BarraBusca } from '../../components/ui/BarraBusca/BarraBusca'
 import { Button } from '../../components/ui/Botao/Botao'
 import { Carregando } from '../../components/ui/Carregando/Carregando'
 import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
+import { useFavoritarUniversidade } from '../../features/favoritos'
 import { CabecalhoListagem } from './components/CabecalhoListagem/CabecalhoListagem'
 import { CardUniversidadeGrid } from './components/CardUniversidadeGrid/CardUniversidadeGrid'
 import { FiltrosLaterais } from './components/FiltrosLaterais/FiltrosLaterais'
@@ -13,18 +14,7 @@ import styles from './index.module.scss'
 export default function Universidades() {
   const listagem = useFiltrosUniversidades()
 
-  // Só em memória por enquanto (favoritos ainda não estão na API)
-  const [favoritosIds, setFavoritosIds] = useState(() => new Set<string>())
-
-  function alternarFavorito(universidadeId: string) {
-    setFavoritosIds((atual) => {
-      const proximo = new Set(atual)
-
-      if (!proximo.delete(universidadeId)) proximo.add(universidadeId)
-
-      return proximo
-    })
-  }
+  const { ehFavorita, alternarFavorita } = useFavoritarUniversidade()
 
   function limparBuscaSeVazia(evento: SyntheticEvent<HTMLDivElement>) {
     if (evento.target instanceof HTMLInputElement && evento.target.value === '') {
@@ -66,8 +56,8 @@ export default function Universidades() {
             <li key={universidade.id}>
               <CardUniversidadeGrid
                 universidade={universidade}
-                favorito={favoritosIds.has(universidade.id)}
-                onAlternarFavorito={() => alternarFavorito(universidade.id)}
+                favorito={ehFavorita(universidade.id)}
+                onAlternarFavorito={() => alternarFavorita(universidade.id)}
               />
             </li>
           ))}

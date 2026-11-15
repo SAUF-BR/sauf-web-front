@@ -34,6 +34,7 @@ export const endpoints = {
     cursos: '/favoritos/cursos',
     curso: (cursoId: string) => `/favoritos/cursos/${cursoId}`,
     universidades: '/favoritos/universidades',
+    universidadesIds: '/favoritos/universidades/ids',
     universidade: (universidadeId: string) => `/favoritos/universidades/${universidadeId}`,
   },
   notificacoes: {

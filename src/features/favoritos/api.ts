@@ -29,6 +29,11 @@ export async function getUniversidadesFavoritas(): Promise<UniversidadeFavoritaA
   return data
 }
 
+export async function getUniversidadesFavoritasIds(): Promise<string[]> {
+  const { data } = await apiClient.get<string[]>(endpoints.favoritos.universidadesIds)
+  return data
+}
+
 export async function alternarUniversidadeFavorita(
   universidadeId: string,
   favoritar: boolean,
