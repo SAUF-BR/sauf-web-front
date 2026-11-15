@@ -1,13 +1,27 @@
-import { buscarUniversidadeDetalheMock, type UniversidadeDetalhe } from './conteudo'
+import { ehUniversidadeNaoEncontrada, useUniversidade } from '../../features/universidades'
+import type { UniversidadeDetalhe } from '../../features/universidades'
 
 type ResultadoUniversidadeDetalhe = {
   universidade: UniversidadeDetalhe | null
   carregando: boolean
+  naoEncontrada: boolean
   erro: boolean
+  mensagemErro: string | undefined
+  tentando: boolean
+  tentarDeNovo: () => void
 }
 
 export function useUniversidadeDetalhe(id: string): ResultadoUniversidadeDetalhe {
-  const universidade = buscarUniversidadeDetalheMock(id)
+  const consulta = useUniversidade(id)
+  const naoEncontrada = id === '' || ehUniversidadeNaoEncontrada(consulta.error)
 
-  return { universidade, carregando: false, erro: false }
+  return {
+    universidade: consulta.data ?? null,
+    carregando: consulta.isPending && !naoEncontrada,
+    naoEncontrada,
+    erro: consulta.isError && !naoEncontrada,
+    mensagemErro: consulta.error?.message,
+    tentando: consulta.isFetching,
+    tentarDeNovo: () => void consulta.refetch(),
+  }
 }
