@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
 import styles from './index.module.scss'
 import { QuestaoBar } from './components/QuestaoBar/QuestaoBar'
@@ -10,6 +10,7 @@ import { EsqueletoRevisao } from './components/EsqueletoRevisao/EsqueletoRevisao
 import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Seletor } from '../../compartilhados/Seletor/Seletor'
 import { FilterPillButton } from './components/FilterPillButton/FilterPillButton'
+import { Trilha } from '../../compartilhados/Trilha/Trilha'
 import {
   NOME_AREA,
   ORDEM_AREAS,
@@ -22,7 +23,7 @@ import {
 import { ErroApi } from '../../../../lib/api/erros'
 import { formatarData, formatarDuracao, formatarQuantidade } from '../../../../lib/utils/formatadores'
 
-export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco' | 'fora_do_tempo'
+export type FiltroStatus = 'todas' | 'acertos' | 'erros' | 'em_branco'
 
 const POR_PAGINA = 6
 
@@ -30,7 +31,6 @@ const FILTRO: Record<Exclude<FiltroStatus, 'todas'>, (q: QuestaoRevisao) => bool
   acertos: (q) => q.resultado === 'acerto',
   erros: (q) => q.resultado === 'erro',
   em_branco: (q) => q.resultado === 'em_branco',
-  fora_do_tempo: (q) => q.foraDoTempo,
 }
 
 const OPCOES_FILTRO: Array<{ label: string; tipo: FiltroStatus }> = [
@@ -38,7 +38,6 @@ const OPCOES_FILTRO: Array<{ label: string; tipo: FiltroStatus }> = [
   { label: 'Acertos', tipo: 'acertos' },
   { label: 'Erros', tipo: 'erros' },
   { label: 'Em branco', tipo: 'em_branco' },
-  { label: 'Fora do tempo', tipo: 'fora_do_tempo' },
 ]
 
 function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
@@ -63,18 +62,12 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
     acertos: 0,
     erros: 0,
     em_branco: 0,
-    fora_do_tempo: 0,
   }
   for (const questao of dasArea) {
     if (questao.resultado === 'acerto') contagem.acertos++
     else if (questao.resultado === 'erro') contagem.erros++
     else contagem.em_branco++
-    if (questao.foraDoTempo) contagem.fora_do_tempo++
   }
-  // O filtro "Fora do tempo" só aparece quando há alguma questão nele
-  const opcoesFiltro = OPCOES_FILTRO.filter(
-    (opcao) => opcao.tipo !== 'fora_do_tempo' || revisao.respondidasForaDoTempo > 0,
-  )
 
   const questoesFiltradas =
     filtroStatus === 'todas' ? dasArea : dasArea.filter(FILTRO[filtroStatus])
@@ -134,7 +127,8 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
       onSuccess: (novo) => navigate(ROTAS.simuladosQuestoes(novo.id)),
     })
 
-  const semErros = revisao.erros === 0
+  // Refazer leva as erradas e as em branco, escolhidas ou sem resposta (D-96)
+  const paraRefazer = revisao.erros + revisao.emBranco
   const total = revisao.totalQuestoes || 1
   const grafico = {
     '--acertos': `${(revisao.acertos / total) * 100}%`,
@@ -146,13 +140,11 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
       <div className={styles.headerSection}>
         <div className={styles.headerContainer}>
           <div className={styles.leftInfo}>
-            <nav className={styles.breadcrumb} aria-label="Você está em">
-              <Link to={ROTAS.simulados}>Simulados</Link>
-              <span aria-hidden="true">/</span>
-              <span className={styles.currentBreadcrumb} aria-current="page">
-                Revisão
-              </span>
-            </nav>
+            <Trilha
+              itens={[{ rotulo: 'Simulados', para: ROTAS.simulados }, { rotulo: 'Revisão' }]}
+              voltarPara={ROTAS.simulados}
+              className={styles.trilha}
+            />
 
             <Titulo
               titulo={revisao.titulo}
@@ -188,15 +180,6 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
                 <span className={styles.statLabel}>EM BRANCO</span>
                 <span className={`${styles.statValue} ${styles.grayValue}`}>{revisao.emBranco}</span>
               </div>
-
-              {revisao.respondidasForaDoTempo > 0 && (
-                <div className={styles.statItem}>
-                  <span className={styles.statLabel}>FORA DO TEMPO</span>
-                  <span className={`${styles.statValue} ${styles.amberValue}`}>
-                    {revisao.respondidasForaDoTempo}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -205,7 +188,7 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
         <div className={styles.filterBarContainer}>
           <div className={styles.controlsRow}>
             <div className={styles.statusPills}>
-              {opcoesFiltro.map((opcao) => (
+              {OPCOES_FILTRO.map((opcao) => (
                 <FilterPillButton
                   key={opcao.tipo}
                   label={opcao.label}
@@ -231,11 +214,15 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
               <button
                 type="button"
                 className={styles.refazerBtn}
-                disabled={semErros || refazer.isPending}
-                title={semErros ? 'Você não errou nenhuma questão neste simulado' : undefined}
+                disabled={paraRefazer === 0 || refazer.isPending}
+                title={
+                  paraRefazer === 0
+                    ? 'Você acertou todas as questões deste simulado'
+                    : 'Cria um simulado novo com as questões erradas e as em branco'
+                }
                 onClick={refazerErros}
               >
-                {refazer.isPending ? 'Criando…' : 'Refazer só os erros'}
+                {refazer.isPending ? 'Criando…' : `Refazer erros e em branco (${paraRefazer})`}
               </button>
             </div>
           </div>
@@ -248,6 +235,7 @@ function Revisao({ revisao }: { revisao: RevisaoSimulado }) {
                 key={q.ordem}
                 numero={q.ordem}
                 status={q.resultado}
+                deixadaEmBranco={q.deixadaEmBranco}
                 isAtiva={questaoAtiva === q.ordem}
                 onClick={() => irParaQuestao(q.ordem)}
               />

@@ -23,7 +23,6 @@ export function FilterPillButton({
     acertos: styles.pillAcertos,
     erros: styles.pillErros,
     em_branco: styles.pillEmBranco,
-    fora_do_tempo: styles.pillForaDoTempo,
   }[tipo]
 
   return (

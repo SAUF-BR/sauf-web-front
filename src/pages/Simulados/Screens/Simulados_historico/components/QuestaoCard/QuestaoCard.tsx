@@ -31,8 +31,7 @@ export function QuestaoCard({ questao, isAtiva = false }: QuestaoCardProps) {
     comando,
     alternativas,
     resultado,
-    tempoEsgotado,
-    foraDoTempo,
+    deixadaEmBranco,
     alternativaMarcada,
     alternativaCorreta,
     tempoSegundos,
@@ -51,24 +50,16 @@ export function QuestaoCard({ questao, isAtiva = false }: QuestaoCardProps) {
         <div className={styles.titleGroup}>
           <h3 className={styles.numero}>Questão {ordem}</h3>
 
-          <span className={`${styles.statusTag} ${styles[`tag_${resultado}`]}`}>
-            {ROTULO_STATUS[resultado]}
+          <span
+            className={`${styles.statusTag} ${deixadaEmBranco ? styles.tagEscolhida : styles[`tag_${resultado}`]}`}
+          >
+            {resultado === 'em_branco' && !deixadaEmBranco ? 'Sem resposta' : ROTULO_STATUS[resultado]}
           </span>
-
-          {foraDoTempo && (
-            <span className={`${styles.statusTag} ${styles.tagForaDoTempo}`}>Fora do tempo</span>
-          )}
-          {!foraDoTempo && tempoEsgotado && resultado === 'em_branco' && (
-            <span className={`${styles.statusTag} ${styles.tagForaDoTempo}`}>Tempo esgotado</span>
-          )}
 
           <span className={styles.categoriaTag}>{etiquetaQuestao(area, ano)}</span>
         </div>
 
-        <span className={`${styles.tempo} ${foraDoTempo ? styles.tempoForaDoTempo : ''}`}>
-          {formatarTempoQuestao(tempoSegundos)}
-          {foraDoTempo && ' · respondida fora do tempo'}
-        </span>
+        <span className={styles.tempo}>{formatarTempoQuestao(tempoSegundos)}</span>
       </div>
 
       {textoBase && (
@@ -107,7 +98,9 @@ export function QuestaoCard({ questao, isAtiva = false }: QuestaoCardProps) {
           <div className={`${styles.boxResposta} ${styles.boxEmBranco}`}>
             <div className={styles.circleIcon} />
             <div>
-              <strong className={styles.textGray}>Você não respondeu</strong>
+              <strong className={styles.textGray}>
+                {deixadaEmBranco ? 'Você deixou em branco' : 'Você não respondeu'}
+              </strong>
               <span className={styles.subtexto}>Questões em branco contam como erro na média</span>
             </div>
           </div>

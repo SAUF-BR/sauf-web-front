@@ -56,8 +56,6 @@ export interface QuestaoSimulado {
   situacao: SituacaoQuestao
   alternativaMarcada: string | null
   tempoSegundos: number
-  // Resposta dada com o tempo do simulado cronometrado já esgotado
-  foraDoTempo: boolean
 }
 
 export interface SimuladoDetalhe {
@@ -97,9 +95,8 @@ export interface QuestaoRevisao {
   comando: string
   alternativas: Alternativa[]
   resultado: ResultadoQuestao
-  // Ficou o limite inteiro na questão (respondida ou não)
-  tempoEsgotado: boolean
-  foraDoTempo: boolean
+  // true quando o aluno clicou em "Deixar em branco"; false se só ficou sem resposta (D-96)
+  deixadaEmBranco: boolean
   alternativaMarcada: string | null
   alternativaCorreta: string
   tempoSegundos: number
@@ -118,7 +115,6 @@ export interface RevisaoSimulado {
   acertos: number
   erros: number
   emBranco: number
-  respondidasForaDoTempo: number
   porcentagemAcerto: number
   duracaoSegundos: number
   porArea: DesempenhoArea[]
@@ -137,7 +133,6 @@ export interface SimuladoResumo {
   finalizadoEm: string | null
   totalQuestoes: number
   respondidas: number
-  respondidasForaDoTempo: number
   acertos: number
   erros: number
   emBranco: number

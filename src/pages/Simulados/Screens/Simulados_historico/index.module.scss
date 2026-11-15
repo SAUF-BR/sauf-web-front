@@ -31,26 +31,8 @@
   flex-direction: column;
   gap: $spacing-xs;
 
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8125rem;
-    color: $color-text-secondary;
-
-    a {
-      color: $color-text-secondary;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .currentBreadcrumb {
-      color: $color-blue-primary;
-      font-weight: 600;
-    }
+  .trilha {
+    margin-bottom: $spacing-sm;
   }
 
   .title {
