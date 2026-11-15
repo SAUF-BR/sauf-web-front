@@ -14,16 +14,27 @@ type OpcoesFavoritos<T, O extends string> = {
   comparadores: Record<O, Comparador<T>>
   ordenacaoPadrao: O
   selecionadosIniciais?: string[]
+  aoRemover?: (item: T) => void
+  aoDesfazerRemocao?: (item: T) => void
 }
 
-//Estado: ordenação, seleção para a Comparação rápida e remoção com desfazer. Só em memória 
 export function useFavoritos<T extends ItemFavorito, O extends string>({
   iniciais,
   comparadores,
   ordenacaoPadrao,
   selecionadosIniciais = [],
+  aoRemover,
+  aoDesfazerRemocao,
 }: OpcoesFavoritos<T, O>) {
   const [favoritos, setFavoritos] = useState(iniciais)
+  const [iniciaisAnteriores, setIniciaisAnteriores] = useState(iniciais)
+
+  // Quando a lista da API chega (ou é atualizada), ela passa a valer
+  if (iniciais !== iniciaisAnteriores) {
+    setIniciaisAnteriores(iniciais)
+    setFavoritos(iniciais)
+  }
+
   const [ordenacao, setOrdenacao] = useState(ordenacaoPadrao)
   const [selecionados, setSelecionados] = useState(() => new Set(selecionadosIniciais))
   const [ultimaRemocao, setUltimaRemocao] = useState<Remocao<T> | null>(null)
@@ -66,6 +77,7 @@ export function useFavoritos<T extends ItemFavorito, O extends string>({
       proximo.delete(id)
       return proximo
     })
+    aoRemover?.(favoritos[posicao])
   }
 
   function desfazerRemocao() {
@@ -80,6 +92,7 @@ export function useFavoritos<T extends ItemFavorito, O extends string>({
     }
 
     setUltimaRemocao(null)
+    aoDesfazerRemocao?.(item)
   }
 
   return {
