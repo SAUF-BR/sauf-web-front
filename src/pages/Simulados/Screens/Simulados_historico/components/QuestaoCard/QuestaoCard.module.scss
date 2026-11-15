@@ -68,7 +68,7 @@
     color: $color-text-secondary;
   }
 
-  &.tagForaDoTempo {
+  &.tagEscolhida {
     background-color: $color-yellow-soft;
     color: $color-yellow-dark;
   }
@@ -86,11 +86,6 @@
 .tempo {
   font-size: 0.75rem;
   color: $color-text-secondary;
-
-  &.tempoForaDoTempo {
-    color: $color-yellow-dark;
-    font-weight: 600;
-  }
 }
 
 .enunciado {

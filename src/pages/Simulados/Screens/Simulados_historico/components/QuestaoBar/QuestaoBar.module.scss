@@ -26,6 +26,10 @@
     background-color: $color-border-light;
   }
 
+  &.em_branco.escolhida {
+    background-color: $color-yellow;
+  }
+
   &.ativa {
     outline: 2px solid $color-blue-primary;
     outline-offset: 2px;
