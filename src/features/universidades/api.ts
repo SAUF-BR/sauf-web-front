@@ -7,6 +7,7 @@ import type {
   ContagensUniversidades,
   FiltrosUniversidadesApi,
   Universidade,
+  UniversidadeDetalhe,
   UniversidadeListagemApi,
 } from './types'
 
@@ -67,5 +68,10 @@ export async function getCidadesComUniversidade(uf: string): Promise<string[]> {
   const { data } = await apiClient.get<string[]>(endpoints.universidades.cidades, {
     params: { uf },
   })
+  return data
+}
+
+export async function getUniversidadeDetalhe(id: string): Promise<UniversidadeDetalhe> {
+  const { data } = await apiClient.get<UniversidadeDetalhe>(endpoints.universidades.detalhe(id))
   return data
 }
