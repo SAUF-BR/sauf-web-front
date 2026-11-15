@@ -15,6 +15,7 @@ import { ROTAS } from '../routes/paths'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import Cadastro from '../pages/Cadastro'
+import EsqueciSenha from '../pages/EsqueciSenha'
 import Cursos from '../pages/Cursos'
 import CursoDetalhe from '../pages/CursoDetalhe'
 import Universidades from '../pages/Universidades'
@@ -52,6 +53,8 @@ const router = createBrowserRouter(
       {/* Telas de autenticação: tela cheia, sem o header da aplicação */}
       <Route path={ROTAS.login} element={<Login />} />
       <Route path={ROTAS.cadastro} element={<Cadastro />} />
+      {/* Esqueci minha senha: pede o código por e-mail e entra com ele */}
+      <Route path={ROTAS.esqueciSenha} element={<EsqueciSenha />} />
 
       {/* Simulado em andamento: header próprio, mas exige assinatura */}
       <Route element={<SubscriberRoute />}>
@@ -98,7 +101,10 @@ const router = createBrowserRouter(
         <Route path={ROTAS.favoritos} element={<Favoritos />} />
         <Route path={ROTAS.notificacoes} element={<Notificacoes />} />
         <Route path={ROTAS.perfil} element={<Perfil />} />
-        <Route path={ROTAS.perfilAssinatura} element={<GerenciarAssinatura />} />
+        {/* Perfil: a própria tela trata o visitante; gerenciar a assinatura exige login */}
+        <Route element={<PrivateRoute />}>
+          <Route path={ROTAS.perfilAssinatura} element={<GerenciarAssinatura />} />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Route>

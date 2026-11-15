@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { PlanoAssinatura } from '../../types'
+import { useUsuarioAtual } from '../auth'
 import {
   cancelarAssinatura,
   getAssinaturaAtual,
@@ -7,6 +8,10 @@ import {
   reativarAssinatura,
   trocarPlano,
 } from './api'
+
+// Só em desenvolvimento (.env.development): libera as telas de assinante sem pagamento.
+// Ainda é preciso entrar na conta, porque a API dos simulados exige login.
+const ASSINATURA_SIMULADA = import.meta.env.VITE_MOCK_ASSINATURA === 'true'
 
 export const assinaturaKeys = {
   all: ['assinatura'] as const,
@@ -22,11 +27,28 @@ export function usePlanos() {
   })
 }
 
-export function useAssinaturaAtual() {
+// `enabled: false` para visitantes: sem conta não há assinatura para buscar
+export function useAssinaturaAtual({ enabled = true }: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: assinaturaKeys.atual(),
     queryFn: getAssinaturaAtual,
+    enabled,
   })
+}
+
+/**
+ * Se a pessoa tem assinatura vigente (a API responde 204 quando não tem, D-56).
+ * Visitante conta como sem assinatura. `isPending` fica true enquanto ainda não dá
+ * para saber, para as rotas não redirecionarem antes da hora.
+ */
+export function useTemAssinaturaAtiva() {
+  const { data: usuario, isPending: carregandoUsuario } = useUsuarioAtual()
+  const consulta = useAssinaturaAtual({ enabled: !!usuario })
+
+  if (carregandoUsuario) return { ativa: false, isPending: true }
+  if (!usuario) return { ativa: false, isPending: false }
+
+  return { ativa: !!consulta.data || ASSINATURA_SIMULADA, isPending: consulta.isPending && !ASSINATURA_SIMULADA }
 }
 
 // Depois de qualquer tentativa de mudança, recarrega a assinatura (selo "Seu plano", resumo

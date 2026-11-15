@@ -1,0 +1,31 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// "input." para vencer o padding do TextInput: espaço para o ícone não cobrir o texto
+input.comOlho {
+  padding-right: 2.75rem;
+}
+
+.olho {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-right: -0.375rem;
+  padding: 0;
+  color: $color-text-secondary;
+  background: none;
+  border: 0;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: $color-green;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

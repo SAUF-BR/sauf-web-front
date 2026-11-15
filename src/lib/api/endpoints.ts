@@ -1,9 +1,18 @@
 export const endpoints = {
   auth: {
+    cadastro: '/auth/cadastro',
+    emailDisponivel: '/auth/email-disponivel',
     login: '/auth/login',
     logout: '/auth/logout',
     me: '/me',
     foto: '/me/foto',
+    senha: '/me/senha',
+    esqueciSenha: '/auth/esqueci-senha',
+    entrarComCodigo: '/auth/esqueci-senha/codigo',
+  },
+  documentos: {
+    vigentes: '/documentos-legais',
+    aceites: '/me/aceites',
   },
   cursos: {
     list: '/cursos',

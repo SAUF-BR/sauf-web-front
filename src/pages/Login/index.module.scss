@@ -48,31 +48,34 @@
 }
 
 .esqueciSenha {
+  padding: 0;
+  font: inherit;
   font-size: 0.75rem;
   font-weight: 600;
   color: $color-green;
   text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:disabled {
+    color: $color-grey;
+    cursor: not-allowed;
+  }
+}
+
+.aviso {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $color-yellow-dark;
+  background: $color-yellow-soft;
+  border-radius: 0.625rem;
 }
 
 .botaoEntrar {
   margin-top: 0.25rem;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 0.25rem 0;
-  font-size: 0.75rem;
-  color: $color-grey;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: $color-grey;
-  }
 }
 
 .cadastro {

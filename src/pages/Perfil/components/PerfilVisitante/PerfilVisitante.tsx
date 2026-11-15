@@ -1,4 +1,4 @@
-import { User } from 'lucide-react'
+import { ArrowLeft, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../../../components/ui/Botao/Botao'
 import { Tag } from '../../../../components/ui/Tag/Tag'
@@ -34,6 +34,10 @@ export function PerfilVisitante() {
       }
       acoes={
         <>
+          <Button variant="outline" onClick={() => navigate(ROTAS.inicio)}>
+            <ArrowLeft size="1em" aria-hidden="true" />
+            Voltar ao início
+          </Button>
           <Button variant="outline" onClick={() => navigate(ROTAS.cadastro)}>
             Criar conta
           </Button>

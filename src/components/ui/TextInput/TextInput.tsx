@@ -2,7 +2,7 @@ import { useId } from 'react'
 import type { ComponentProps, ReactNode } from 'react'
 import styles from './TextInput.module.scss'
 
-type TextInputProps = ComponentProps<'input'> & {
+export type TextInputProps = ComponentProps<'input'> & {
   label: string
   error?: string
   hint?: string

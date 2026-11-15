@@ -1,0 +1,142 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.leitor {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 0;
+}
+
+.abas {
+  display: flex;
+  gap: 0.125rem;
+  padding: 0.1875rem;
+  background: rgba($color-grey, 0.15);
+  border-radius: $radius-md;
+}
+
+.aba,
+.abaAtiva {
+  flex: 1;
+  padding: 0.3125rem 0.625rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+  background: transparent;
+  border: 0;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.abaAtiva {
+  color: $color-blue-primary;
+  background: $color-surface;
+  box-shadow: 0 1px 3px rgba($color-blue-primary, 0.12);
+}
+
+.descricao {
+  margin: 0.5rem 0 0;
+  font-size: 0.6875rem;
+  color: $color-text-secondary;
+}
+
+// Área do texto: a altura vem da tela (classeTexto); rola por dentro
+.texto {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: 0.5rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: $color-blue-secondary;
+  scrollbar-width: thin;
+  scrollbar-color: $color-grey transparent;
+
+  &:focus-visible {
+    outline: 2px solid $color-green;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+
+  // O título já aparece na aba e no cabeçalho da tela
+  > h1:first-child {
+    display: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 1.25rem 0 0.5rem;
+    line-height: 1.35;
+    color: $color-blue-primary;
+  }
+
+  h1 {
+    font-size: 1rem;
+  }
+
+  h2 {
+    font-size: 0.9375rem;
+  }
+
+  h3 {
+    font-size: 0.875rem;
+  }
+
+  p,
+  ul,
+  ol {
+    margin: 0 0 0.75rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+
+  li + li {
+    margin-top: 0.25rem;
+  }
+
+  strong {
+    color: $color-blue-primary;
+  }
+
+  a {
+    @include text-link;
+  }
+
+  hr {
+    margin: 1.25rem 0;
+    border: 0;
+    border-top: 1px solid rgba($color-grey, 0.35);
+  }
+
+  table {
+    width: 100%;
+    margin: 0 0 0.75rem;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+
+  th,
+  td {
+    padding: 0.375rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid rgba($color-grey, 0.35);
+  }
+
+  th {
+    color: $color-blue-primary;
+    background: rgba($color-grey, 0.12);
+  }
+}

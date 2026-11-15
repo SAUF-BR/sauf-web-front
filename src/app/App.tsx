@@ -1,13 +1,11 @@
 import { QueryProvider } from './providers/QueryProvider'
-import { AuthProvider } from './providers/AuthProvider'
 import { AppRouter } from './router'
 
+// A sessão (quem está logado) vem do useUsuarioAtual (features/auth), via React Query
 function App() {
   return (
     <QueryProvider>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
+      <AppRouter />
     </QueryProvider>
   )
 }
