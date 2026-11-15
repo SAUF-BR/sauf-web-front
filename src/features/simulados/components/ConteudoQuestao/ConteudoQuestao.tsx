@@ -2,14 +2,11 @@ import type { ReactNode } from 'react'
 import Markdown, { type Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './ConteudoQuestao.module.scss'
+import { ImagemQuestao } from './ImagemQuestao'
+import { urlSegura } from './imagens'
 
 // Renderiza o Markdown que vem do banco (texto-base, comando e alternativas) com react-markdown
 // e remark-gfm (tabelas). Sem rehype-raw: HTML que vier no texto aparece como texto, nunca é executado.
-
-// Só aceita imagens http(s); qualquer outro esquema (javascript:, data:) vira o texto alternativo
-function urlSegura(url: string | undefined) {
-  return url !== undefined && /^https?:\/\//i.test(url)
-}
 
 // Títulos do texto ficam todos no mesmo nível, abaixo do título da página
 function Titulo({ children }: { children?: ReactNode }) {
@@ -33,7 +30,7 @@ const COMPONENTES: Components = {
   img: ({ src, alt }) => {
     const url = typeof src === 'string' ? src : undefined
     return urlSegura(url) ? (
-      <img className={styles.imagem} src={url} alt={alt ?? ''} loading="lazy" />
+      <ImagemQuestao key={url} src={url} alt={alt ?? ''} />
     ) : (
       <span>{alt}</span>
     )

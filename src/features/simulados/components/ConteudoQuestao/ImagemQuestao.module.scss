@@ -1,0 +1,126 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// Espaço reservado enquanto carrega, para o texto não pular quando a imagem chega
+$altura-reservada: 220px;
+
+.moldura {
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+
+  &.carregando {
+    width: min(100%, 560px);
+    min-height: $altura-reservada;
+  }
+}
+
+.imagem {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: $radius-sm;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+
+  .carregando & {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.esqueleto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: $radius-sm;
+  background-color: $color-placeholder-stripe;
+  background-image: linear-gradient(
+    90deg,
+    rgba($color-surface, 0) 0,
+    rgba($color-surface, 0.55) 50%,
+    rgba($color-surface, 0) 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: brilho 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-image: none;
+  }
+}
+
+.erro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  width: min(100%, 560px);
+  margin: 0 auto;
+  padding: $spacing-lg $spacing-md;
+  border: 1px dashed $color-border-light;
+  border-radius: $radius-md;
+  background: $color-fundo-lateral;
+  color: $color-text-secondary;
+  font-size: 0.875rem;
+  text-align: center;
+  white-space: normal;
+}
+
+.erroTitulo {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.erroDescricao {
+  max-width: 60ch;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.tentar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px $spacing-md;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  background: $color-surface;
+  color: $color-blue-primary;
+  font: 600 0.8125rem $font-sans;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $color-blue-primary;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.somenteLeitor {
+  @include visually-hidden;
+}
+
+@keyframes brilho {
+  from {
+    background-position: 150% 0;
+  }
+
+  to {
+    background-position: -50% 0;
+  }
+}
