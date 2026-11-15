@@ -129,4 +129,9 @@
   a {
     @include text-link;
   }
+
+  > [role='status'],
+  > [role='alert'] {
+    align-self: stretch;
+  }
 }

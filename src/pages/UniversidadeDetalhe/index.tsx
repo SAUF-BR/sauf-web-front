@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { Carregando } from '../../components/ui/Carregando/Carregando'
+import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
 import { formatarInteiro } from '../../lib/utils'
 import { ROTAS } from '../../routes/paths'
 import { CabecalhoUniversidade } from './components/CabecalhoUniversidade/CabecalhoUniversidade'
@@ -16,7 +18,8 @@ import styles from './index.module.scss'
 
 export default function UniversidadeDetalhe() {
   const { universidadeId = '' } = useParams()
-  const { universidade, carregando, erro } = useUniversidadeDetalhe(universidadeId)
+  const { universidade, carregando, naoEncontrada, erro, mensagemErro, tentando, tentarDeNovo } =
+    useUniversidadeDetalhe(universidadeId)
 
   // Só em memória por enquanto
   const [favorito, setFavorito] = useState(false)
@@ -29,22 +32,29 @@ export default function UniversidadeDetalhe() {
   if (carregando) {
     return (
       <main className={styles.estado} aria-busy="true">
-        <p>Carregando universidade…</p>
+        <Carregando mensagem="Carregando universidade…" />
       </main>
     )
   }
 
-  if (erro || !universidade) {
+  if (erro) {
     return (
       <main className={styles.estado}>
-        <h1 className={styles.tituloSecao}>
-          {erro ? 'Não foi possível carregar' : 'Universidade não encontrada'}
-        </h1>
-        <p>
-          {erro
-            ? 'Tivemos um problema ao buscar os dados. Tente novamente em instantes.'
-            : 'Não encontramos essa universidade. Ela pode ter sido removida ou o endereço está errado.'}
-        </p>
+        <EstadoErro
+          titulo="Não foi possível carregar a universidade"
+          descricao={mensagemErro}
+          onTentarDeNovo={tentarDeNovo}
+          tentando={tentando}
+        />
+      </main>
+    )
+  }
+
+  if (naoEncontrada || !universidade) {
+    return (
+      <main className={styles.estado}>
+        <h1 className={styles.tituloSecao}>Universidade não encontrada</h1>
+        <p>Não encontramos essa universidade. Ela pode ter sido removida ou o endereço está errado.</p>
         <Link to={ROTAS.universidades}>Voltar para universidades</Link>
       </main>
     )
@@ -98,7 +108,7 @@ export default function UniversidadeDetalhe() {
                 </div>
               ))}
             </dl>
-            
+
             <section aria-labelledby="secao-sobre">
               <h2 id="secao-sobre" className={styles.tituloSecao}>
                 Sobre a universidade
@@ -130,13 +140,7 @@ export default function UniversidadeDetalhe() {
           </div>
 
           <aside className={styles.lateral} aria-label="Informações rápidas">
-            <PainelOndeFica
-              nome={universidade.nome}
-              cidade={universidade.cidade}
-              uf={universidade.uf}
-              endereco={universidade.endereco}
-              distanciaKm={universidade.distanciaKm}
-            />
+            <PainelOndeFica nome={universidade.nome} endereco={universidade.enderecoSede} />
             <PainelFormasIngresso
               formas={universidade.formasIngresso}
               nota={universidade.notaFormasIngresso}
