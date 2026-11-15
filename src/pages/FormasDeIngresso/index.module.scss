@@ -4,7 +4,7 @@
   display: flex;
   align-items: stretch;
   width: 100%;
-  max-width: 1440px;
+  max-width: $container-max-width;
   min-height: calc(100vh - 87px);
   margin: 0 auto;
   background: $color-surface;

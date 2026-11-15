@@ -59,7 +59,9 @@ $radius-xl: 1.25rem;
 $radius-full: 999px;
 
 // Layout
-$container-max-width: 1320px;
+// Largura máxima do conteúdo e do header; o respiro lateral cresce com a tela
+$container-max-width: 1600px;
+$container-padding-x: clamp(16px, 4vw, 64px);
 $header-height: 4rem;
 
 $color-primary: #4f46e5; // ajustar: cor de marca

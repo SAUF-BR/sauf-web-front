@@ -10,7 +10,7 @@
 
 .conteudo {
   width: 100%;
-  max-width: 1152px;
+  max-width: $container-max-width;
   margin: 0 auto;
 }
 
@@ -22,6 +22,6 @@
 
 .container {
   width: 100%;
-  max-width: 1152px;
+  max-width: $container-max-width;
   margin: 0 auto;
 }
