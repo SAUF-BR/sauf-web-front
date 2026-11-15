@@ -38,3 +38,55 @@ export interface ContagensUniversidades {
   tipo: Record<TipoUniversidade, number>
   modalidade: Record<Modalidade, number>
 }
+
+export type EsferaAdministrativa = 'federal' | 'estadual' | 'municipal'
+
+export interface EnderecoSede {
+  logradouro: string | null
+  numero: string | null
+  complemento: string | null
+  bairro: string | null
+  cep: string | null
+  cidade: string
+  uf: UF
+}
+
+export interface ModalidadeOfertada {
+  modalidade: Modalidade
+  disponivel: boolean
+  totalCursos: number
+  descricao: string | null
+}
+
+export interface AreaCursos {
+  area: string
+  totalCursos: number
+}
+
+export interface FormaIngresso {
+  nome: string
+  aceita: boolean
+}
+
+export interface ProximoPrazo {
+  titulo: string
+  data: string
+  editalUrl: string | null
+}
+
+export interface UniversidadeDetalhe extends Universidade {
+  esfera: EsferaAdministrativa | null
+  enderecoSede: EnderecoSede
+  siteUrl: string | null
+  capaUrl: string | null
+  anoFundacao: number | null
+  notaMec: number | null
+  gratuita: boolean
+  vagasPorAno: number | null
+  sobre: string[]
+  modalidades: ModalidadeOfertada[]
+  cursosPorArea: AreaCursos[]
+  formasIngresso: FormaIngresso[]
+  notaFormasIngresso: string | null
+  proximoPrazo: ProximoPrazo | null
+}
