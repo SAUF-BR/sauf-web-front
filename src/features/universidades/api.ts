@@ -19,17 +19,28 @@ export async function getUniversidadesEmDestaque(): Promise<Paginado<Universidad
   return simularRequisicao(universidadesDestaqueMock)
 }
 
+// Tira os campos vazios. Assim, filtros equivalentes viram a mesma chave de cache
+export function limparFiltros(filtros: FiltrosUniversidadesApi): FiltrosUniversidadesApi {
+  const limpos: FiltrosUniversidadesApi = {}
+  const busca = filtros.busca?.trim()
+
+  if (busca) limpos.busca = busca
+  if (filtros.uf) limpos.uf = filtros.uf
+  if (filtros.cidade) limpos.cidade = filtros.cidade
+  if (filtros.tipos?.length) limpos.tipos = filtros.tipos
+  if (filtros.modalidades?.length) limpos.modalidades = filtros.modalidades
+  if (filtros.notaMec) limpos.notaMec = filtros.notaMec
+
+  return limpos
+}
 function paramsDosFiltros(filtros: FiltrosUniversidadesApi) {
-  const params: Record<string, string> = {}
+  const { tipos, modalidades, ...demais } = limparFiltros(filtros)
 
-  if (filtros.busca?.trim()) params.busca = filtros.busca.trim()
-  if (filtros.uf) params.uf = filtros.uf
-  if (filtros.cidade) params.cidade = filtros.cidade
-  if (filtros.tipos?.length) params.tipo = filtros.tipos.join(',')
-  if (filtros.modalidades?.length) params.modalidade = filtros.modalidades.join(',')
-  if (filtros.notaMec) params.notaMec = filtros.notaMec
-
-  return params
+  return {
+    ...demais,
+    ...(tipos && { tipo: tipos.join(',') }),
+    ...(modalidades && { modalidade: modalidades.join(',') }),
+  }
 }
 
 export async function getUniversidades(
