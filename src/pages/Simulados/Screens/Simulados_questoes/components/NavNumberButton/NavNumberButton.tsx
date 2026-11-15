@@ -10,7 +10,6 @@ const DESCRICAO: Record<SituacaoQuestao, string> = {
 interface NavNumberButtonProps {
   numero: number
   status: SituacaoQuestao
-  foraDoTempo?: boolean
   isAtiva: boolean
   disabled?: boolean
   onClick: () => void
@@ -19,7 +18,6 @@ interface NavNumberButtonProps {
 export function NavNumberButton({
   numero,
   status,
-  foraDoTempo = false,
   isAtiva,
   disabled,
   onClick,
@@ -27,10 +25,8 @@ export function NavNumberButton({
   return (
     <button
       type="button"
-      className={`${styles.btn} ${styles[status]} ${isAtiva ? styles.ativa : ''} ${
-        foraDoTempo ? styles.foraDoTempo : ''
-      }`}
-      aria-label={`Questão ${numero}, ${DESCRICAO[status]}${foraDoTempo ? ', fora do tempo' : ''}`}
+      className={`${styles.btn} ${styles[status]} ${isAtiva ? styles.ativa : ''}`}
+      aria-label={`Questão ${numero}, ${DESCRICAO[status]}`}
       aria-current={isAtiva ? 'step' : undefined}
       disabled={disabled}
       onClick={onClick}

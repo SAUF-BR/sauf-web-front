@@ -21,19 +21,6 @@
     color: $color-surface;
   }
 
-  // Respondida fora do tempo: ponto no canto
-  &.foraDoTempo::after {
-    content: '';
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: $color-yellow-dark;
-    border: 2px solid $color-surface;
-  }
-
   &:disabled {
     cursor: not-allowed;
     opacity: 0.7;

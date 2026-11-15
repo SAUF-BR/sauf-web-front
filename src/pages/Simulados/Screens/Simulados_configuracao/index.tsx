@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ROTAS } from '../../../../routes/paths'
@@ -22,6 +22,7 @@ import { EsqueletoConfiguracao } from './components/EsqueletoConfiguracao/Esquel
 import { TamanhoCard, type TamanhoOpcao } from './components/TamanhoCard/TamanhoCard'
 import { schemaConfiguracao, type ConfiguracaoSimulado } from './schema'
 import styles from './index.module.scss'
+import { Trilha } from '../../compartilhados/Trilha/Trilha'
 
 const TEXTO_TAMANHO: Record<Tamanho, { titulo: string; subtexto: string; sugerida?: boolean }> = {
   rapida: { titulo: 'Rápida', subtexto: 'Boa para treinar uma área só.' },
@@ -40,6 +41,20 @@ function descreverTempo(segundos: number) {
   const minutos = Math.round(segundos / 60)
   return minutos < 60 ? `${minutos} minutos` : formatarDuracao(segundos)
 }
+
+// cronometrado=true é o regressivo e false o crescente (D-95); o tempo nunca bloqueia a resposta
+const MODOS_CRONOMETRO = [
+  {
+    cronometrado: true,
+    titulo: 'Regressivo',
+    texto: 'Conta para baixo a partir de um tempo de referência por questão. Quando zera, segue contando o tempo extra.',
+  },
+  {
+    cronometrado: false,
+    titulo: 'Crescente',
+    texto: 'Conta o tempo que você passa em cada questão, sem referência.',
+  },
+]
 
 // Selos das opções de tempo por questão
 const SELO_TEMPO: Record<number, string> = { 150: 'sugerido', 180: 'ritmo do ENEM' }
@@ -222,31 +237,39 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
 
         <div className={styles.sectionBlock}>
           <h2>4 · TEMPO</h2>
-          <div className={styles.toggleCard}>
-            <div>
-              <strong id="rotulo-cronometro">Cronometrar o simulado</strong>
-              <p>
-                {cronometrado
-                  ? `Limite de ${limite} por questão. Depois dele dá para responder, mas a resposta fica marcada como fora do tempo`
-                  : 'Sem limite de tempo; o tempo gasto é medido mesmo assim'}
-              </p>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={cronometrado}
-              aria-labelledby="rotulo-cronometro"
-              className={`${styles.switchBtn} ${cronometrado ? styles.switchOn : ''}`}
-              onClick={() => setValue('cronometrado', !cronometrado)}
-            >
-              <span className={styles.switchHandle} />
-            </button>
+          <p className={styles.tempoAviso}>
+            O cronômetro é só uma referência: você responde no seu ritmo e o tempo total aparece ao
+            lado.
+          </p>
+          <div className={styles.modosGrid} role="radiogroup" aria-label="Cronômetro por questão">
+            {MODOS_CRONOMETRO.map((modo) => {
+              const ativo = cronometrado === modo.cronometrado
+              return (
+                <label
+                  key={modo.titulo}
+                  className={`${styles.modoCard} ${ativo ? styles.modoAtivo : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="cronometrado"
+                    checked={ativo}
+                    onChange={() => setValue('cronometrado', modo.cronometrado)}
+                    className={styles.inputEscondido}
+                  />
+                  <span className={`${styles.radioIcon} ${ativo ? styles.radioAtivo : ''}`} />
+                  <span className={styles.modoTexto}>
+                    <strong>{modo.titulo}</strong>
+                    <span>{modo.texto}</span>
+                  </span>
+                </label>
+              )
+            })}
           </div>
 
           {cronometrado && (
             <div className={styles.temposBloco}>
               <span className={styles.temposTitulo} id="rotulo-tempo">
-                Tempo por questão
+                Tempo de referência por questão
               </span>
               <div className={styles.pillsRow} role="radiogroup" aria-labelledby="rotulo-tempo">
                 {temposPorQuestao.map((segundos) => {
@@ -311,7 +334,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <div className={styles.summaryRow}>
               <span className={styles.label}>Cronômetro</span>
               <strong className={styles.value}>
-                {cronometrado ? `Limite de ${limite} por questão` : 'Desligado'}
+                {cronometrado ? `Regressivo · ${limite} por questão` : 'Crescente'}
               </strong>
             </div>
           </div>
@@ -347,11 +370,11 @@ export default function SimuladosConfiguracao() {
     <main className={styles.pageWrapper}>
       <header className={styles.headerSection}>
         <div className={styles.headerContainer}>
-          <nav className={styles.breadcrumb} aria-label="Você está em">
-            <Link to={ROTAS.simulados}>Simulados</Link>
-            <span>/</span>
-            <span className={styles.currentBreadcrumb}>Novo simulado</span>
-          </nav>
+          <Trilha
+            itens={[{ rotulo: 'Simulados', para: ROTAS.simulados }, { rotulo: 'Novo simulado' }]}
+            voltarPara={ROTAS.simulados}
+            className={styles.trilha}
+          />
 
           <h1 className={styles.title}>Configurar seu simulado</h1>
 

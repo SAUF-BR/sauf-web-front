@@ -182,7 +182,7 @@ export default function SimuladosMain() {
             <div className={styles.bannerCta}>
               <div>
                 <h3>Monte um simulado do jeito que você precisa</h3>
-                <p>Escolha o vestibular, as categorias, a quantidade de questões e se quer tempo cronometrado.</p>
+                <p>Escolha o vestibular, as categorias, a quantidade de questões e o tipo de cronômetro.</p>
               </div>
 
               <button type="button" className={styles.bannerBtn} onClick={criarSimulado}>

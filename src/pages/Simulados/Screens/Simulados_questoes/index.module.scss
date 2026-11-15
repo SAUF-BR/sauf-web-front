@@ -76,7 +76,6 @@
   &.greenDot { background-color: $color-green; }
   &.yellowDot { background-color: $color-yellow; }
   &.grayDot { background-color: $color-text-muted; }
-  &.foraDot { background-color: $color-yellow-dark; }
 }
 
 .numbersNavGrid {
@@ -142,14 +141,32 @@
   @include visually-hidden;
 }
 
-// Botões da Barra Inferior
+// Barra inferior presa no rodapé da tela
+.actionsBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background-color: $color-white;
+  border-top: 1px solid $color-border-light;
+  box-shadow: 0 -4px 12px rgba($color-blue-primary, 0.06);
+  padding: $spacing-sm 0 calc(#{$spacing-sm} + env(safe-area-inset-bottom));
+}
+
 .actionsFooter {
+  @include container;
+  max-width: 860px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: $spacing-lg;
-  padding-top: $spacing-md;
-  border-top: 1px solid $color-border-light;
+  gap: $spacing-sm;
+}
+
+.prevBtn,
+.nextBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .prevBtn {
@@ -215,16 +232,6 @@
   color: $color-text-secondary;
   margin: $spacing-xs 0 0 0;
 }
-.avisoTempo {
-  margin: 0;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $radius-md;
-  background-color: $color-yellow-soft;
-  color: $color-yellow-dark;
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
 .falha {
   display: flex;
   align-items: center;
@@ -260,13 +267,18 @@
     width: 140px;
   }
 
+  // Anterior e em branco lado a lado, avançar embaixo ocupando a linha toda
   .actionsFooter {
-    flex-direction: column;
-    align-items: stretch;
-    gap: $spacing-sm;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .rightActions {
-    flex-direction: column;
+    display: contents;
+  }
+
+  .nextBtn {
+    grid-column: 1 / -1;
+    order: 3;
   }
 }

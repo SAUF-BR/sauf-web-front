@@ -16,16 +16,7 @@
   }
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  color: $color-text-secondary;
-
-  a { color: $color-text-secondary; text-decoration: none; &:hover { text-decoration: underline; } }
-  .currentBreadcrumb { color: $color-blue-primary; font-weight: 600; }
-}
+.trilha { margin-bottom: $spacing-sm; }
 
 .title { font-family: $font-serif; font-size: 2.25rem; font-weight: 400; color: $color-blue-primary; margin: 4px 0 0; }
 .subtitle { font-size: 0.875rem; color: $color-text-secondary; margin: 0; }
@@ -108,11 +99,31 @@
 .catDisponiveis { font-size: 0.6875rem; font-weight: 400; color: $color-text-secondary; }
 .emBreve { font-size: 0.6875rem; font-weight: 700; color: $color-yellow-dark; background: $color-yellow-soft; border-radius: $radius-full; padding: 1px 6px; margin-left: 4px; }
 
-.toggleCard {
+.tempoAviso { font-size: 0.8125rem; color: $color-text-secondary; margin: 0 0 $spacing-sm; }
+
+.modosGrid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: $spacing-sm;
+  @media (max-width: $breakpoint-sm) { grid-template-columns: 1fr; }
+}
+
+.modoCard {
   background: $color-surface; border: 1px solid $color-border-light; border-radius: $radius-lg;
-  padding: $spacing-md $spacing-lg; display: flex; justify-content: space-between; align-items: center;
+  padding: $spacing-md; display: flex; align-items: flex-start; gap: $spacing-sm; cursor: pointer;
+  position: relative;
+  &.modoAtivo { background: $color-background-light-green; border-color: $color-green; }
+  &:has(input:focus-visible) { border-color: $color-green; @include focus-ring; }
+}
+
+.radioIcon {
+  flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; border-radius: 50%;
+  border: 1px solid $color-border-light; background: $color-surface;
+  &.radioAtivo { border: 5px solid $color-green; }
+}
+
+.modoTexto {
+  display: flex; flex-direction: column; gap: 2px;
   strong { font-size: 0.875rem; color: $color-blue-primary; }
-  p { font-size: 0.75rem; color: $color-text-secondary; margin: 2px 0 0; }
+  span { font-size: 0.75rem; color: $color-text-secondary; line-height: 1.4; }
 }
 
 .temposBloco {
@@ -124,13 +135,6 @@
 .seloTempo {
   font-size: 0.6875rem; font-weight: 700; color: $color-yellow-dark; background: $color-yellow-soft;
   border-radius: $radius-full; padding: 1px 6px; margin-left: 6px;
-}
-
-.switchBtn {
-  width: 44px; height: 24px; background: $color-border-light; border-radius: $radius-full; border: none;
-  padding: 2px; cursor: pointer;
-  &.switchOn { background: $color-green; .switchHandle { transform: translateX(20px); } }
-  .switchHandle { display: block; width: 20px; height: 20px; background: $color-surface; border-radius: 50%; transition: transform 0.2s; }
 }
 
 /* Sidebar Resumo */
@@ -171,7 +175,6 @@
 // Foco do teclado visível nos botões da tela
 .linkAction,
 .pillBtn,
-.switchBtn,
 .startBtn,
 .cancelBtn {
   &:focus-visible {

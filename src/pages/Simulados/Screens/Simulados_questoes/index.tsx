@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { ROTAS } from '../../../../routes/paths'
 import { EstadoConsulta } from '../../../../components/ui/EstadoConsulta/EstadoConsulta'
 import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
@@ -9,6 +10,7 @@ import {
   useFinalizarSimulado,
   useResponderQuestao,
   useSimulado,
+  urlsDeImagens,
   type QuestaoSimulado,
   type ResponderQuestaoRequest,
   type SimuladoDetalhe,
@@ -22,6 +24,23 @@ import { ModalFinalizar } from './components/ModalFinalizar/ModalFinalizar'
 import styles from './index.module.scss'
 
 const SEGUNDOS_ALERTA = 30
+
+// 754 → "12:34" · 4510 → "1:15:10"
+function formatarTotal(segundos: number) {
+  if (segundos < 3600) return formatarCronometro(segundos)
+  const horas = Math.floor(segundos / 3600)
+  return `${horas}:${formatarCronometro(segundos % 3600)}`
+}
+
+// Baixa antes as imagens da questão para a troca não mostrar o carregamento
+function preCarregarImagens(questao: QuestaoSimulado | undefined) {
+  if (!questao) return
+  const textos = [questao.textoBase, questao.comando, ...questao.alternativas.map((a) => a.texto)]
+  for (const url of textos.flatMap(urlsDeImagens)) {
+    const imagem = new Image()
+    imagem.src = url
+  }
+}
 
 // Relógio lido só em handlers e no intervalo do cronômetro, nunca durante a renderização
 const agoraEmMs = () => Date.now()
@@ -100,9 +119,13 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
   const modoFinalizar = ehUltima || outrasPendentes.length === 0
 
   const tempoTotal = visita.base + Math.max(0, Math.floor((agora - visita.inicio) / 1000))
-  // Esgotado não bloqueia: a questão aceita resposta, que a API marca como fora do tempo
-  const esgotado = cronometrado && tempoTotal >= limite
-  const restante = Math.max(0, limite - tempoTotal)
+  // O tempo por questão é só referência (D-95): passar dele não bloqueia nem marca a resposta
+  const restante = limite - tempoTotal
+  const passou = cronometrado && restante < 0
+  const tempoSimulado = questoes.reduce(
+    (soma, q) => soma + (q.ordem === atual.ordem ? tempoTotal : q.tempoSegundos),
+    0,
+  )
   const ocupado = responder.isPending || finalizar.isPending
 
   useEffect(() => {
@@ -155,6 +178,11 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
 
   const proximaIndice = proximaPendente(questoes, indice)
 
+  useEffect(() => {
+    preCarregarImagens(questoes[indice + 1])
+    if (proximaIndice !== indice + 1) preCarregarImagens(questoes[proximaIndice])
+  }, [questoes, indice, proximaIndice])
+
   const irPara = (destino: number) => {
     if (destino === indice || destino < 0 || destino >= questoes.length) return
     void executar(async () => {
@@ -201,35 +229,37 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
 
   const respondidas = questoes.filter((q) => q.situacao === 'respondida').length
   const emBranco = questoes.filter((q) => q.situacao === 'em_branco').length
-  const foraDoTempo = questoes.filter((q) => q.foraDoTempo).length
   const restantes = questoes.filter((q) => q.situacao === 'pendente').length
   const concluidas = totalQuestoes - restantes
   const semResposta = totalQuestoes - questoes.filter((q) => q.situacao === 'respondida').length
 
   const respondidaAgora = selecionada !== null
-  // Aviso para leitor de tela: o texto só muda ao cruzar os 30 s, então é lido uma vez por questão
-  const avisoRestante =
-    cronometrado && !esgotado && restante <= SEGUNDOS_ALERTA
-      ? `Faltam ${SEGUNDOS_ALERTA} segundos ou menos nesta questão.`
-      : ''
+  const alerta = cronometrado && !passou && restante <= SEGUNDOS_ALERTA
+  // Aviso para leitor de tela: o texto só muda ao cruzar os limites, então é lido uma vez por questão
+  let avisoRestante = ''
+  if (passou) avisoRestante = 'O tempo de referência desta questão acabou. Continue no seu ritmo.'
+  else if (alerta) avisoRestante = `Faltam ${SEGUNDOS_ALERTA} segundos ou menos do tempo de referência.`
 
   let tempo = formatarCronometro(tempoTotal)
-  let rotuloTempo = 'tempo nesta questão'
-  if (esgotado) {
-    tempo = `+${formatarCronometro(tempoTotal - limite)}`
-    rotuloTempo = 'fora do tempo'
+  let rotuloTempo = 'nesta questão'
+  if (passou) {
+    tempo = `+${formatarCronometro(-restante)}`
+    rotuloTempo = 'além da referência'
   } else if (cronometrado) {
     tempo = formatarCronometro(restante)
-    rotuloTempo = 'restantes nesta questão'
+    rotuloTempo = 'restantes'
   }
 
   return (
     <main className={styles.pageWrapper}>
       <SimuladoHeader
         tituloSimulado={simulado.titulo}
+        modo={cronometrado ? 'regressivo' : 'crescente'}
         tempo={tempo}
         rotuloTempo={rotuloTempo}
-        alerta={cronometrado && restante <= SEGUNDOS_ALERTA}
+        tempoTotal={formatarTotal(tempoSimulado)}
+        alerta={alerta}
+        passou={passou}
         desabilitado={ocupado}
         onFinalizar={pedirFinalizar}
         onSalvarSair={salvarESair}
@@ -267,11 +297,6 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
               <span>
                 <span className={`${styles.dot} ${styles.yellowDot}`} /> {emBranco} em branco
               </span>
-              {foraDoTempo > 0 && (
-                <span>
-                  <span className={`${styles.dot} ${styles.foraDot}`} /> {foraDoTempo} fora do tempo
-                </span>
-              )}
               <span>
                 <span className={`${styles.dot} ${styles.grayDot}`} /> {restantes} restantes
               </span>
@@ -284,7 +309,6 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
                 key={questao.ordem}
                 numero={i + 1}
                 status={questao.situacao}
-                foraDoTempo={questao.foraDoTempo}
                 isAtiva={questao.ordem === atual.ordem}
                 disabled={ocupado}
                 onClick={() => irPara(i)}
@@ -301,18 +325,6 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
           </div>
 
           <Enunciado questao={atual} />
-
-          {atual.foraDoTempo ? (
-            <p role="status" className={styles.avisoTempo}>
-              Esta resposta foi dada fora do tempo e fica marcada assim na revisão.
-            </p>
-          ) : (
-            esgotado && (
-              <p role="status" className={styles.avisoTempo}>
-                Tempo esgotado: sua resposta será marcada como fora do tempo.
-              </p>
-            )
-          )}
 
           <fieldset className={styles.optionsList}>
             <legend className={styles.somenteLeitor}>Alternativas da questão {indice + 1}</legend>
@@ -337,44 +349,55 @@ function Execucao({ simulado }: { simulado: SimuladoDetalhe }) {
             </div>
           )}
 
-          <div className={styles.actionsFooter}>
-            <button
-              type="button"
-              className={styles.prevBtn}
-              onClick={() => irPara(indice - 1)}
-              disabled={indice === 0 || ocupado}
-            >
-              ← Questão anterior
-            </button>
-
-            <div className={styles.rightActions}>
-              <button
-                type="button"
-                className={styles.whiteBtn}
-                onClick={deixarEmBranco}
-                disabled={ocupado}
-              >
-                Deixar em branco
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.nextBtn} ${
-                  respondidaAgora || modoFinalizar ? styles.activeNext : ''
-                }`}
-                onClick={responderEAvancar}
-                disabled={ocupado || (!respondidaAgora && !modoFinalizar)}
-              >
-                {modoFinalizar ? 'Finalizar simulado' : 'Responder e avançar →'}
-              </button>
-            </div>
-          </div>
-
           <p className={styles.bottomFooterNote}>
-            ● Você pode voltar em qualquer questão antes de finalizar o simulado.
+            Você pode voltar em qualquer questão antes de finalizar o simulado.
           </p>
         </div>
       </section>
+
+      {/* Barra presa no rodapé: anterior, em branco e avançar sempre à mão */}
+      <div className={styles.actionsBar}>
+        <div className={styles.actionsFooter}>
+          <button
+            type="button"
+            className={styles.prevBtn}
+            onClick={() => irPara(indice - 1)}
+            disabled={indice === 0 || ocupado}
+          >
+            <ArrowLeft size={16} aria-hidden="true" />
+            Anterior
+          </button>
+
+          <div className={styles.rightActions}>
+            <button
+              type="button"
+              className={styles.whiteBtn}
+              onClick={deixarEmBranco}
+              disabled={ocupado}
+            >
+              Deixar em branco
+            </button>
+
+            <button
+              type="button"
+              className={`${styles.nextBtn} ${
+                respondidaAgora || modoFinalizar ? styles.activeNext : ''
+              }`}
+              onClick={responderEAvancar}
+              disabled={ocupado || (!respondidaAgora && !modoFinalizar)}
+            >
+              {modoFinalizar ? (
+                'Finalizar simulado'
+              ) : (
+                <>
+                  Responder e avançar
+                  <ArrowRight size={16} aria-hidden="true" />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {modalAberto && (
         <ModalFinalizar
