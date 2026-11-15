@@ -1,9 +1,10 @@
-import type { AreaCursos } from '../../conteudo'
+import type { AreaCursos } from '../../../../features/universidades'
 import styles from './CursosPorArea.module.scss'
 
 type CursosPorAreaProps = {
   areas: AreaCursos[]
 }
+const Opacidade_minima = 0.4
 
 export function CursosPorArea({ areas }: CursosPorAreaProps) {
   if (areas.length === 0) {
@@ -18,22 +19,29 @@ export function CursosPorArea({ areas }: CursosPorAreaProps) {
 
   return (
     <ul className={styles.lista}>
-      {areas.map(({ area, totalCursos }) => (
-        <li key={area} className={styles.item}>
-          <span className={styles.area}>{area}</span>
+      {areas.map(({ area, totalCursos }) => {
+        const proporcao = totalCursos / maior
 
-          <span className={styles.trilho} aria-hidden="true">
-            <span
-              className={styles.barra}
-              style={{ width: `${(totalCursos / maior) * 100}%` }}
-            />
-          </span>
+        return (
+          <li key={area} className={styles.item}>
+            <span className={styles.area}>{area}</span>
 
-          <span className={styles.total}>
-            {totalCursos} {totalCursos === 1 ? 'curso' : 'cursos'}
-          </span>
-        </li>
-      ))}
+            <span className={styles.trilho} aria-hidden="true">
+              <span
+                className={styles.barra}
+                style={{
+                  width: `${proporcao * 100}%`,
+                  opacity: Opacidade_minima + (1 - Opacidade_minima) * proporcao,
+                }}
+              />
+            </span>
+
+            <span className={styles.total}>
+              {totalCursos} {totalCursos === 1 ? 'curso' : 'cursos'}
+            </span>
+          </li>
+        )
+      })}
     </ul>
   )
 }

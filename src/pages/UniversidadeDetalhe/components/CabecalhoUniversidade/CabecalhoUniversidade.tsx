@@ -1,10 +1,13 @@
 import { Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Imagem } from '../../../../components/ui/Imagem/Imagem'
-import { ROTULO_TIPO_UNIVERSIDADE } from '../../../../features/universidades'
+import {
+  ROTULO_TIPO_UNIVERSIDADE,
+  type UniversidadeDetalhe,
+} from '../../../../features/universidades'
 import { ESTADOS_BR, formatarInteiro } from '../../../../lib/utils'
 import { ROTAS } from '../../../../routes/paths'
-import { Rotulo_modalidade_detalhe, type UniversidadeDetalhe } from '../../conteudo'
+import { Rotulo_modalidade_detalhe } from '../../conteudo'
 import styles from './CabecalhoUniversidade.module.scss'
 
 type CabecalhoUniversidadeProps = {
@@ -38,7 +41,6 @@ export function CabecalhoUniversidade({
 
   return (
     <header>
-   
       <Imagem
         src={universidade.capaUrl}
         alt={`Foto do campus da ${universidade.nome}`}
@@ -49,7 +51,6 @@ export function CabecalhoUniversidade({
       <div className={styles.faixa}>
         <div className={styles.conteudo}>
           <div className={styles.principal}>
-          
             <nav aria-label="Trilha de navegação">
               <ol className={styles.trilha}>
                 <li>
