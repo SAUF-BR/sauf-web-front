@@ -5,8 +5,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: $spacing-xs;
-  font-size: 0.875rem;
+  gap: $spacing-xs $spacing-sm;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .separador {
@@ -14,6 +15,8 @@
 }
 
 .link {
+  display: inline-block;
+  padding: 2px 0;
   color: $color-text-secondary;
   text-decoration: none;
 
@@ -30,4 +33,5 @@
 
 .atual {
   color: $color-blue-primary;
+  font-weight: 600;
 }
