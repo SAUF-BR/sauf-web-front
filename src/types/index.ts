@@ -4,7 +4,7 @@ export interface Usuario {
   email: string
 }
 
-export type PlanoAssinatura = 'basic' | 'plus' | 'premium'
+export type PlanoAssinatura = 'free' | 'basic' | 'plus'
 
 export interface Paginado<T> {
   content: T[]

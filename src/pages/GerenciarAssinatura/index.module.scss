@@ -29,19 +29,7 @@
   }
 }
 
-.trilha {
-  font-size: 0.875rem;
-  color: $color-text-secondary;
 
-  [aria-current] {
-    color: $color-blue-primary;
-  }
-}
-
-.trilhaLink {
-  @include text-link($color-text-secondary);
-  font-weight: 400;
-}
 
 .titulo {
   margin-top: $spacing-md;
@@ -72,7 +60,7 @@
 .planos {
   display: grid;
   gap: $spacing-lg;
-  align-items: start;
+  align-items: stretch;
 
   @media (min-width: $breakpoint-lg) {
     grid-template-columns: repeat(3, 1fr);

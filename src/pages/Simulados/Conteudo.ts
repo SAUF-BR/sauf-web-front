@@ -3,7 +3,7 @@ import { ListChecks, Timer, TrendingUp, Trophy, type LucideIcon } from 'lucide-r
 // Conteúdo editorial da tela de acesso aos Simulados. Dados vindos da API ficam
 // nos hooks das features, não aqui.
 
-export type PlanoRecurso = 'todos' | 'premium'
+export type PlanoRecurso = 'basic' | 'plus'
 
 export type Recurso = {
   id: string
@@ -29,8 +29,8 @@ export type SimuladoPrevia = {
 }
 
 export const ROTULO_PLANO: Record<PlanoRecurso, string> = {
-  todos: 'Todos os planos',
-  premium: 'Plano Premium',
+  basic: 'A partir do Basic',
+  plus: 'Plano Plus',
 }
 
 export const RECURSOS: Recurso[] = [
@@ -39,7 +39,7 @@ export const RECURSOS: Recurso[] = [
     titulo: 'Simulados',
     descricao:
       'Monte provas por vestibular, categoria e quantidade de questões, e revise cada acerto e erro.',
-    plano: 'todos',
+    plano: 'basic',
     icone: ListChecks,
   },
   {
@@ -47,7 +47,7 @@ export const RECURSOS: Recurso[] = [
     titulo: 'Meu acompanhamento',
     descricao:
       'Um painel com sua evolução por categoria, aproveitamento médio e pontos fracos.',
-    plano: 'premium',
+    plano: 'plus',
     icone: TrendingUp,
   },
   {
@@ -55,7 +55,7 @@ export const RECURSOS: Recurso[] = [
     titulo: 'Cronômetro',
     descricao:
       'Marque o tempo real de estudo por sessão e veja quantas horas você dedicou na semana.',
-    plano: 'premium',
+    plano: 'plus',
     icone: Timer,
   },
   {
@@ -63,35 +63,38 @@ export const RECURSOS: Recurso[] = [
     titulo: 'Ranking',
     descricao:
       'Compare seu desempenho com outros estudantes que treinam para os mesmos vestibulares.',
-    plano: 'premium',
+    plano: 'plus',
     icone: Trophy,
   },
 ]
 
-// TODO: os planos e preços virão da API quando a feature de assinatura existir
+// TODO: os planos e preços virão da API (GET /assinatura/planos) quando o paywall usar os hooks
 export const PLANOS: Plano[] = [
+  {
+    id: 'free',
+    nome: 'Free',
+    precoMensal: 0,
+    descricao: 'Busca de cursos e universidades, teste vocacional, calendário e favoritos',
+  },
   {
     id: 'basic',
     nome: 'Basic',
     precoMensal: 8,
-    descricao: 'Simulados do ENEM com gabarito comentado',
+    descricao: 'Tudo do Free mais os simulados do ENEM',
   },
   {
     id: 'plus',
     nome: 'Plus',
-    precoMensal: 12,
-    descricao: 'Também os simulados dos vestibulares das universidades',
-  },
-  {
-    id: 'premium',
-    nome: 'Premium',
-    precoMensal: 15,
-    descricao: 'Tudo isso mais acompanhamento, cronômetro e ranking',
+    precoMensal: 10,
+    descricao: 'Tudo isso mais ranking, cronômetro e meu acompanhamento',
     destaque: true,
   },
 ]
 
-export const PRECO_INICIAL = Math.min(...PLANOS.map((plano) => plano.precoMensal))
+// Menor preço entre os planos que liberam os simulados (o Free não libera)
+export const PRECO_INICIAL = Math.min(
+  ...PLANOS.filter((plano) => plano.precoMensal > 0).map((plano) => plano.precoMensal),
+)
 
 // Exemplos ilustrativos do cartão "Meus simulados" (não são dados reais do usuário)
 export const PREVIA: SimuladoPrevia[] = [

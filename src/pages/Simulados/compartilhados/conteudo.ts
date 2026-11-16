@@ -16,7 +16,8 @@ export const Abas_simulados: { id: AbaSimulados; rotulo: string; rota: string }[
   { id: 'ranking', rotulo: 'Ranking', rota: ROTAS.simuladosRanking },
 ]
 
-export const Selo_plano = 'Plano premium'
+// Selo do cabeçalho enquanto o plano do usuário não carregou
+export const Selo_plano = 'Assinante'
 
 export const Ordem_periodos: Periodo[] = ['semana', 'mes', 'ano']
 

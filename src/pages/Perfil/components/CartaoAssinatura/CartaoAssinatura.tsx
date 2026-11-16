@@ -43,11 +43,11 @@ export function CartaoAssinatura({ visitante = false, assinatura, plano }: Carta
           </>
         ) : (
           <>
-            <h3 className={styles.titulo}>Nenhum plano ativo</h3>
+            <h3 className={styles.titulo}>{visitante ? 'Nenhum plano ativo' : 'Plano Free'}</h3>
             <p className={styles.descricao}>
               {visitante
                 ? 'Entre na sua conta para ver e gerenciar sua assinatura.'
-                : 'Assine para liberar os simulados do ENEM e dos vestibulares.'}
+                : 'Você está no plano Free. Assine o Basic para liberar os simulados do ENEM.'}
             </p>
           </>
         )}

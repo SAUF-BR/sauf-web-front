@@ -7,9 +7,14 @@ export function obterSituacao(assinatura: Assinatura | null | undefined): Situac
 
 export type RelacaoPlano = 'assinar' | 'atual' | 'upgrade' | 'downgrade'
 
-// Compara um plano com o plano atual do usuário
+// O Free (preço zero) é o plano de quem não assina
+export function planoGratuito(plano: Plano): boolean {
+  return plano.precoMensal === 0
+}
+
+// Compara um plano com o plano atual do usuário. Sem assinatura, o plano atual é o Free.
 export function compararPlano(plano: Plano, atual: Plano | undefined): RelacaoPlano {
-  if (!atual) return 'assinar'
+  if (!atual) return planoGratuito(plano) ? 'atual' : 'assinar'
   if (plano.id === atual.id) return 'atual'
   return plano.precoMensal > atual.precoMensal ? 'upgrade' : 'downgrade'
 }

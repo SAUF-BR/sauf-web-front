@@ -8,7 +8,7 @@ type CartaoRecursoProps = {
 
 export function CartaoRecurso({ recurso }: CartaoRecursoProps) {
   const Icone = recurso.icone
-  const premium = recurso.plano === 'premium'
+  const premium = recurso.plano === 'plus'
 
   return (
     <Card className={styles.cartao}>

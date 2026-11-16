@@ -1,13 +1,15 @@
 import type { PlanoAssinatura } from '../../types'
 
-// Tipos provisórios — alinhar com o contrato da API quando estiver definido.
-
 export type RecursoPlano =
+  | 'busca-cursos'
+  | 'busca-universidades'
+  | 'teste-vocacional'
+  | 'calendario'
+  | 'favoritos'
   | 'simulados-enem'
-  | 'simulados-vestibulares'
-  | 'dashboard'
-  | 'timer'
   | 'ranking'
+  | 'timer'
+  | 'dashboard'
 
 export interface Plano {
   id: PlanoAssinatura
@@ -18,8 +20,9 @@ export interface Plano {
   selo: string | null
 }
 
+// O Free nunca aparece aqui: é o plano de quem não tem assinatura (a API responde 204)
 export interface Assinatura {
-  plano: PlanoAssinatura
+  plano: Exclude<PlanoAssinatura, 'free'>
   status: 'ativa' | 'cancelamento-agendado'
   renovaEm: string
 }
