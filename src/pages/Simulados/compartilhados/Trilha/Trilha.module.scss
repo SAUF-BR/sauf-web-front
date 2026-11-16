@@ -49,6 +49,18 @@
   }
 }
 
+.semFundo {
+  .voltar {
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .voltar {
     transition: none;

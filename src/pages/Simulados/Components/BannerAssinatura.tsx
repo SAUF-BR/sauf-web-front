@@ -17,7 +17,7 @@ export function BannerAssinatura({ planos }: BannerAssinaturaProps) {
           </h2>
           <p className={styles.descricao}>
             Para criar simulados e revisar suas respostas é preciso assinar um dos planos. O
-            Basic já libera os simulados do ENEM; o Premium inclui acompanhamento, cronômetro e
+            Basic já libera os simulados do ENEM; o Plus inclui meu acompanhamento, cronômetro e
             ranking.
           </p>
         </div>

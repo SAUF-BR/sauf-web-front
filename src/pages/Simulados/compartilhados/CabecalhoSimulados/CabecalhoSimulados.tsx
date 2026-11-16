@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
 import { cn } from '../../../../lib/utils'
+import { useAssinaturaAtual, usePlanos } from '../../../../features/assinatura'
 import { Trilha } from '../Trilha/Trilha'
 import { Abas_simulados, Selo_plano, type AbaSimulados } from '../conteudo'
 import styles from './CabecalhoSimulados.module.scss'
@@ -19,6 +20,10 @@ export function CabecalhoSimulados({
   descricao,
   acoes,
 }: CabecalhoSimuladosProps) {
+  const { data: assinatura } = useAssinaturaAtual()
+  const { data: planos } = usePlanos()
+  const nomePlano = planos?.find((plano) => plano.id === assinatura?.plano)?.nome
+  const selo = nomePlano ? `Plano ${nomePlano}` : Selo_plano
   const aba = Abas_simulados.find((item) => item.id === abaAtiva)
   const naPrincipal = abaAtiva === 'simulados'
   const trilha = naPrincipal
@@ -36,7 +41,7 @@ export function CabecalhoSimulados({
         <div className={styles.topo}>
           <div>
             <p className={styles.contexto}>
-              <span className={styles.selo}>{Selo_plano}</span>
+              <span className={styles.selo}>{selo}</span>
               {descricao}
             </p>
             <h1 className={styles.titulo}>{titulo}</h1>

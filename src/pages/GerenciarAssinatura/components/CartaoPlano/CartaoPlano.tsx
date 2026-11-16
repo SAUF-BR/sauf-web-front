@@ -3,11 +3,12 @@ import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Button } from '../../../../components/ui/Botao/Botao'
 import { Card } from '../../../../components/ui/Card/Card'
 import { Tag } from '../../../../components/ui/Tag/Tag'
-import type {
-  Plano,
-  RecursoPlano,
-  RelacaoPlano,
-  SituacaoAssinatura,
+import {
+  planoGratuito,
+  type Plano,
+  type RecursoPlano,
+  type RelacaoPlano,
+  type SituacaoAssinatura,
 } from '../../../../features/assinatura'
 import { formatarDataExtenso, formatarMoeda } from '../../../../lib/utils'
 import { ORDEM_RECURSOS, ROTULO_RECURSO } from '../../conteudo'
@@ -48,6 +49,25 @@ function montarAcao({
   const diferenca = planoAtual ? Math.abs(plano.precoMensal - planoAtual.precoMensal) : 0
   const data = renovaEm ? formatarDataExtenso(renovaEm) : ''
 
+  // Free: quem não assina já está nele; quem assina volta a ele cancelando (D-98 da API)
+  if (planoGratuito(plano)) {
+    if (relacao === 'atual') {
+      return { rotulo: 'Plano atual', variante: 'outline', nota: 'Gratuito, sem cobrança' }
+    }
+    return situacao === 'cancelamento-agendado'
+      ? {
+          rotulo: `A partir de ${data}`,
+          variante: 'outline',
+          nota: 'Seu plano quando o acesso pago acabar',
+        }
+      : {
+          rotulo: 'Voltar para o Free',
+          variante: 'outline',
+          onClick: onEscolher,
+          nota: `Cancela a assinatura; o acesso pago vai até ${data}`,
+        }
+  }
+
   switch (relacao) {
     case 'assinar':
       return {
@@ -85,6 +105,7 @@ function montarAcao({
 export function CartaoPlano(props: CartaoPlanoProps) {
   const { plano, relacao, recursosNovos, desabilitado, erro } = props
   const atual = relacao === 'atual'
+  const gratuito = planoGratuito(plano)
   const acao = montarAcao(props)
   const idInclui = `inclui-${plano.id}`
 
@@ -92,7 +113,8 @@ export function CartaoPlano(props: CartaoPlanoProps) {
     <Card className={`${styles.cartao} ${atual ? styles.atual : ''}`}>
       <div className={styles.topo}>
         <div className={styles.identificacao}>
-          <h2 className={styles.nome}>{plano.nome}</h2>
+          {/* No Free o nome vai grande no lugar do preço (abaixo); aqui fica só para leitores de tela */}
+          <h2 className={gratuito ? styles.somenteLeitor : styles.nome}>{plano.nome}</h2>
           {atual ? (
             <Tag variant="premium">Seu plano</Tag>
           ) : (
@@ -101,8 +123,16 @@ export function CartaoPlano(props: CartaoPlanoProps) {
         </div>
 
         <p className={styles.preco}>
-          <span className={styles.valor}>{formatarMoeda(plano.precoMensal)}</span>
-          <span className={styles.periodo}>/mês</span>
+          {gratuito ? (
+            <span className={`${styles.valor} ${styles.valorFree}`} aria-hidden="true">
+              {plano.nome}
+            </span>
+          ) : (
+            <>
+              <span className={styles.valor}>{formatarMoeda(plano.precoMensal)}</span>
+              <span className={styles.periodo}>/mês</span>
+            </>
+          )}
         </p>
         <p className={styles.descricao}>{plano.descricao}</p>
       </div>
@@ -123,7 +153,7 @@ export function CartaoPlano(props: CartaoPlanoProps) {
                 className={`${styles.recurso} ${incluido ? '' : styles.ausente} ${novo ? styles.novo : ''}`}
               >
                 <span className={styles.marcador} aria-hidden="true">
-                  {incluido ? <Check size="0.875rem" /> : <Minus size="0.875rem" />}
+                  {incluido ? <Check size="0.75rem" /> : <Minus size="0.75rem" />}
                 </span>
                 {ROTULO_RECURSO[recurso]}
                 {!incluido && <span className={styles.somenteLeitor}> (não incluso)</span>}

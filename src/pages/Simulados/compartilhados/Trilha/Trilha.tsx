@@ -10,11 +10,19 @@ type TrilhaProps = {
   voltarPara: string
   // Faixa escura (tela de questões): texto claro
   clara?: boolean
+  // Sem o fundo do botão (ex.: tela de assinatura, sobre o cabeçalho colorido)
+  semFundo?: boolean
   className?: string
 }
 
 // Botão de voltar + trilha de navegação, no topo das telas de simulados
-export function Trilha({ itens, voltarPara, clara = false, className }: TrilhaProps) {
+export function Trilha({
+  itens,
+  voltarPara,
+  clara = false,
+  semFundo = false,
+  className,
+}: TrilhaProps) {
   const navigate = useNavigate()
 
   const voltar = () => {
@@ -25,7 +33,7 @@ export function Trilha({ itens, voltarPara, clara = false, className }: TrilhaPr
   }
 
   return (
-    <div className={cn(styles.trilha, clara && styles.clara, className)}>
+    <div className={cn(styles.trilha, clara && styles.clara, semFundo && styles.semFundo, className)}>
       <button type="button" className={styles.voltar} onClick={voltar}>
         <ArrowLeft size={18} aria-hidden="true" />
         <span>Voltar</span>

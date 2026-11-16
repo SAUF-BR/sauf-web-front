@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
 import { EstadoConsulta } from '../../components/ui/EstadoConsulta/EstadoConsulta'
 import {
   compararPlano,
   obterSituacao,
+  planoGratuito,
   recursosNovos,
   useAssinaturaAtual,
   useCancelarAssinatura,
@@ -11,6 +11,7 @@ import {
   useTrocarPlano,
 } from '../../features/assinatura'
 import { ROTAS } from '../../routes/paths'
+import { Trilha } from '../Simulados/compartilhados/Trilha/Trilha'
 import { CartaoCancelamento } from './components/CartaoCancelamento/CartaoCancelamento'
 import { CartaoPlano } from './components/CartaoPlano/CartaoPlano'
 import { ResumoAssinatura } from './components/ResumoAssinatura/ResumoAssinatura'
@@ -23,7 +24,7 @@ export default function GerenciarAssinatura() {
   const trocarPlano = useTrocarPlano()
   const cancelar = useCancelarAssinatura()
   const reativar = useReativarAssinatura()
-  const ocupado = trocarPlano.isPending || reativar.isPending
+  const ocupado = trocarPlano.isPending || reativar.isPending || cancelar.isPending
 
   return (
     <main>
@@ -39,6 +40,7 @@ export default function GerenciarAssinatura() {
           // Único ponto de decisão da tela: tudo abaixo depende só destes valores
           const situacao = obterSituacao(assinatura)
           const planoAtual = planos.find((plano) => plano.id === assinatura?.plano)
+          const planoFree = planos.find(planoGratuito)
           const textos =
             TEXTOS_CABECALHO[situacao === 'sem-assinatura' ? 'semAssinatura' : 'assinante']
 
@@ -49,6 +51,13 @@ export default function GerenciarAssinatura() {
               return trocarPlano.error.message
             }
             if (reativar.isError && planoId === planoAtual?.id) return reativar.error.message
+            if (cancelar.isError && planoId === planoFree?.id) return cancelar.error.message
+          }
+
+          // Voltar ao Free é cancelar o plano pago: o Free não se assina
+          function escolher(plano: (typeof planos)[number]) {
+            if (planoGratuito(plano)) cancelar.mutate()
+            else trocarPlano.mutate(plano.id)
           }
 
           return (
@@ -56,13 +65,12 @@ export default function GerenciarAssinatura() {
               <section className={styles.cabecalho}>
                 <div className={styles.cabecalhoConteudo}>
                   <div>
-                    <nav aria-label="Você está em" className={styles.trilha}>
-                      <Link to={ROTAS.perfil} className={styles.trilhaLink}>
-                        Minha conta
-                      </Link>
-                      <span aria-hidden="true"> / </span>
-                      <span aria-current="page">Assinatura</span>
-                    </nav>
+                    {/* Volta para a tela anterior; aberta direto, leva ao perfil */}
+                    <Trilha
+                      itens={[{ rotulo: 'Minha conta', para: ROTAS.perfil }, { rotulo: 'Assinatura' }]}
+                      voltarPara={ROTAS.perfil}
+                      semFundo
+                    />
 
                     <h1 className={styles.titulo}>{textos.titulo}</h1>
                     <p className={styles.descricao}>{textos.descricao}</p>
@@ -87,7 +95,7 @@ export default function GerenciarAssinatura() {
                         recursosNovos={recursosNovos(plano, todos)}
                         desabilitado={ocupado}
                         erro={erroDoCartao(plano.id)}
-                        onEscolher={() => trocarPlano.mutate(plano.id)}
+                        onEscolher={() => escolher(plano)}
                         onReativar={() => reativar.mutate()}
                       />
                     </li>

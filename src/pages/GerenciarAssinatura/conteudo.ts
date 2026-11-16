@@ -4,26 +4,34 @@ import type { RecursoPlano } from '../../features/assinatura'
 // da feature, não aqui.
 
 export const ORDEM_RECURSOS: RecursoPlano[] = [
+  'busca-cursos',
+  'busca-universidades',
+  'teste-vocacional',
+  'calendario',
+  'favoritos',
   'simulados-enem',
-  'simulados-vestibulares',
-  'dashboard',
-  'timer',
   'ranking',
+  'timer',
+  'dashboard',
 ]
 
 export const ROTULO_RECURSO: Record<RecursoPlano, string> = {
+  'busca-cursos': 'Busca por cursos',
+  'busca-universidades': 'Busca por universidades',
+  'teste-vocacional': 'Teste vocacional',
+  calendario: 'Calendário',
+  favoritos: 'Lista de favoritos',
   'simulados-enem': 'Simulados do ENEM',
-  'simulados-vestibulares': 'Simulados dos vestibulares das universidades',
-  dashboard: 'Dashboard de acompanhamento',
-  timer: 'Timer de tempo de estudo',
   ranking: 'Ranking de usuários',
+  timer: 'Cronômetro de estudo',
+  dashboard: 'Meu acompanhamento',
 }
 
 export const TEXTOS_CABECALHO = {
   semAssinatura: {
     titulo: 'Escolha seu plano',
     descricao:
-      'Assine para liberar os simulados. Você pode trocar de plano ou cancelar quando quiser.',
+      'Você está no plano Free. Assine o Basic ou o Plus para liberar os simulados. Você pode trocar de plano ou cancelar quando quiser.',
   },
   assinante: {
     titulo: 'Sua assinatura',
