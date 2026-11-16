@@ -13,11 +13,14 @@ export function SimuladoCard({ simulado }: SimuladoCardProps) {
   const isConcluido = simulado.status === 'concluido'
   const data = simulado.finalizadoEm ?? simulado.iniciadoEm
 
-  // Abre a Configuração já preenchida com a mesma configuração deste simulado
+  // Abre a Configuração já preenchida com a mesma configuração deste simulado;
+  // sem tamanho pronto (personalizado), repete a mesma quantidade de cada área (D-97)
   const refazer = () =>
     navigate(ROTAS.simuladosConfiguracao, {
       state: {
-        tamanho: simulado.tamanho ?? 'media',
+        ...(simulado.tamanho
+          ? { tamanho: simulado.tamanho }
+          : { quantidades: simulado.questoesPorArea }),
         areas: simulado.areas,
         cronometrado: simulado.cronometrado,
         ...(simulado.segundosPorQuestao !== null && { segundosPorQuestao: simulado.segundosPorQuestao }),
