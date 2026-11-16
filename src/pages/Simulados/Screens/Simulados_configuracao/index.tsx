@@ -1,4 +1,6 @@
+import { lazy, Suspense, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Pencil, Plus, RotateCcw } from 'lucide-react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ROTAS } from '../../../../routes/paths'
@@ -10,6 +12,7 @@ import {
   useCriarSimulado,
   useOpcoesSimulado,
   type Area,
+  type CriarSimuladoRequest,
   type OpcoesSimulado,
   type Tamanho,
 } from '../../../../features/simulados'
@@ -20,7 +23,8 @@ import {
 } from '../../../../lib/utils/formatadores'
 import { EsqueletoConfiguracao } from './components/EsqueletoConfiguracao/EsqueletoConfiguracao'
 import { TamanhoCard, type TamanhoOpcao } from './components/TamanhoCard/TamanhoCard'
-import { schemaConfiguracao, type ConfiguracaoSimulado } from './schema'
+import { camposConfiguracao, schemaConfiguracao, type ConfiguracaoSimulado } from './schema'
+import { dividir, maximoComAreas, somar, type Quantidades } from './personalizar/distribuicao'
 import styles from './index.module.scss'
 import { Trilha } from '../../compartilhados/Trilha/Trilha'
 
@@ -59,11 +63,19 @@ const MODOS_CRONOMETRO = [
 // Selos das opções de tempo por questão
 const SELO_TEMPO: Record<number, string> = { 150: 'sugerido', 180: 'ritmo do ENEM' }
 
+// Os modais (e o react-aria deles) só baixam quando a pessoa clica em personalizar
+const ModalTamanho = lazy(() =>
+  import('./personalizar/ModalTamanho').then((m) => ({ default: m.ModalTamanho })),
+)
+const ModalCategorias = lazy(() =>
+  import('./personalizar/ModalCategorias').then((m) => ({ default: m.ModalCategorias })),
+)
+
 // Valores vindos de outra tela (ex.: repetir a configuração de um simulado anterior)
 function lerConfiguracaoInicial(state: unknown): Partial<ConfiguracaoSimulado> {
-  const resultado = schemaConfiguracao
+  const resultado = camposConfiguracao
     .omit({ banca: true })
-    .partial({ segundosPorQuestao: true })
+    .partial({ segundosPorQuestao: true, tamanho: true, quantidade: true, quantidades: true })
     .safeParse(state)
   return resultado.success ? resultado.data : {}
 }
@@ -89,6 +101,8 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
     resolver: zodResolver(schemaConfiguracao),
     defaultValues: {
       tamanho: 'media',
+      quantidade: null,
+      quantidades: null,
       banca: 'enem',
       areas: [...ORDEM_AREAS],
       cronometrado: true,
@@ -98,7 +112,10 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
     },
   })
 
+  const [modal, setModal] = useState<'tamanho' | 'categorias' | null>(null)
   const tamanho = useWatch({ control, name: 'tamanho' })
+  const quantidade = useWatch({ control, name: 'quantidade' })
+  const quantidades = useWatch({ control, name: 'quantidades' })
   const areasSel = useWatch({ control, name: 'areas' })
   const cronometrado = useWatch({ control, name: 'cronometrado' })
   const segundosPorQuestao = useWatch({ control, name: 'segundosPorQuestao' })
@@ -119,6 +136,21 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
 
   const areas = ORDEM_AREAS.flatMap((id) => opcoes.areas.find((a) => a.id === id) ?? [])
   const tamanhoAtual = tamanhos.find((t) => t.id === tamanho)
+  const disponiveis = Object.fromEntries(areas.map((a) => [a.id, a.questoesDisponiveis])) as Record<Area, number>
+  const limiteQuestoes = opcoes.maximoQuestoes ?? 100
+
+  // Total do simulado: soma por categoria > tamanho personalizado > tamanho pronto (D-97)
+  const totalQuestoes = quantidades ? somar(quantidades) : (quantidade ?? tamanhoAtual?.questoes ?? 0)
+  const maximoTamanho = maximoComAreas(areasSel, disponiveis, limiteQuestoes)
+  // O tamanho personalizado precisa caber nas categorias marcadas (sem repetir questão)
+  const erroTamanho =
+    !quantidades && quantidade !== null && areasSel.length > 0 && quantidade > maximoTamanho
+      ? `Com as categorias marcadas, o máximo é ${maximoTamanho} questões. Diminua o tamanho ou marque mais categorias.`
+      : null
+  const distribuicao = ORDEM_AREAS.filter((id) => (quantidades?.[id] ?? 0) > 0).map(
+    (id) => `${NOME_AREA[id]} ${quantidades?.[id]}`,
+  )
+  const descreverQuestoes = (n: number) => descreverTempo(n * segundosEstimados)
   const limite = formatarTempoPorQuestao(segundosPorQuestao)
   const todasMarcadas = areas.length > 0 && areasSel.length === areas.length
   const nomesAreas = areas.filter((a) => areasSel.includes(a.id)).map((a) => NOME_AREA[a.id])
@@ -133,10 +165,16 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
   }
 
   const enviar = handleSubmit((dados) => {
-    const pedido = {
-      ...dados,
+    if (erroTamanho) return
+    const comum = {
+      banca: dados.banca,
+      cronometrado: dados.cronometrado,
       segundosPorQuestao: dados.cronometrado ? dados.segundosPorQuestao : null,
     }
+    let pedido: CriarSimuladoRequest
+    if (dados.quantidades) pedido = { ...comum, quantidades: dados.quantidades }
+    else if (dados.quantidade !== null) pedido = { ...comum, quantidade: dados.quantidade, areas: dados.areas }
+    else pedido = { ...comum, tamanho: dados.tamanho, areas: dados.areas }
     criar.mutate(pedido, {
       onSuccess: (simulado) => navigate(ROTAS.simuladosQuestoes(simulado.id)),
     })
@@ -151,17 +189,60 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <span className={styles.badgeObrigatorio}>obrigatório</span>
           </div>
 
-          <fieldset className={styles.tamanhosGrid}>
+          {quantidades && (
+            <p className={styles.avisoDerivado} role="note">
+              O tamanho vem da distribuição por categoria: {totalQuestoes}{' '}
+              {totalQuestoes === 1 ? 'questão' : 'questões'}.
+            </p>
+          )}
+
+          <fieldset
+            className={`${styles.tamanhosGrid} ${quantidades ? styles.gradeInativa : ''}`}
+            disabled={quantidades !== null}
+          >
             <legend className={styles.somenteLeitor}>Tamanho do simulado</legend>
             {tamanhos.map((opcao) => (
               <TamanhoCard
                 key={opcao.id}
                 opcao={opcao}
-                isSelecionado={tamanho === opcao.id}
-                onSelect={() => setValue('tamanho', opcao.id)}
+                isSelecionado={!quantidades && quantidade === null && tamanho === opcao.id}
+                onSelect={() => {
+                  setValue('tamanho', opcao.id)
+                  setValue('quantidade', null)
+                }}
               />
             ))}
           </fieldset>
+
+          {!quantidades &&
+            (quantidade !== null ? (
+              <div className={styles.personalizadoCard}>
+                <div className={styles.personalizadoTexto}>
+                  <span className={styles.seloPersonalizado}>Personalizado</span>
+                  <strong>
+                    {quantidade} {quantidade === 1 ? 'questão' : 'questões'}
+                  </strong>
+                  <span>Cerca de {descreverQuestoes(quantidade)}, divididas entre as categorias marcadas.</span>
+                </div>
+                <div className={styles.personalizadoAcoes}>
+                  <button type="button" className={styles.acaoTexto} onClick={() => setModal('tamanho')}>
+                    <Pencil size={14} aria-hidden="true" /> Editar
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.acaoTexto}
+                    onClick={() => setValue('quantidade', null)}
+                  >
+                    <RotateCcw size={14} aria-hidden="true" /> Usar tamanhos prontos
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button type="button" className={styles.personalizarBtn} onClick={() => setModal('tamanho')}>
+                <Plus size={16} aria-hidden="true" /> Personalizar tamanho
+              </button>
+            ))}
+          {erroTamanho && <AvisoErro>{erroTamanho}</AvisoErro>}
         </div>
 
         <div className={styles.sectionBlock}>
@@ -188,47 +269,82 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
         <div className={styles.sectionBlock}>
           <div className={styles.sectionHeaderFlex}>
             <h2>3 · CATEGORIAS</h2>
-            <button type="button" className={styles.linkAction} onClick={alternarTodas}>
-              {todasMarcadas ? 'Desmarcar todas' : 'Selecionar todas'}
-            </button>
+            {!quantidades && (
+              <button type="button" className={styles.linkAction} onClick={alternarTodas}>
+                {todasMarcadas ? 'Desmarcar todas' : 'Selecionar todas'}
+              </button>
+            )}
           </div>
 
-          <fieldset className={styles.categoriasGrid} aria-describedby={errors.areas ? 'erro-areas' : undefined}>
-            <legend className={styles.somenteLeitor}>Categorias</legend>
-            {areas.map((area) => {
-              const marcada = areasSel.includes(area.id)
-              const semQuestoes = area.questoesDisponiveis === 0
-              return (
-                <label
-                  key={area.id}
-                  className={`${styles.checkboxCard} ${marcada ? styles.checkedCard : ''} ${
-                    semQuestoes ? styles.cardDesabilitado : ''
-                  }`}
+          {quantidades ? (
+            <div className={styles.personalizadoCard}>
+              <div className={styles.personalizadoTexto}>
+                <span className={styles.seloPersonalizado}>Personalizado</span>
+                <strong>{distribuicao.join(' · ')}</strong>
+                <span>
+                  {totalQuestoes} {totalQuestoes === 1 ? 'questão' : 'questões'} no total, cerca de{' '}
+                  {descreverQuestoes(totalQuestoes)}.
+                </span>
+              </div>
+              <div className={styles.personalizadoAcoes}>
+                <button type="button" className={styles.acaoTexto} onClick={() => setModal('categorias')}>
+                  <Pencil size={14} aria-hidden="true" /> Editar
+                </button>
+                <button
+                  type="button"
+                  className={styles.acaoTexto}
+                  onClick={() => {
+                    setValue('areas', ORDEM_AREAS.filter((id) => (quantidades[id] ?? 0) > 0))
+                    setValue('quantidades', null)
+                  }}
                 >
-                  <input
-                    type="checkbox"
-                    checked={marcada}
-                    disabled={semQuestoes}
-                    onChange={() => alternarArea(area.id)}
-                    className={styles.inputEscondido}
-                  />
-                  <span
-                    aria-hidden="true"
-                    className={`${styles.checkIcon} ${marcada ? styles.iconActive : ''}`}
+                  <RotateCcw size={14} aria-hidden="true" /> Voltar a marcar categorias
+                </button>
+              </div>
+            </div>
+          ) : (
+            <fieldset className={styles.categoriasGrid} aria-describedby={errors.areas ? 'erro-areas' : undefined}>
+              <legend className={styles.somenteLeitor}>Categorias</legend>
+              {areas.map((area) => {
+                const marcada = areasSel.includes(area.id)
+                const semQuestoes = area.questoesDisponiveis === 0
+                return (
+                  <label
+                    key={area.id}
+                    className={`${styles.checkboxCard} ${marcada ? styles.checkedCard : ''} ${
+                      semQuestoes ? styles.cardDesabilitado : ''
+                    }`}
                   >
-                    {marcada && '✓'}
-                  </span>
-                  <span className={styles.catLabel}>
-                    {NOME_AREA[area.id]}
-                    <span className={styles.catDisponiveis}>
-                      {formatarInteiro(area.questoesDisponiveis)} questões
+                    <input
+                      type="checkbox"
+                      checked={marcada}
+                      disabled={semQuestoes}
+                      onChange={() => alternarArea(area.id)}
+                      className={styles.inputEscondido}
+                    />
+                    <span
+                      aria-hidden="true"
+                      className={`${styles.checkIcon} ${marcada ? styles.iconActive : ''}`}
+                    >
+                      {marcada && '✓'}
                     </span>
-                  </span>
-                </label>
-              )
-            })}
-          </fieldset>
-          {errors.areas && (
+                    <span className={styles.catLabel}>
+                      {NOME_AREA[area.id]}
+                      <span className={styles.catDisponiveis}>
+                        {formatarInteiro(area.questoesDisponiveis)} questões
+                      </span>
+                    </span>
+                  </label>
+                )
+              })}
+            </fieldset>
+          )}
+          {!quantidades && (
+            <button type="button" className={styles.personalizarBtn} onClick={() => setModal('categorias')}>
+              <Plus size={16} aria-hidden="true" /> Escolher quantas de cada categoria
+            </button>
+          )}
+          {errors.areas && !quantidades && (
             <div id="erro-areas">
               <AvisoErro>{errors.areas.message}</AvisoErro>
             </div>
@@ -308,7 +424,11 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <div className={styles.summaryRow}>
               <span className={styles.label}>Tamanho</span>
               <strong className={styles.value}>
-                {tamanhoAtual?.titulo} · {tamanhoAtual?.questoes} questões
+                {quantidades
+                  ? `${totalQuestoes} questões (soma das categorias)`
+                  : quantidade !== null
+                    ? `Personalizado · ${quantidade} ${quantidade === 1 ? 'questão' : 'questões'}`
+                    : `${tamanhoAtual?.titulo} · ${tamanhoAtual?.questoes} questões`}
               </strong>
             </div>
 
@@ -320,14 +440,18 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
             <div className={styles.summaryRow}>
               <span className={styles.label}>Categorias</span>
               <strong className={styles.value}>
-                {nomesAreas.length > 0 ? nomesAreas.join(', ') : 'Nenhuma selecionada'}
+                {quantidades
+                  ? distribuicao.join(', ')
+                  : nomesAreas.length > 0
+                    ? nomesAreas.join(', ')
+                    : 'Nenhuma selecionada'}
               </strong>
             </div>
 
             <div className={styles.summaryRow}>
               <span className={styles.label}>Tempo estimado</span>
               <strong className={styles.value}>
-                {tamanhoAtual ? descreverTempo(tamanhoAtual.questoes * segundosEstimados) : '—'}
+                {totalQuestoes > 0 ? descreverQuestoes(totalQuestoes) : '—'}
               </strong>
             </div>
 
@@ -341,7 +465,7 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
 
           {criar.isError && <AvisoErro>{criar.error.message}</AvisoErro>}
 
-          <button type="submit" className={styles.startBtn} disabled={criar.isPending}>
+          <button type="submit" className={styles.startBtn} disabled={criar.isPending || erroTamanho !== null}>
             {criar.isPending ? 'Criando…' : 'Começar simulado'}
           </button>
 
@@ -359,6 +483,31 @@ function Formulario({ opcoes }: { opcoes: OpcoesSimulado }) {
           </p>
         </div>
       </aside>
+
+      <Suspense fallback={null}>
+        {modal === 'tamanho' && (
+          <ModalTamanho
+            aberto
+            inicial={quantidade ?? tamanhoAtual?.questoes ?? 20}
+            maximo={maximoTamanho}
+            limite={limiteQuestoes}
+            descreverTempo={descreverQuestoes}
+            onConfirmar={(n) => setValue('quantidade', n)}
+            onFechar={() => setModal(null)}
+          />
+        )}
+        {modal === 'categorias' && (
+          <ModalCategorias
+            aberto
+            areas={areas}
+            inicial={quantidades ?? dividir(totalQuestoes, areasSel)}
+            limite={limiteQuestoes}
+            descreverTempo={descreverQuestoes}
+            onConfirmar={(novas: Quantidades) => setValue('quantidades', novas)}
+            onFechar={() => setModal(null)}
+          />
+        )}
+      </Suspense>
     </form>
   )
 }
