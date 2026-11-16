@@ -99,6 +99,47 @@
 .catDisponiveis { font-size: 0.6875rem; font-weight: 400; color: $color-text-secondary; }
 .emBreve { font-size: 0.6875rem; font-weight: 700; color: $color-yellow-dark; background: $color-yellow-soft; border-radius: $radius-full; padding: 1px 6px; margin-left: 4px; }
 
+// ---------- Personalizar tamanho e categorias (D-97) ----------
+.personalizarBtn {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: $spacing-sm; min-height: 2.5rem; padding: 0 $spacing-md;
+  border: 1px dashed $color-green; border-radius: $radius-full; background: transparent;
+  font: 600 0.8125rem $font-sans; color: $color-green; cursor: pointer;
+  &:hover { background: $color-background-light-green; }
+}
+
+.personalizadoCard {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: $spacing-sm $spacing-md;
+  margin-top: $spacing-sm; padding: $spacing-md $spacing-lg;
+  border: 1px solid $color-green; border-radius: $radius-lg; background: $color-background-light-green;
+}
+
+.personalizadoTexto {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  strong { font-size: 1rem; color: $color-blue-primary; }
+  span { font-size: 0.75rem; color: $color-text-secondary; }
+  .seloPersonalizado {
+    align-self: flex-start; padding: 1px 8px; border-radius: $radius-full;
+    background: $color-green; color: $color-surface; font-size: 0.6875rem; font-weight: 700;
+  }
+}
+
+.personalizadoAcoes { display: flex; flex-wrap: wrap; gap: $spacing-xs $spacing-md; }
+
+.acaoTexto {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 2.25rem; padding: 0;
+  border: none; background: transparent; font: 600 0.8125rem $font-sans; color: $color-green; cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
+.avisoDerivado {
+  margin: 0 0 $spacing-sm; padding: $spacing-sm $spacing-md; border-radius: $radius-md;
+  background: $color-yellow-soft; color: $color-yellow-dark; font-size: 0.8125rem;
+}
+
+.gradeInativa { opacity: 0.45; pointer-events: none; }
+
 .tempoAviso { font-size: 0.8125rem; color: $color-text-secondary; margin: 0 0 $spacing-sm; }
 
 .modosGrid {
@@ -174,6 +215,8 @@
 
 // Foco do teclado visível nos botões da tela
 .linkAction,
+.personalizarBtn,
+.acaoTexto,
 .pillBtn,
 .startBtn,
 .cancelBtn {

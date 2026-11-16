@@ -1,0 +1,281 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
+
+// ---------- Modal ----------
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  background: rgba($color-blue-primary, 0.45);
+
+  &[data-entering] {
+    animation: aparecer 0.15s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-entering] {
+      animation: none;
+    }
+  }
+}
+
+.modal {
+  width: min(100%, 560px);
+  max-height: calc(100dvh - #{$spacing-md * 2});
+  overflow-y: auto;
+  background: $color-surface;
+  border-radius: $radius-lg;
+  box-shadow: 0 20px 48px rgba($color-blue-primary, 0.25);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  outline: none;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-md;
+  }
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.titulo {
+  margin: 0;
+  font-family: $font-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: $color-blue-primary;
+}
+
+.descricao {
+  margin: $spacing-xs 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.fechar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-full;
+  background: $color-surface;
+  color: $color-blue-primary;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $color-blue-primary;
+  }
+}
+
+// ---------- Campo de número ----------
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campoRotulo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.campoGrupo {
+  display: flex;
+  align-items: stretch;
+  width: fit-content;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  background: $color-surface;
+  overflow: hidden;
+
+  &[data-focus-within] {
+    border-color: $color-green;
+    @include focus-ring;
+  }
+
+  &[data-invalid] {
+    border-color: $color-error;
+  }
+}
+
+.passo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  border: none;
+  background: $color-fundo-lateral;
+  color: $color-blue-primary;
+  cursor: pointer;
+
+  &[data-hovered] {
+    background: $color-green-soft;
+  }
+
+  &[data-disabled] {
+    color: $color-grey;
+    cursor: not-allowed;
+    background: $color-fundo-lateral;
+  }
+}
+
+.campoInput {
+  width: 4.5rem;
+  min-height: 2.75rem;
+  border: none;
+  border-inline: 1px solid $color-border-light;
+  text-align: center;
+  font: 700 1.125rem $font-sans;
+  font-variant-numeric: tabular-nums;
+  color: $color-blue-primary;
+  outline: none;
+}
+
+.campoDetalhe {
+  font-size: 0.75rem;
+  color: $color-text-secondary;
+}
+
+.campoGrande .campoInput {
+  width: 6rem;
+  min-height: 3.25rem;
+  font-size: 1.5rem;
+}
+
+.campoGrande .passo {
+  width: 3.25rem;
+}
+
+.gradeAreas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+
+  @media (max-width: $breakpoint-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ---------- Total, avisos e botões ----------
+
+.total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $spacing-xs $spacing-sm;
+  margin: 0;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  background: $color-green-soft;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+
+  strong {
+    color: $color-green;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &.totalPassou {
+    background: $color-background-light-red;
+
+    strong {
+      color: $color-error;
+    }
+  }
+}
+
+.totalTempo {
+  margin-left: auto;
+}
+
+.nota,
+.erro {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.nota {
+  color: $color-yellow-dark;
+}
+
+.erro {
+  color: $color-error;
+  font-weight: 600;
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
+
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column-reverse;
+  }
+}
+
+.primario,
+.secundario {
+  min-height: 2.75rem;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-md;
+  font: 700 0.875rem $font-sans;
+  cursor: pointer;
+}
+
+.primario {
+  border: none;
+  background: $color-green;
+  color: $color-surface;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.secundario {
+  border: 1px solid $color-border-light;
+  background: $color-surface;
+  color: $color-blue-primary;
+}
+
+.fechar,
+.passo,
+.primario,
+.secundario {
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

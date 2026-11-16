@@ -29,6 +29,8 @@ export interface Alternativa {
 
 export interface OpcoesSimulado {
   tamanhos: { id: Tamanho; questoes: number }[]
+  // Limite do total num simulado personalizado (D-97)
+  maximoQuestoes: number
   // Padrão sugerido e as opções que a tela oferece (a API aceita de 60 a 600, de 30 em 30)
   segundosPorQuestao: number
   temposPorQuestao: number[]
@@ -36,10 +38,15 @@ export interface OpcoesSimulado {
   areas: { id: Area; nome: string; questoesDisponiveis: number }[]
 }
 
+// O total vem de um destes, nesta ordem (D-97): quantidades por área, quantidade livre ou tamanho pronto
 export interface CriarSimuladoRequest {
   banca: Banca
-  tamanho: Tamanho
-  areas: Area[]
+  tamanho?: Tamanho
+  // Total livre de 1 a 100, dividido entre as áreas
+  quantidade?: number
+  areas?: Area[]
+  // Questões de cada área; as áreas passam a ser as que têm mais de 0
+  quantidades?: Partial<Record<Area, number>>
   cronometrado: boolean
   // Obrigatório no cronometrado; nulo sem cronômetro
   segundosPorQuestao: number | null
@@ -139,6 +146,8 @@ export interface SimuladoResumo {
   porcentagemAcerto: number | null
   duracaoSegundos: number
   areas: Area[]
+  // Quantas questões de cada área o simulado teve (para repetir um personalizado)
+  questoesPorArea: Partial<Record<Area, number>>
   porArea: DesempenhoArea[]
 }
 
