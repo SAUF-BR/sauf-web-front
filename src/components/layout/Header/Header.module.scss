@@ -117,10 +117,6 @@
   position: relative;
 }
 
-.acaoContorno {
-  border: 2px solid rgba($color-white, 0.85);
-  font-size: 1.125rem;
-}
 
 .iconeFavoritos {
   color: $color-yellow;
@@ -128,8 +124,8 @@
 
 .indicador {
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: 0.5rem;
+  right: 0.5rem;
   width: 0.625rem;
   height: 0.625rem;
   background: $color-yellow;

@@ -63,7 +63,7 @@ export function Header() {
                 <button
                   ref={sinoRef}
                   type="button"
-                  className={`${styles.acao} ${styles.acaoContorno}`}
+                  className={styles.acao}
                   aria-label={
                     totalNaoLidas > 0
                       ? `Notificações (${totalNaoLidas} não lidas)`

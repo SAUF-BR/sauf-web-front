@@ -13,12 +13,14 @@ export function AtalhosRapidos({ atalhos }: AtalhosRapidosProps) {
       <ul className={styles.lista}>
         {atalhos.map((atalho) => {
           const emDestaque = atalho.variante !== 'neutro'
+          const Icone = atalho.icone
 
           return (
             <li key={atalho.id} className={`${styles.item} ${styles[atalho.variante]}`}>
               <Link to={atalho.para} className={styles.link}>
-                {/* TODO: substituir pelo ícone definitivo de cada atalho */}
-                <span className={styles.icone} aria-hidden="true" />
+                <span className={styles.icone} aria-hidden="true">
+                  <Icone size="1.125rem" />
+                </span>
 
                 <span className={styles.textos}>
                   <span className={styles.titulo}>{atalho.titulo}</span>

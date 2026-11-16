@@ -1,8 +1,8 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
-// Faixa única com bordas arredondadas: em telas grandes os 5 atalhos ficam lado
-// a lado (os 2 em destaque mais largos); em telas menores quebram em grade.
+// Faixa única com bordas arredondadas: em telas grandes os 6 atalhos ficam lado
+// a lado (os 3 em destaque mais largos); em telas menores quebram em grade.
 // As divisórias são o fundo da lista aparecendo pelo `gap` de 1px.
 .lista {
   display: grid;
@@ -18,7 +18,7 @@
   }
 
   @media (min-width: $breakpoint-lg) {
-    grid-template-columns: 1.15fr 1.15fr 1fr 1fr 1fr;
+    grid-template-columns: 1.3fr 1.15fr 1.15fr 1fr 1fr 1fr;
   }
 }
 
@@ -32,6 +32,12 @@
       grid-column: 1 / -1;
     }
   }
+}
+
+// Acessar simulados: o atalho mais visível da faixa (amarelo, antes dos demais)
+.amarelo {
+  background: $color-yellow;
+  color: $color-blue-primary;
 }
 
 .verde {
@@ -65,6 +71,7 @@
   }
 }
 
+.amarelo .link:hover,
 .verde .link:hover,
 .azul .link:hover {
   filter: brightness(1.1);
@@ -77,8 +84,15 @@
 .icone {
   width: 1.75rem;
   height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   border-radius: $radius-sm;
+
+  .amarelo & {
+    background: rgba($color-blue-primary, 0.15);
+  }
 
   .verde & {
     background: rgba($color-white, 0.2);
@@ -86,10 +100,12 @@
 
   .azul & {
     background: $color-yellow;
+    color: $color-blue-primary;
   }
 
   .neutro & {
     background: $color-border-light;
+    color: $color-blue-primary;
   }
 }
 
@@ -103,6 +119,7 @@
   font-size: 1rem;
   font-weight: 600;
 
+  .amarelo &,
   .verde &,
   .azul & {
     font-weight: 700;

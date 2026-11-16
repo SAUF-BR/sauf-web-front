@@ -1,3 +1,12 @@
+import {
+  CalendarDays,
+  DoorOpen,
+  FilePenLine,
+  GraduationCap,
+  Landmark,
+  Lightbulb,
+  type LucideIcon,
+} from 'lucide-react'
 import { formatarInteiro } from '../../lib/utils'
 import { ROTAS } from '../../routes/paths'
 
@@ -7,7 +16,7 @@ import { ROTAS } from '../../routes/paths'
 // TODO: avaliar se as buscas populares virão da API (ex.: termos mais buscados)
 export const BUSCAS_POPULARES = ['Medicina', 'Nota de corte SISU', 'EaD em Pedagogia']
 
-export type VarianteAtalho = 'verde' | 'azul' | 'neutro'
+export type VarianteAtalho = 'amarelo' | 'verde' | 'azul' | 'neutro'
 
 export type Atalho = {
   id: string
@@ -15,6 +24,7 @@ export type Atalho = {
   descricao?: string
   para: string
   variante: VarianteAtalho
+  icone: LucideIcon
 }
 
 type DadosAtalhos = {
@@ -24,11 +34,20 @@ type DadosAtalhos = {
 export function montarAtalhos({ totalCursos }: DadosAtalhos): Atalho[] {
   return [
     {
+      id: 'simulados',
+      titulo: 'Acessar simulados',
+      descricao: 'Treine para o ENEM',
+      para: ROTAS.simulados,
+      variante: 'amarelo',
+      icone: FilePenLine,
+    },
+    {
       id: 'cursos',
       titulo: 'Explorar cursos',
       descricao: totalCursos !== undefined ? `${formatarInteiro(totalCursos)} cursos` : undefined,
       para: ROTAS.cursos,
       variante: 'verde',
+      icone: GraduationCap,
     },
     {
       id: 'teste-vocacional',
@@ -36,9 +55,28 @@ export function montarAtalhos({ totalCursos }: DadosAtalhos): Atalho[] {
       descricao: '12 minutos',
       para: ROTAS.testeVocacional,
       variante: 'azul',
+      icone: Lightbulb,
     },
-    { id: 'formas-de-ingresso', titulo: 'Formas de ingresso', para: ROTAS.formasDeIngresso, variante: 'neutro' },
-    { id: 'universidades', titulo: 'Universidades', para: ROTAS.universidades, variante: 'neutro' },
-    { id: 'calendario', titulo: 'Calendário', para: ROTAS.calendario, variante: 'neutro' },
+    {
+      id: 'formas-de-ingresso',
+      titulo: 'Formas de ingresso',
+      para: ROTAS.formasDeIngresso,
+      variante: 'neutro',
+      icone: DoorOpen,
+    },
+    {
+      id: 'universidades',
+      titulo: 'Universidades',
+      para: ROTAS.universidades,
+      variante: 'neutro',
+      icone: Landmark,
+    },
+    {
+      id: 'calendario',
+      titulo: 'Calendário',
+      para: ROTAS.calendario,
+      variante: 'neutro',
+      icone: CalendarDays,
+    },
   ]
 }
