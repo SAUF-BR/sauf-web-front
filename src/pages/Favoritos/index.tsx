@@ -1,4 +1,5 @@
 import { useId, useState, type ReactNode } from 'react'
+import { Carregando } from '../../components/ui/Carregando/Carregando'
 import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
 import { useUsuarioAtual } from '../../features/auth'
 import {
@@ -46,7 +47,12 @@ export default function Favoritos() {
   const { data: usuario, isPending, isError, error, isFetching, refetch } = useUsuarioAtual()
 
   if (isPending) {
-    return <main className={styles.pagina} aria-busy="true" />
+    return (
+      <main className={styles.pagina} aria-busy="true">
+        <CabecalhoFavoritos />
+        <Carregando mensagem="Carregando seus favoritos…" />
+      </main>
+    )
   }
 
   if (isError && usuario === undefined) {
@@ -96,7 +102,7 @@ function FavoritosLogado() {
     ordenacaoPadrao: Ordenacao_padrao_universidades,
     aoRemover: (item) => alternarUniversidade.mutate({ universidadeId: item.id, favoritar: false }),
     aoDesfazerRemocao: (item) =>
-      alternarUniversidade.mutate({ universidadeId: item.id, favoritar: true }),
+      alternarUniversidade.mutate({ universidadeId: item.id, favoritar: true, universidade: item }),
   })
 
   const abas: { id: AbaFavoritos; rotulo: string; total: number }[] = [
@@ -164,6 +170,7 @@ function FavoritosLogado() {
             mensagemErro={universidadesApi.error?.message}
             tentando={universidadesApi.isFetching}
             onTentarDeNovo={() => void universidadesApi.refetch()}
+            erroAlteracao={alternarUniversidade.isError ? alternarUniversidade.error.message : null}
             alertaAtivo={alertaUniversidadesAtivo}
             onAlternarAlerta={() => setAlertaUniversidadesAtivo((atual) => !atual)}
           />

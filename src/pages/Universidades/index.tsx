@@ -14,7 +14,7 @@ import styles from './index.module.scss'
 export default function Universidades() {
   const listagem = useFiltrosUniversidades()
 
-  const { ehFavorita, alternarFavorita } = useFavoritarUniversidade()
+  const favoritos = useFavoritarUniversidade()
 
   function limparBuscaSeVazia(evento: SyntheticEvent<HTMLDivElement>) {
     if (evento.target instanceof HTMLInputElement && evento.target.value === '') {
@@ -48,6 +48,12 @@ export default function Universidades() {
 
     return (
       <>
+        {favoritos.erro && (
+          <AvisoErro className={styles.avisoFavorito}>
+            Não foi possível atualizar seus favoritos. {favoritos.erro}
+          </AvisoErro>
+        )}
+
         <ul
           className={`${styles.grade} ${listagem.atualizando ? styles.atualizando : ''}`}
           aria-busy={listagem.atualizando}
@@ -56,8 +62,8 @@ export default function Universidades() {
             <li key={universidade.id}>
               <CardUniversidadeGrid
                 universidade={universidade}
-                favorito={ehFavorita(universidade.id)}
-                onAlternarFavorito={() => alternarFavorita(universidade.id)}
+                favorito={favoritos.ehFavorita(universidade.id)}
+                onAlternarFavorito={() => favoritos.alternarFavorita(universidade.id)}
               />
             </li>
           ))}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { AvisoErro } from '../../../components/ui/AvisoErro/AvisoErro'
 import { Carregando } from '../../../components/ui/Carregando/Carregando'
 import { EstadoErro } from '../../../components/ui/EstadoErro/EstadoErro'
 import { Tag } from '../../../components/ui/Tag/Tag'
@@ -25,6 +26,7 @@ type AbaUniversidadesProps = {
   mensagemErro: string | undefined
   tentando: boolean
   onTentarDeNovo: () => void
+  erroAlteracao: string | null
   alertaAtivo: boolean
   onAlternarAlerta: () => void
 }
@@ -36,6 +38,7 @@ export function AbaUniversidades({
   mensagemErro,
   tentando,
   onTentarDeNovo,
+  erroAlteracao,
   alertaAtivo,
   onAlternarAlerta,
 }: AbaUniversidadesProps) {
@@ -121,6 +124,10 @@ export function AbaUniversidades({
   return (
     <>
       <div className={styles.lista}>
+        {erroAlteracao && (
+          <AvisoErro>Não foi possível atualizar seus favoritos. {erroAlteracao}</AvisoErro>
+        )}
+
         {renderizarLista()}
 
         <AvisoRemocao
