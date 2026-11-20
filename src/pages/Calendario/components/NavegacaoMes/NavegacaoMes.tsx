@@ -5,12 +5,14 @@ import styles from './NavegacaoMes.module.scss'
 
 type NavegacaoMesProps = {
   anoMes: AnoMes
+  mesAtual: AnoMes
   onMudarMes: (anoMes: AnoMes) => void
 }
 
-export function NavegacaoMes({ anoMes, onMudarMes }: NavegacaoMesProps) {
+export function NavegacaoMes({ anoMes, mesAtual, onMudarMes }: NavegacaoMesProps) {
   const anterior = somarMeses(anoMes, -1)
   const proximo = somarMeses(anoMes, 1)
+  const noMesAtual = anoMes.ano === mesAtual.ano && anoMes.mes === mesAtual.mes
 
   return (
     <div className={styles.navegacao}>
@@ -35,6 +37,17 @@ export function NavegacaoMes({ anoMes, onMudarMes }: NavegacaoMesProps) {
       >
         <ChevronRight size="1.125rem" aria-hidden="true" />
       </Button>
+
+      {!noMesAtual && (
+        <Button
+          variant="outline"
+          className={styles.hoje}
+          aria-label={`Voltar para o mês atual, ${formatarMesAno(mesAtual)}`}
+          onClick={() => onMudarMes(mesAtual)}
+        >
+          Hoje
+        </Button>
+      )}
     </div>
   )
 }

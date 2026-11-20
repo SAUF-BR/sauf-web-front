@@ -96,6 +96,12 @@
   gap: $spacing-xs;
 }
 
+.mais {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+}
+
 .marcadores {
   display: flex;
   flex-wrap: wrap;
@@ -110,6 +116,10 @@
   border: none;
   border-radius: inherit;
   cursor: pointer;
+
+  &:hover {
+    background: rgba($color-green, 0.06);
+  }
 
   &:focus-visible {
     @include focus-ring;

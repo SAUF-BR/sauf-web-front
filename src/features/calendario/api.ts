@@ -1,21 +1,18 @@
-import { simularRequisicao } from '../../lib/api/mock'
-import { eventosCalendarioMock, proximosPrazosMock } from './mocks'
+import { apiClient } from '../../lib/api/client'
+import { endpoints } from '../../lib/api/endpoints'
 import type { EventoCalendario, Prazo } from './types'
 
-export async function getProximosPrazos(): Promise<Prazo[]> {
-  // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
-  // const { data } = await apiClient.get<Prazo[]>(endpoints.calendario.proximosPrazos)
-  // return data
-  return simularRequisicao(proximosPrazosMock)
+export async function getProximosPrazos(limite = 3): Promise<Prazo[]> {
+  const { data } = await apiClient.get<Prazo[]>(endpoints.calendario.proximosPrazos, {
+    params: { limite },
+  })
+  return data
 }
 
+// Eventos com algum dia no ano: um período que cruza a virada aparece nos dois anos
 export async function getEventosDoAno(ano: number): Promise<EventoCalendario[]> {
-  // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
-  // const { data } = await apiClient.get<EventoCalendario[]>(endpoints.calendario.eventos, {
-  //   params: { ano },
-  // })
-  // return data
-  return simularRequisicao(
-    eventosCalendarioMock.filter((evento) => evento.data.startsWith(`${ano}-`)),
-  )
+  const { data } = await apiClient.get<EventoCalendario[]>(endpoints.calendario.eventos, {
+    params: { ano },
+  })
+  return data
 }

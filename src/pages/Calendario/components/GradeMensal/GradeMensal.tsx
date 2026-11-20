@@ -13,6 +13,16 @@ import styles from './GradeMensal.module.scss'
 
 const DIAS_DA_SEMANA = obterDiasDaSemana()
 
+// Acima disso a célula mostra "+N" e o resto fica na agenda abaixo da grade
+const MAXIMO_POR_DIA = 3
+
+// O título de um período aparece no primeiro dia dele em cada linha da grade
+// (início, dia 1 do mês ou domingo); nos outros dias fica só a barra colorida
+function continuaDoDiaAnterior(evento: EventoCalendario, dataIso: string, dia: number) {
+  const domingo = new Date(`${dataIso}T00:00:00Z`).getUTCDay() === 0
+  return evento.inicio < dataIso && dia !== 1 && !domingo
+}
+
 type GradeMensalProps = {
   anoMes: AnoMes
   eventosPorDia: Map<string, EventoCalendario[]>
@@ -70,18 +80,29 @@ export function GradeMensal({
 
                 {eventos.length > 0 && (
                   <ul className={compacto ? styles.marcadores : styles.eventos}>
-                    {eventos.map((evento) => (
-                      <ChipEvento key={evento.id} evento={evento} compacto={compacto} />
+                    {(compacto ? eventos : eventos.slice(0, MAXIMO_POR_DIA)).map((evento) => (
+                      <ChipEvento
+                        key={evento.id}
+                        evento={evento}
+                        compacto={compacto}
+                        continuacao={continuaDoDiaAnterior(evento, dataIso, dia)}
+                      />
                     ))}
                   </ul>
                 )}
 
-                {compacto && eventos.length > 0 && (
+                {!compacto && eventos.length > MAXIMO_POR_DIA && (
+                  <span className={styles.mais} aria-hidden="true">
+                    +{eventos.length - MAXIMO_POR_DIA}
+                  </span>
+                )}
+
+                {eventos.length > 0 && (
                   <button
                     type="button"
                     className={styles.botaoDia}
                     aria-pressed={diaSelecionado === dataIso}
-                    aria-label={`Ver eventos de ${porExtenso}`}
+                    aria-label={`Ver ${eventos.length === 1 ? '1 evento' : `${eventos.length} eventos`} de ${porExtenso}`}
                     onClick={() => onSelecionarDia(dataIso)}
                   />
                 )}
