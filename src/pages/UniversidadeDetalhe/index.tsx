@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Carregando } from '../../components/ui/Carregando/Carregando'
 import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
+import { useFavoritarUniversidade } from '../../features/favoritos'
 import { formatarInteiro } from '../../lib/utils'
 import { ROTAS } from '../../routes/paths'
 import { CabecalhoUniversidade } from './components/CabecalhoUniversidade/CabecalhoUniversidade'
@@ -21,8 +22,7 @@ export default function UniversidadeDetalhe() {
   const { universidade, carregando, naoEncontrada, erro, mensagemErro, tentando, tentarDeNovo } =
     useUniversidadeDetalhe(universidadeId)
 
-  // Só em memória por enquanto
-  const [favorito, setFavorito] = useState(false)
+  const favoritos = useFavoritarUniversidade()
   const [abaAtiva, setAbaAtiva] = useState(Abas_universidade[0].id)
 
   useEffect(() => {
@@ -69,8 +69,9 @@ export default function UniversidadeDetalhe() {
     <main>
       <CabecalhoUniversidade
         universidade={universidade}
-        favorito={favorito}
-        onAlternarFavorito={() => setFavorito((atual) => !atual)}
+        favorito={favoritos.ehFavorita(universidade.id)}
+        onAlternarFavorito={() => favoritos.alternarFavorita(universidade.id)}
+        erroFavorito={favoritos.erro}
       />
 
       <div className={styles.barraAbas}>

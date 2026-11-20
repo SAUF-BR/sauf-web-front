@@ -1,5 +1,6 @@
 import { Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { AvisoErro } from '../../../../components/ui/AvisoErro/AvisoErro'
 import { Imagem } from '../../../../components/ui/Imagem/Imagem'
 import {
   ROTULO_TIPO_UNIVERSIDADE,
@@ -14,12 +15,14 @@ type CabecalhoUniversidadeProps = {
   universidade: UniversidadeDetalhe
   favorito: boolean
   onAlternarFavorito: () => void
+  erroFavorito: string | null
 }
 
 export function CabecalhoUniversidade({
   universidade,
   favorito,
   onAlternarFavorito,
+  erroFavorito,
 }: CabecalhoUniversidadeProps) {
   const estado = ESTADOS_BR[universidade.uf]
 
@@ -104,6 +107,10 @@ export function CabecalhoUniversidade({
               <Heart size="1em" fill={favorito ? 'currentColor' : 'none'} aria-hidden="true" />
               {favorito ? 'Salvo' : 'Salvar universidade'}
             </button>
+
+            {erroFavorito && (
+              <AvisoErro>Não foi possível atualizar seus favoritos. {erroFavorito}</AvisoErro>
+            )}
           </div>
         </div>
       </div>
