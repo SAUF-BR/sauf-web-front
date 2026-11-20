@@ -1,9 +1,9 @@
 import type { Modalidade } from '../cursos/types'
-import type { Universidade } from '../universidades/types'
+import type { NotaMec, Universidade } from '../universidades/types'
 
 // GET /favoritos/universidades
 export interface UniversidadeFavoritaApi extends Universidade {
-  notaMec: number | null
+  notaMec: NotaMec | null
   modalidades: Modalidade[]
   totalCampi: number
 }

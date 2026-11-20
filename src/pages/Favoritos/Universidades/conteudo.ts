@@ -1,5 +1,6 @@
 import { ROTULO_MODALIDADE, type Modalidade } from '../../../features/cursos'
 import type { UniversidadeFavoritaApi } from '../../../features/favoritos'
+import { ORDEM_MODALIDADES } from '../../../features/universidades'
 import { compararComNulos, type Comparador, type Opcao } from '../conteudo'
 
 export type UniversidadeFavorita = UniversidadeFavoritaApi
@@ -24,10 +25,8 @@ export const Comparadores_universidades: Record<
   nome: () => 0,
 }
 
-const Ordem_modalidades: Modalidade[] = ['presencial', 'semipresencial', 'ead']
-
 export function formatarModalidades(modalidades: Modalidade[]) {
-  const rotulos = Ordem_modalidades.filter((modalidade) => modalidades.includes(modalidade)).map(
+  const rotulos = ORDEM_MODALIDADES.filter((modalidade) => modalidades.includes(modalidade)).map(
     (modalidade) =>
       modalidade === 'ead'
         ? ROTULO_MODALIDADE[modalidade]

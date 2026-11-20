@@ -16,10 +16,12 @@ export interface Universidade {
 
 export type UniversidadeResumo = Pick<Universidade, 'id' | 'nome' | 'sigla' | 'tipo'>
 
+export type NotaMec = 1 | 2 | 3 | 4 | 5
+
 export type FaixaNotaMec = '4-5' | '3'
 
 export interface UniversidadeListagemApi extends Universidade {
-  notaMec: number | null
+  notaMec: NotaMec | null
   modalidades: Modalidade[]
 }
 

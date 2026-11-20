@@ -1,9 +1,9 @@
 import type { Modalidade } from '../cursos/types'
-import type { Universidade } from './types'
+import type { NotaMec, Universidade } from './types'
+
+export type { NotaMec }
 
 // Mock da listagem de Universidades (tela /universidades)
-
-export type NotaMec = 1 | 2 | 3 | 4 | 5
 
 export interface UniversidadeListagem extends Universidade {
   notaMec: NotaMec
