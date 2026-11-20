@@ -1,6 +1,7 @@
 import type { Curso } from '../../../features/cursos'
 import { cursosRecomendadosMock } from '../../../features/cursos/mocks'
 import { universidadesListagemMock } from '../../../features/universidades/mockUniversidades'
+import type { UniversidadeResumo } from '../../../features/universidades'
 import type { UF } from '../../../lib/utils'
 import {
   compararComNulos,
@@ -11,7 +12,13 @@ import {
   type StatusFavorito,
 } from '../conteudo'
 
-export interface CursoFavorito extends Curso {
+// O favorito é o curso numa universidade: guarda a instituição e a mensalidade da oferta
+interface CursoNaUniversidade extends Curso {
+  universidade: UniversidadeResumo
+  mensalidadeMinima: number | null
+}
+
+export interface CursoFavorito extends CursoNaUniversidade {
   cidade: string
   uf: UF
   status: StatusFavorito | null
@@ -41,14 +48,15 @@ export function formatarSemestres(total: number) {
 }
 
 // Dados mockados 
-const Cursos_extras_mock: Curso[] = [
+const Cursos_extras_mock: CursoNaUniversidade[] = [
   {
     id: 'c-fisioterapia-utfpr',
     nome: 'Fisioterapia',
     area: 'Saúde',
-    grau: 'bacharelado',
-    modalidade: 'presencial',
-    duracaoSemestres: 8,
+    graus: ['bacharelado'],
+    modalidades: ['presencial'],
+    duracaoSemestresMin: 8,
+    duracaoSemestresMax: 8,
     imagemUrl: null,
     universidade: {
       id: 'u-utfpr',
@@ -57,18 +65,21 @@ const Cursos_extras_mock: Curso[] = [
       tipo: 'publica',
     },
     notaCorteSisu: 705.3,
+    totalUniversidades: 1,
     mensalidadeMinima: null,
   },
   {
     id: 'c-nutricao-uniasselvi',
     nome: 'Nutrição',
     area: 'Saúde',
-    grau: 'bacharelado',
-    modalidade: 'presencial',
-    duracaoSemestres: 8,
+    graus: ['bacharelado'],
+    modalidades: ['presencial'],
+    duracaoSemestresMin: 8,
+    duracaoSemestresMax: 8,
     imagemUrl: null,
     universidade: { id: 'u-uniasselvi', nome: 'Uniasselvi', sigla: null, tipo: 'privada' },
     notaCorteSisu: null,
+    totalUniversidades: 1,
     mensalidadeMinima: 529,
   },
 ]
@@ -78,8 +89,22 @@ const Status_cursos_mock: Record<string, StatusFavorito> = {
   'c-medicina-unicesumar': { tipo: 'info', texto: 'Aceita FIES e PROUni parcial' },
   'c-enfermagem-uniasselvi': { tipo: 'neutro', texto: 'Inscrições abrem em novembro' },
 }
+const Universidade_dos_recomendados_mock: Record<string, UniversidadeResumo> = {
+  'c-biomedicina-uem': { id: 'u-uem', nome: 'Universidade Estadual de Maringá', sigla: 'UEM', tipo: 'publica' },
+  'c-medicina-unicesumar': { id: 'u-unicesumar', nome: 'UniCesumar', sigla: null, tipo: 'privada' },
+  'c-enfermagem-uniasselvi': { id: 'u-uniasselvi', nome: 'Uniasselvi', sigla: null, tipo: 'privada' },
+}
+
+const Mensalidade_dos_recomendados_mock: Record<string, number> = {
+  'c-enfermagem-uniasselvi': 489,
+}
+
 export const cursosFavoritosMock: CursoFavorito[] = [
-  ...cursosRecomendadosMock,
+  ...cursosRecomendadosMock.map((curso) => ({
+    ...curso,
+    universidade: Universidade_dos_recomendados_mock[curso.id],
+    mensalidadeMinima: Mensalidade_dos_recomendados_mock[curso.id] ?? null,
+  })),
   ...Cursos_extras_mock,
 ].map((curso) => {
   const universidade = universidadesListagemMock.find((item) => item.id === curso.universidade.id)

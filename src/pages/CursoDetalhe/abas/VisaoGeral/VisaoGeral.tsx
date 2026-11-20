@@ -12,10 +12,9 @@ import styles from './VisaoGeral.module.scss'
 import type { Curso } from '../../../../features/cursos/types'
 import { Link } from 'react-router-dom'
 import { ROTAS } from '../../../../routes/paths'
-import { universidadesMock } from '../../../../features/universidades/mocks'
-import { ROTULO_TIPO_UNIVERSIDADE } from '../../../../features/universidades/utils'
 import {
   calcularChance,
+  formatarDuracao,
 } from '../../../../features/cursos/utils'
 import { BotaoFavorito } from '../../../../features/favoritos/components/BotaoFavorito/BotaoFavorito'
 import {
@@ -30,9 +29,6 @@ interface VisaoGeralProps {
 
 export function VisaoGeral({ curso }: VisaoGeralProps) {
   const detalhes = detalhesCursoMock[curso.id]
-  const universidadeCompleta = universidadesMock.find(
-  (universidade) => universidade.id === curso.universidade.id,
-)
 const { data: favoritosIds } = useCursosFavoritosIds()
 const alternarFavorito = useAlternarCursoFavorito()
 
@@ -56,10 +52,9 @@ const { diferencaNota, percentualNota, corChance } = calcularChance(
         <section className={styles.cardsInformativos}>
             <article className={styles.cardInformativo}>
                 <span className={styles.cardRotulo}>DURAÇÃO</span>
-                <div className={styles.cardValor}>
-                <strong>{curso.duracaoSemestres}</strong>
-                <span>semestres</span>
-                </div>
+                <strong className={styles.cardValorUnico}>
+                {formatarDuracao(curso.duracaoSemestresMin, curso.duracaoSemestresMax)}
+                </strong>
             </article>
 
             <article className={styles.cardInformativo}>
@@ -90,26 +85,12 @@ const { diferencaNota, percentualNota, corChance } = calcularChance(
         </section>
 
         <section className={styles.secao}>
-          <h2>Instituição que ofertam o curso</h2>
-            <Link
-            to={ROTAS.universidadeDetalhe(curso.universidade.id)}
-            className={styles.universidade}
-            >
-            <div className={styles.sigla}>
-                {curso.universidade.sigla || 'UNI'}
-            </div>
-
-            <div>
-                <h3>{curso.universidade.nome}</h3>
-                <p>
-                    {ROTULO_TIPO_UNIVERSIDADE[curso.universidade.tipo]}
-                    {universidadeCompleta?.cidade &&
-                        ` · ${universidadeCompleta.cidade}`}
-                    {universidadeCompleta?.uf &&
-                        `, ${universidadeCompleta.uf}`}
-                </p>
-                            </div>
-            </Link>
+          <h2>Instituições que ofertam o curso</h2>
+          {/* TODO: listar as universidades quando a API tiver a rota das ofertas do curso */}
+          <p>
+            Ofertado em {curso.totalUniversidades}{' '}
+            {curso.totalUniversidades === 1 ? 'universidade' : 'universidades'}.
+          </p>
         </section>
       </div>
     

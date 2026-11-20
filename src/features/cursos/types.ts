@@ -1,4 +1,3 @@
-import type { UniversidadeResumo } from '../universidades/types'
 export type GrauAcademico = 'bacharelado' | 'licenciatura' | 'tecnologo'
 export type Modalidade = 'presencial' | 'semipresencial' | 'ead'
 

@@ -39,11 +39,15 @@ export function CursoDetalheHeader({
 
             <div className={styles.informacoes}>
             <h1>{curso.nome}</h1>
-            <p className={styles.area}>{curso.area} | Ofertado em {curso.totalOfertas ?? 0} universidades</p>
+            <p className={styles.area}>{curso.area} | Ofertado em {curso.totalUniversidades} universidades</p>
                 
             <div className={styles.tags}>
-              <Tag variant="destaque">{ROTULO_GRAU[curso.grau]}</Tag>
-              <Tag variant="neutro">{ROTULO_MODALIDADE[curso.modalidade]}</Tag>
+              {curso.graus.map((grau) => (
+                <Tag key={grau} variant="destaque">{ROTULO_GRAU[grau]}</Tag>
+              ))}
+              {curso.modalidades.map((modalidade) => (
+                <Tag key={modalidade} variant="neutro">{ROTULO_MODALIDADE[modalidade]}</Tag>
+              ))}
             </div>
             </div>
         </div>

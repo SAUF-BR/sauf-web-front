@@ -36,20 +36,27 @@ export function CursoCard({ curso, acao }: CursoCardProps) {
         <div className={styles.cabecalho}>
           <div>
             <h3 className={styles.nome}>{curso.nome}</h3>
-            <p className={styles.universidade}>{curso.universidade.nome}</p>
+            <p className={styles.universidade}>
+              Ofertado em {curso.totalUniversidades}{' '}
+              {curso.totalUniversidades === 1 ? 'universidade' : 'universidades'}
+            </p>
           </div>
           {acao && <div className={styles.acao}>{acao}</div>}
         </div>
 
         <ul className={styles.tags} aria-label="Características do curso">
+          {curso.graus.map((grau) => (
+            <li key={grau}>
+              <Tag variant="destaque">{ROTULO_GRAU[grau]}</Tag>
+            </li>
+          ))}
+          {curso.modalidades.map((modalidade) => (
+            <li key={modalidade}>
+              <Tag>{ROTULO_MODALIDADE[modalidade]}</Tag>
+            </li>
+          ))}
           <li>
-            <Tag variant="destaque">{ROTULO_GRAU[curso.grau]}</Tag>
-          </li>
-          <li>
-            <Tag>{ROTULO_MODALIDADE[curso.modalidade]}</Tag>
-          </li>
-          <li>
-            <Tag>{formatarDuracao(curso.duracaoSemestres)}</Tag>
+            <Tag>{formatarDuracao(curso.duracaoSemestresMin, curso.duracaoSemestresMax)}</Tag>
           </li>
         </ul>
 
@@ -64,7 +71,7 @@ export function CursoCard({ curso, acao }: CursoCardProps) {
           <Link
             to={ROTAS.cursoDetalhe(curso.id)}
             className={styles.link}
-            aria-label={`Ver curso de ${curso.nome} — ${curso.universidade.nome}`}
+            aria-label={`Ver curso de ${curso.nome}`}
           >
             Ver curso <ChevronRight size="1em" />
           </Link>

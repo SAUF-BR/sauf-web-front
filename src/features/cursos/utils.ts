@@ -1,4 +1,4 @@
-import { formatarMoeda, formatarNumero } from '../../lib/utils'
+import { formatarNumero } from '../../lib/utils'
 import type { Curso, GrauAcademico, Modalidade } from './types'
 
 export const ROTULO_GRAU: Record<GrauAcademico, string> = {
