@@ -40,27 +40,3 @@ export function compararComNulos<T>(a: T | null, b: T | null, comparar: Comparad
 
   return comparar(a, b)
 }
-
-function prazoAberto(status: StatusFavorito | null) {
-  if (status?.tipo !== 'prazo') return null
-
-  const hoje = new Date().toISOString().slice(0, 10)
-  return status.encerraEm >= hoje ? status.encerraEm : null
-}
-
-export function compararPrazo(
-  a: { status: StatusFavorito | null },
-  b: { status: StatusFavorito | null },
-) {
-  return compararComNulos(prazoAberto(a.status), prazoAberto(b.status), (x, y) =>
-    x.localeCompare(y),
-  )
-}
-
-// Apoio aos mocks
-export function daquiA(dias: number) {
-  const hoje = new Date()
-  const data = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + dias))
-
-  return data.toISOString().slice(0, 10)
-}

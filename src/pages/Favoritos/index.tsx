@@ -1,9 +1,11 @@
-import { useId, useState, type ReactNode } from 'react'
+import { useId, useMemo, useState, type ReactNode } from 'react'
 import { Carregando } from '../../components/ui/Carregando/Carregando'
 import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
-import { useUsuarioAtual } from '../../features/auth'
+import { useUsuarioAtual, type UsuarioAtual } from '../../features/auth'
 import {
+  useAlternarCursoFavorito,
   useAlternarUniversidadeFavorita,
+  useCursosFavoritos,
   useUniversidadesFavoritas,
   type UniversidadeFavoritaApi,
 } from '../../features/favoritos'
@@ -13,10 +15,10 @@ import { SeletorOrdenacao } from './components/SeletorOrdenacao/SeletorOrdenacao
 import { AbaCursos } from './Cursos/AbaCursos'
 import {
   Comparadores_cursos,
-  cursosFavoritosMock,
-  cursosSelecionadosIniciaisMock,
   Opcoes_ordenacao_cursos,
   Ordenacao_padrao_cursos,
+  paraCursoFavorito,
+  type CursoFavorito,
 } from './Cursos/conteudo'
 import { AbaUniversidades } from './Universidades/AbaUniversidades'
 import {
@@ -29,6 +31,7 @@ import { useFavoritos } from './useFavoritos'
 import styles from './index.module.scss'
 
 const Sem_universidades: UniversidadeFavoritaApi[] = []
+const Sem_cursos: CursoFavorito[] = []
 
 function CabecalhoFavoritos({ acoes }: { acoes?: ReactNode }) {
   return (
@@ -77,20 +80,29 @@ export default function Favoritos() {
     )
   }
 
-  return <FavoritosLogado />
+  return <FavoritosLogado usuario={usuario} />
 }
 
-function FavoritosLogado() {
+function FavoritosLogado({ usuario }: { usuario: UsuarioAtual }) {
   const idBase = useId()
   const [aba, setAba] = useState<AbaFavoritos>('cursos')
   const [alertaCursosAtivo, setAlertaCursosAtivo] = useState(true)
   const [alertaUniversidadesAtivo, setAlertaUniversidadesAtivo] = useState(true)
 
+  const cursosApi = useCursosFavoritos()
+  const alternarCurso = useAlternarCursoFavorito()
+  const cursosFavoritos = useMemo(
+    () => cursosApi.data?.map(paraCursoFavorito) ?? Sem_cursos,
+    [cursosApi.data],
+  )
+
   const cursos = useFavoritos({
-    iniciais: cursosFavoritosMock,
+    iniciais: cursosFavoritos,
     comparadores: Comparadores_cursos,
     ordenacaoPadrao: Ordenacao_padrao_cursos,
-    selecionadosIniciais: cursosSelecionadosIniciaisMock,
+    aoRemover: (item) => alternarCurso.mutate({ cursoId: item.id, favoritar: false }),
+    aoDesfazerRemocao: (item) =>
+      alternarCurso.mutate({ cursoId: item.id, favoritar: true, curso: item }),
   })
 
   const universidadesApi = useUniversidadesFavoritas()
@@ -159,6 +171,13 @@ function FavoritosLogado() {
         {aba === 'cursos' ? (
           <AbaCursos
             favoritos={cursos}
+            carregando={cursosApi.isPending}
+            erro={cursosApi.isError && !cursosApi.data}
+            mensagemErro={cursosApi.error?.message}
+            tentando={cursosApi.isFetching}
+            onTentarDeNovo={() => void cursosApi.refetch()}
+            erroAlteracao={alternarCurso.isError ? alternarCurso.error.message : null}
+            notaEnem={usuario.notaEnem}
             alertaAtivo={alertaCursosAtivo}
             onAlternarAlerta={() => setAlertaCursosAtivo((atual) => !atual)}
           />
