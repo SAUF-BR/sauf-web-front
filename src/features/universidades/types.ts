@@ -80,7 +80,7 @@ export interface UniversidadeDetalhe extends Universidade {
   siteUrl: string | null
   capaUrl: string | null
   anoFundacao: number | null
-  notaMec: number | null
+  notaMec: NotaMec | null
   gratuita: boolean
   vagasPorAno: number | null
   sobre: string[]

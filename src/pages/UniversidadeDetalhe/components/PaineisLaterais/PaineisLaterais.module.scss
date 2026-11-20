@@ -41,16 +41,11 @@
   border-top: 1px solid $color-border-light;
 }
 
-.distancia,
 .contagem {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
   font-size: 0.875rem;
-}
-
-.distancia {
-  color: $color-blue-secondary;
 }
 
 .ponto {

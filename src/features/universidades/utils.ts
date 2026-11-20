@@ -1,3 +1,4 @@
+import { ErroApi } from '../../lib/api/erros'
 import type { Modalidade } from '../cursos/types'
 import type { TipoUniversidade, Universidade } from './types'
 
@@ -13,3 +14,8 @@ export function obterNomeCurto(universidade: Pick<Universidade, 'nome' | 'sigla'
 
 // Ordem em que as modalidades aparecem nas telas de universidade
 export const ORDEM_MODALIDADES: Modalidade[] = ['presencial', 'semipresencial', 'ead']
+
+// GET /universidades/{id}: 404 = não existe ou está inativa; 400 = id que não é um UUID
+export function ehUniversidadeNaoEncontrada(erro: unknown) {
+  return erro instanceof ErroApi && (erro.status === 400 || erro.status === 404)
+}
