@@ -1,0 +1,59 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.filtro {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.titulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-text-secondary;
+}
+
+.campo {
+  position: relative;
+  display: flex;
+  height: 2.75rem;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-md;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $color-grey;
+  }
+
+  &:focus-within {
+    border-color: $color-green;
+    @include focus-ring;
+  }
+}
+
+.select {
+  flex: 1;
+  min-width: 0;
+  padding: 0 2.5rem 0 $spacing-md;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+  background: transparent;
+  border: none;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.seta {
+  position: absolute;
+  top: 50%;
+  right: $spacing-md;
+  transform: translateY(-50%);
+  color: $color-text-secondary;
+  pointer-events: none;
+}

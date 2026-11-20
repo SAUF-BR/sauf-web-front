@@ -2,8 +2,9 @@
 
 .navegacao {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-sm $spacing-md;
 }
 
 .botao {
@@ -24,4 +25,10 @@
   @media (min-width: $breakpoint-md) {
     min-width: 14rem;
   }
+}
+
+.hoje {
+  margin-left: auto;
+  padding: 0 $spacing-md;
+  flex-shrink: 0;
 }

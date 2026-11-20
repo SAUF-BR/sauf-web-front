@@ -1,0 +1,129 @@
+@use 'sass:list';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-sm $spacing-md;
+}
+
+.titulo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-blue-primary;
+}
+
+.limpar {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-green;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.vazio {
+  padding: $spacing-lg;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+  background: $color-fundo-lateral;
+  border-radius: $radius-md;
+}
+
+.lista {
+  display: grid;
+  gap: $spacing-sm;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-left: 4px solid;
+  border-radius: $radius-md;
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} {
+    border-left-color: list.nth($cores, 1);
+
+    .tipo {
+      background: list.nth($cores, 2);
+    }
+  }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs $spacing-sm;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+}
+
+.tipo {
+  padding: 2px $spacing-sm;
+  color: $color-blue-primary;
+  border-radius: $radius-full;
+}
+
+.nome {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+}
+
+.periodo {
+  font-size: 0.875rem;
+  color: $color-blue-secondary;
+}
+
+.descricao {
+  font-size: 0.8125rem;
+  color: $color-text-secondary;
+}
+
+.fonte {
+  @include text-link;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  align-self: flex-start;
+  margin-top: $spacing-xs;
+  font-size: 0.8125rem;
+}
+
+.oculto {
+  @include visually-hidden;
+}

@@ -25,6 +25,9 @@
 }
 
 .lateral {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
   padding: $spacing-lg $spacing-md;
   background: $color-fundo-lateral;
   border-bottom: 1px solid $color-border-light;
@@ -47,10 +50,8 @@
   }
 }
 
-.erro {
-  padding: $spacing-lg;
-  font-size: 0.9375rem;
-  color: $color-error;
-  background: $color-fundo-lateral;
-  border-radius: $radius-md;
+.nota {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
 }

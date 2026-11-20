@@ -30,6 +30,8 @@ $color-evento-resultado: $color-yellow;
 $color-evento-resultado-fundo: #FBF0D2;
 $color-evento-feira: #8FAFA2;
 $color-evento-feira-fundo: #EEF3F0;
+$color-evento-outro: $color-text-secondary;
+$color-evento-outro-fundo: $color-placeholder;
 $color-fundo-lateral: #FAF8F3;
 
 $cores-evento: (
@@ -37,6 +39,7 @@ $cores-evento: (
   prova: ($color-evento-prova, $color-evento-prova-fundo),
   resultado: ($color-evento-resultado, $color-evento-resultado-fundo),
   feira: ($color-evento-feira, $color-evento-feira-fundo),
+  outro: ($color-evento-outro, $color-evento-outro-fundo),
 );
 
 // Simulados
