@@ -1,116 +1,147 @@
-import { Card } from '../../../../components/ui/Card/Card'
-import { Tag } from '../../../../components/ui/Tag/Tag'
-import type { EventoCalendario } from '../../../../features/calendario'
+import type { CSSProperties, MouseEvent } from 'react'
 import {
-  cn,
-  formatarDiaPorExtenso,
-  montarGradeDoMes,
-  obterDiasDaSemana,
-  type AnoMes,
-} from '../../../../lib/utils'
-import { ChipEvento } from '../ChipEvento/ChipEvento'
+  ROTULO_TIPO_EVENTO,
+  formatarPeriodo,
+  montarSemanas,
+  type EventoCalendario,
+  type FaixaSemana,
+} from '../../../../features/calendario'
+import { cn, formatarDiaPorExtenso, obterDiasDaSemana, type AnoMes } from '../../../../lib/utils'
 import styles from './GradeMensal.module.scss'
 
 const DIAS_DA_SEMANA = obterDiasDaSemana()
 
-// Acima disso a célula mostra "+N" e o resto fica na agenda abaixo da grade
-const MAXIMO_POR_DIA = 3
-
-// O título de um período aparece no primeiro dia dele em cada linha da grade
-// (início, dia 1 do mês ou domingo); nos outros dias fica só a barra colorida
-function continuaDoDiaAnterior(evento: EventoCalendario, dataIso: string, dia: number) {
-  const domingo = new Date(`${dataIso}T00:00:00Z`).getUTCDay() === 0
-  return evento.inicio < dataIso && dia !== 1 && !domingo
-}
+// Acima disso a coluna mostra "+N" e o resto aparece no modal do dia
+const MAXIMO_RAIAS = 3
 
 type GradeMensalProps = {
   anoMes: AnoMes
+  eventos: EventoCalendario[]
   eventosPorDia: Map<string, EventoCalendario[]>
   hojeIso: string
   carregando: boolean
-  compacto: boolean
-  diaSelecionado: string | null
-  onSelecionarDia: (dataIso: string) => void
+  onAbrirDia: (dataIso: string) => void
+}
+
+function rotuloDoDia(dataIso: string, eventos: EventoCalendario[] = []) {
+  const dia = formatarDiaPorExtenso(dataIso)
+  if (eventos.length === 0) return `${dia}, sem eventos`
+  const quantidade = eventos.length === 1 ? '1 evento' : `${eventos.length} eventos`
+  return `${dia}, ${quantidade}: ${eventos.map((e) => e.titulo).join('; ')}`
+}
+
+function estiloDaFaixa(faixa: FaixaSemana): CSSProperties {
+  return { gridColumn: `${faixa.inicio + 1} / ${faixa.fim + 2}`, gridRow: faixa.raia + 2 }
 }
 
 export function GradeMensal({
   anoMes,
+  eventos,
   eventosPorDia,
   hojeIso,
   carregando,
-  compacto,
-  diaSelecionado,
-  onSelecionarDia,
+  onAbrirDia,
 }: GradeMensalProps) {
+  const semanas = montarSemanas(eventos, anoMes, MAXIMO_RAIAS)
+
+  // A barra fica por cima das células: o clique nela abre o dia que está sob o ponteiro.
+  // Pelo teclado, cada dia já é um botão com os títulos no rótulo.
+  function abrirDiaDaFaixa(evento: MouseEvent<HTMLDivElement>, faixa: FaixaSemana, datas: string[]) {
+    const caixa = evento.currentTarget.getBoundingClientRect()
+    const colunas = faixa.fim - faixa.inicio + 1
+    const deslocamento = Math.floor(((evento.clientX - caixa.left) / caixa.width) * colunas)
+    onAbrirDia(datas[faixa.inicio + Math.min(Math.max(deslocamento, 0), colunas - 1)])
+  }
+
   return (
     <div className={styles.grade} aria-busy={carregando}>
-      <ul className={styles.diasDaSemana} aria-hidden="true">
+      <div className={styles.diasDaSemana} aria-hidden="true">
         {DIAS_DA_SEMANA.map((dia) => (
-          <li key={dia}>{dia}</li>
+          <span key={dia}>{dia}</span>
         ))}
-      </ul>
+      </div>
 
-      <ol className={styles.dias}>
-        {montarGradeDoMes(anoMes).map(({ dataIso, dia, doMesAtual }) => {
-          const hoje = doMesAtual && dataIso === hojeIso
-          const eventos = doMesAtual ? (eventosPorDia.get(dataIso) ?? []) : []
-          const porExtenso = formatarDiaPorExtenso(dataIso)
+      <div className={styles.semanas}>
+        {semanas.map(({ dias, faixas, ocultos }) => {
+          const datas = dias.map((d) => d.dataIso)
 
           return (
-            <li key={dataIso} aria-hidden={!doMesAtual || undefined}>
-              <Card
-                className={cn(
-                  styles.celula,
-                  !doMesAtual && styles.foraDoMes,
-                  hoje && styles.hoje,
-                  diaSelecionado === dataIso && styles.selecionado,
-                )}
-              >
-                <div className={styles.topo}>
-                  <time dateTime={dataIso} className={styles.numero}>
-                    <span aria-hidden="true">{dia}</span>
-                    <span className={styles.oculto}>{porExtenso}</span>
-                  </time>
-                  {hoje && (
-                    <span className={styles.seloHoje}>
-                      <Tag variant="destaque">Hoje</Tag>
-                    </span>
-                  )}
-                </div>
+            <div key={datas[0]} className={styles.semana}>
+              {dias.map(({ dataIso, dia, doMesAtual }, coluna) => {
+                const estilo = { gridColumn: coluna + 1 }
 
-                {eventos.length > 0 && (
-                  <ul className={compacto ? styles.marcadores : styles.eventos}>
-                    {(compacto ? eventos : eventos.slice(0, MAXIMO_POR_DIA)).map((evento) => (
-                      <ChipEvento
-                        key={evento.id}
-                        evento={evento}
-                        compacto={compacto}
-                        continuacao={continuaDoDiaAnterior(evento, dataIso, dia)}
-                      />
-                    ))}
-                  </ul>
-                )}
+                if (!doMesAtual) {
+                  return (
+                    <div key={dataIso} className={cn(styles.dia, styles.foraDoMes)} style={estilo}>
+                      <span className={styles.numero} aria-hidden="true">
+                        {dia}
+                      </span>
+                    </div>
+                  )
+                }
 
-                {!compacto && eventos.length > MAXIMO_POR_DIA && (
-                  <span className={styles.mais} aria-hidden="true">
-                    +{eventos.length - MAXIMO_POR_DIA}
-                  </span>
-                )}
-
-                {eventos.length > 0 && (
+                const hoje = dataIso === hojeIso
+                return (
                   <button
+                    key={dataIso}
                     type="button"
-                    className={styles.botaoDia}
-                    aria-pressed={diaSelecionado === dataIso}
-                    aria-label={`Ver ${eventos.length === 1 ? '1 evento' : `${eventos.length} eventos`} de ${porExtenso}`}
-                    onClick={() => onSelecionarDia(dataIso)}
-                  />
-                )}
-              </Card>
-            </li>
+                    className={cn(styles.dia, hoje && styles.hoje)}
+                    style={estilo}
+                    aria-label={`${hoje ? 'Hoje, ' : ''}${rotuloDoDia(dataIso, eventosPorDia.get(dataIso))}`}
+                    aria-current={hoje ? 'date' : undefined}
+                    onClick={() => onAbrirDia(dataIso)}
+                  >
+                    <time dateTime={dataIso} className={styles.numero}>
+                      {dia}
+                    </time>
+                  </button>
+                )
+              })}
+
+              {faixas.map((faixa) => {
+                const { evento } = faixa
+                const umDia = faixa.inicio === faixa.fim && faixa.comecaNaSemana && faixa.terminaNaSemana
+
+                return (
+                  <div
+                    key={evento.id}
+                    aria-hidden="true"
+                    title={`${evento.titulo}\n${ROTULO_TIPO_EVENTO[evento.tipo]}: ${formatarPeriodo(evento)}`}
+                    className={cn(
+                      styles.faixa,
+                      styles[evento.tipo],
+                      umDia ? styles.pilula : styles.periodo,
+                      faixa.comecaNaSemana && styles.comeca,
+                      faixa.terminaNaSemana && styles.termina,
+                    )}
+                    style={estiloDaFaixa(faixa)}
+                    onClick={(e) => abrirDiaDaFaixa(e, faixa, datas)}
+                  >
+                    <span className={styles.texto}>{evento.titulo}</span>
+                  </div>
+                )
+              })}
+
+              {ocultos.map(
+                (quantidade, coluna) =>
+                  quantidade > 0 && (
+                    <button
+                      key={datas[coluna]}
+                      type="button"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className={styles.mais}
+                      style={{ gridColumn: coluna + 1, gridRow: MAXIMO_RAIAS + 2 }}
+                      onClick={() => onAbrirDia(datas[coluna])}
+                    >
+                      +{quantidade}
+                    </button>
+                  ),
+              )}
+            </div>
           )
         })}
-      </ol>
+      </div>
     </div>
   )
 }

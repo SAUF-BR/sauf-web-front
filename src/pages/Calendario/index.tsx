@@ -4,19 +4,21 @@ import { Breadcrumb } from '../../components/ui/Breadcrumb/Breadcrumb'
 import { EstadoErro } from '../../components/ui/EstadoErro/EstadoErro'
 import { Titulo } from '../../components/ui/Titulo/Titulo'
 import {
+  ROTULO_TIPO_EVENTO,
   TIPOS_EVENTO,
   agruparEventosPorDia,
   chaveInstituicao,
   contarEventosPorInstituicao,
   contarEventosPorTipo,
   eventosDoMes,
+  somarDias,
   useEventosDoAno,
+  useProximosPrazos,
   type TipoEvento,
 } from '../../features/calendario'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
 import {
+  cn,
   formatarAnoMesIso,
-  formatarDiaPorExtenso,
   formatarMesAno,
   lerAnoMes,
   obterAnoMes,
@@ -24,17 +26,16 @@ import {
   type AnoMes,
 } from '../../lib/utils'
 import { ROTAS } from '../../routes/paths'
-import { AgendaEventos } from './components/AgendaEventos/AgendaEventos'
-import {
-  FiltroInstituicao,
-  TODAS_INSTITUICOES,
-} from './components/FiltroInstituicao/FiltroInstituicao'
-import { FiltroTiposEvento } from './components/FiltroTiposEvento/FiltroTiposEvento'
+import { BarraFiltros, TODAS_INSTITUICOES } from './components/BarraFiltros/BarraFiltros'
+import { DestaquePrazos } from './components/DestaquePrazos/DestaquePrazos'
 import { GradeMensal } from './components/GradeMensal/GradeMensal'
+import { ListaDoMes } from './components/ListaDoMes/ListaDoMes'
+import { ModalDia } from './components/ModalDia/ModalDia'
 import { NavegacaoMes } from './components/NavegacaoMes/NavegacaoMes'
 import styles from './index.module.scss'
 
-const CONSULTA_CELULAR = '(max-width: 767px)'
+// Tipos que aparecem no resumo ao lado do mês
+const TIPOS_DO_RESUMO: TipoEvento[] = ['inscricao', 'prova', 'resultado']
 
 export default function Calendario() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -42,13 +43,13 @@ export default function Calendario() {
     () => new Set(TIPOS_EVENTO),
   )
   const [instituicao, setInstituicao] = useState(TODAS_INSTITUICOES)
-  const [diaSelecionado, setDiaSelecionado] = useState<string | null>(null)
-  const compacto = useMediaQuery(CONSULTA_CELULAR)
+  const [diaAberto, setDiaAberto] = useState<string | null>(null)
 
   const hojeIso = obterHojeIso()
   const mesAtual = obterAnoMes(hojeIso)
   const anoMes = lerAnoMes(searchParams.get('mes')) ?? mesAtual
 
+  const prazos = useProximosPrazos(3)
   const {
     data: eventosDoAno,
     isPending,
@@ -74,18 +75,23 @@ export default function Calendario() {
       tiposVisiveis.has(evento.tipo) &&
       (instituicao === TODAS_INSTITUICOES || chaveInstituicao(evento) === instituicao),
   )
+  const eventosNoMes = eventosDoMes(eventosFiltrados, anoMes)
   const eventosPorDia = agruparEventosPorDia(eventosFiltrados, anoMes)
+  const resumo = contarEventosPorTipo(eventosNoMes)
 
-  // Um filtro pode esvaziar o dia escolhido: aí a agenda volta para o mês
-  const diaComEventos =
-    diaSelecionado && eventosPorDia.has(diaSelecionado) ? diaSelecionado : null
-  const eventosDaAgenda = diaComEventos
-    ? (eventosPorDia.get(diaComEventos) ?? [])
-    : eventosDoMes(eventosFiltrados, anoMes)
+  // As setas do modal andam só dentro do mês que está na tela
+  const prefixoMes = formatarAnoMesIso(anoMes)
+  const diaAnterior = diaAberto && somarDias(diaAberto, -1)
+  const diaSeguinte = diaAberto && somarDias(diaAberto, 1)
 
   function mudarMes(novo: AnoMes) {
     setSearchParams({ mes: formatarAnoMesIso(novo) })
-    setDiaSelecionado(null)
+  }
+
+  function abrirPrazo(dataIso: string) {
+    const mes = obterAnoMes(dataIso)
+    if (mes.ano !== anoMes.ano || mes.mes !== anoMes.mes) mudarMes(mes)
+    setDiaAberto(dataIso)
   }
 
   function alternarTipo(tipo: TipoEvento) {
@@ -97,86 +103,113 @@ export default function Calendario() {
     })
   }
 
-  function selecionarDia(dataIso: string) {
-    setDiaSelecionado((atual) => (atual === dataIso ? null : dataIso))
+  function limparFiltros() {
+    setTiposVisiveis(new Set(TIPOS_EVENTO))
+    setInstituicao(TODAS_INSTITUICOES)
   }
 
   function mensagemVazia() {
     if (dadosDoAno?.length === 0) return `Ainda não há datas cadastradas para ${anoMes.ano}.`
     const filtrando =
       tiposVisiveis.size < TIPOS_EVENTO.length || instituicao !== TODAS_INSTITUICOES
-    const mes = formatarMesAno(anoMes)
-    return filtrando ? `Nenhum evento em ${mes} com os filtros escolhidos.` : `Nenhum evento em ${mes}.`
+    return filtrando
+      ? 'Nenhuma data neste mês com os filtros escolhidos. Limpe os filtros para ver todas.'
+      : 'Nenhuma data cadastrada neste mês. Use as setas para ver os meses vizinhos.'
   }
 
   return (
     <main>
       <header className={styles.cabecalho}>
         <div className={styles.cabecalhoConteudo}>
-          <Breadcrumb itens={[{ rotulo: 'Início', para: ROTAS.inicio }, { rotulo: 'Calendário' }]} />
-          <Titulo
-            titulo="Calendário acadêmico"
-            subtitulo="Vestibulares, inscrições, provas e resultados em um só lugar"
-            size="Medio"
+          <div className={styles.apresentacao}>
+            <Breadcrumb
+              itens={[{ rotulo: 'Início', para: ROTAS.inicio }, { rotulo: 'Calendário' }]}
+            />
+            <Titulo
+              titulo="Calendário acadêmico"
+              subtitulo="Inscrições, provas e resultados dos vestibulares, do ENEM e do ProUni, mês a mês."
+              size="Medio"
+            />
+            <p className={styles.aviso}>
+              Cada data vem do edital ou do cronograma oficial e pode mudar. Antes de se inscrever,
+              confira na fonte, que fica no detalhe de cada evento.
+            </p>
+          </div>
+
+          <DestaquePrazos
+            prazos={prazos.data}
+            carregando={prazos.isPending}
+            erro={prazos.isError}
+            onAbrir={abrirPrazo}
           />
         </div>
       </header>
 
       <div className={styles.corpo}>
-        <aside className={styles.lateral} aria-label="Filtros do calendário">
-          <FiltroTiposEvento
-            ano={anoMes.ano}
-            contagem={dadosDoAno ? contarEventosPorTipo(dadosDoAno) : undefined}
-            selecionados={tiposVisiveis}
-            onAlternar={alternarTipo}
-          />
-          <FiltroInstituicao
-            opcoes={opcoesInstituicao}
-            valor={instituicao}
-            onMudar={setInstituicao}
-          />
-          <p className={styles.nota}>
-            As datas vêm dos editais e cronogramas oficiais e podem mudar. Confira sempre na fonte.
-          </p>
-        </aside>
-
-        <section className={styles.principal} aria-label="Eventos do mês">
+        <div className={styles.barraMes}>
           <NavegacaoMes anoMes={anoMes} mesAtual={mesAtual} onMudarMes={mudarMes} />
 
-          {isError && !eventosDoAno ? (
-            <EstadoErro
-              titulo="Não foi possível carregar o calendário"
-              onTentarDeNovo={() => void refetch()}
-              tentando={isFetching}
-            />
-          ) : (
-            <>
-              <GradeMensal
-                anoMes={anoMes}
-                eventosPorDia={eventosPorDia}
-                hojeIso={hojeIso}
-                carregando={isPending || isPlaceholderData}
-                compacto={compacto}
-                diaSelecionado={diaComEventos}
-                onSelecionarDia={selecionarDia}
-              />
-
-              {!isPending && (
-                <AgendaEventos
-                  titulo={
-                    diaComEventos
-                      ? formatarDiaPorExtenso(diaComEventos)
-                      : `Agenda de ${formatarMesAno(anoMes)}`
-                  }
-                  eventos={eventosDaAgenda}
-                  mensagemVazia={mensagemVazia()}
-                  onLimpar={diaComEventos ? () => setDiaSelecionado(null) : undefined}
-                />
-              )}
-            </>
+          {dadosDoAno && (
+            <ul className={styles.resumo} aria-label={`Resumo de ${formatarMesAno(anoMes)}`}>
+              {TIPOS_DO_RESUMO.map((tipo) => (
+                <li key={tipo} className={cn(styles.resumoItem, styles[tipo])}>
+                  <span className={styles.resumoNumero}>{resumo[tipo]}</span>
+                  {ROTULO_TIPO_EVENTO[tipo].toLowerCase()}
+                </li>
+              ))}
+            </ul>
           )}
-        </section>
+        </div>
+
+        <BarraFiltros
+          tipos={tiposVisiveis}
+          contagemTipos={dadosDoAno ? contarEventosPorTipo(dadosDoAno) : undefined}
+          instituicao={instituicao}
+          opcoesInstituicao={opcoesInstituicao}
+          totalDoAno={dadosDoAno?.length}
+          onAlternarTipo={alternarTipo}
+          onMudarInstituicao={setInstituicao}
+          onLimpar={limparFiltros}
+        />
+
+        {isError && !eventosDoAno ? (
+          <EstadoErro
+            titulo="Não foi possível carregar o calendário"
+            onTentarDeNovo={() => void refetch()}
+            tentando={isFetching}
+          />
+        ) : (
+          <>
+            <GradeMensal
+              anoMes={anoMes}
+              eventos={eventosFiltrados}
+              eventosPorDia={eventosPorDia}
+              hojeIso={hojeIso}
+              carregando={isPending || isPlaceholderData}
+              onAbrirDia={setDiaAberto}
+            />
+
+            {!isPending && (
+              <ListaDoMes
+                anoMes={anoMes}
+                eventos={eventosNoMes}
+                mensagemVazia={mensagemVazia()}
+                onAbrirDia={setDiaAberto}
+              />
+            )}
+          </>
+        )}
       </div>
+
+      <ModalDia
+        dataIso={diaAberto}
+        eventos={diaAberto ? (eventosPorDia.get(diaAberto) ?? []) : []}
+        carregando={isPending || isPlaceholderData}
+        anterior={diaAnterior?.startsWith(prefixoMes) ? diaAnterior : null}
+        proximo={diaSeguinte?.startsWith(prefixoMes) ? diaSeguinte : null}
+        onMudarDia={setDiaAberto}
+        onFechar={() => setDiaAberto(null)}
+      />
     </main>
   )
 }

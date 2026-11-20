@@ -1,131 +1,262 @@
+@use 'sass:list';
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
+$altura-raia: 1.5rem;
+$altura-raia-celular: 0.375rem;
+
 .grade {
-  &[aria-busy='true'] {
-    opacity: 0.6;
+  overflow: hidden;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-lg;
+
+  &[aria-busy='true'] .semanas {
+    opacity: 0.55;
     transition: opacity 0.15s;
   }
 }
 
-.diasDaSemana,
-.dias {
+.diasDaSemana {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: $spacing-xs;
+  padding: $spacing-sm 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: $color-text-secondary;
+  background: $color-fundo-lateral;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: 1.75rem repeat(3, $altura-raia-celular) minmax(0.75rem, auto);
+  row-gap: 3px;
+  min-height: 3.75rem;
+
+  & + & {
+    border-top: 1px solid $color-border-light;
+  }
 
   @media (min-width: $breakpoint-md) {
-    gap: $spacing-sm;
+    grid-template-rows: 2.25rem repeat(3, $altura-raia) minmax(1.5rem, auto);
+    row-gap: 4px;
+    min-height: 8rem;
   }
 }
 
-.diasDaSemana {
-  margin-bottom: $spacing-sm;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-align: center;
-  color: $color-text-secondary;
-}
-
-.celula.celula {
-  position: relative;
+// Fundo clicável de cada dia: ocupa a coluna inteira, por baixo das faixas
+.dia {
+  grid-row: 1 / -1;
   display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-  height: 100%;
-  min-height: 3.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
   padding: $spacing-xs;
-  border-radius: $radius-md;
+  font: inherit;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.12s;
+
+  &:not(:first-child) {
+    border-left: 1px solid $color-border-light;
+  }
+
+  &:hover {
+    background: rgba($color-green, 0.05);
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 2;
+    outline: 2px solid $color-green;
+    outline-offset: -2px;
+  }
 
   @media (min-width: $breakpoint-md) {
-    gap: $spacing-sm;
-    min-height: 7.5rem;
     padding: $spacing-sm;
   }
 }
 
-.foraDoMes.foraDoMes {
-  background: $color-fundo-lateral;
+.numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-blue-primary;
+  border-radius: $radius-full;
+
+  @media (min-width: $breakpoint-md) {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+.foraDoMes {
+  cursor: default;
+  background: repeating-linear-gradient(
+    135deg,
+    $color-fundo-lateral 0 6px,
+    rgba($color-border-light, 0.35) 6px 7px
+  );
+
+  &:hover {
+    background: repeating-linear-gradient(
+      135deg,
+      $color-fundo-lateral 0 6px,
+      rgba($color-border-light, 0.35) 6px 7px
+    );
+  }
 
   .numero {
+    font-weight: 500;
     color: $color-grey;
   }
 }
 
-.hoje.hoje {
-  border: 2px solid $color-green;
+.hoje {
+  background: rgba($color-green, 0.06);
+
+  .numero {
+    color: $color-white;
+    background: $color-green;
+  }
 }
 
-.selecionado.selecionado {
-  background: $color-green-soft;
-}
+// ---------- Faixas ----------
 
-.topo {
+.faixa {
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: $spacing-xs;
+  align-items: center;
+  min-width: 0;
+  margin: 0 1px;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.numero {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $color-blue-primary;
+.texto {
+  display: none;
 
   @media (min-width: $breakpoint-md) {
-    font-size: 1rem;
+    display: block;
+    @include truncate;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
   }
 }
 
-.seloHoje > * {
-  padding: 2px 6px;
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+// Período: barra contínua com a cor do tipo; arredonda só onde começa e termina
+.periodo {
+  padding: 0 $spacing-sm;
 
-  @media (max-width: ($breakpoint-md - 1px)) {
-    display: none;
+  &.comeca {
+    margin-left: $spacing-xs;
+    border-top-left-radius: $radius-sm;
+    border-bottom-left-radius: $radius-sm;
+  }
+
+  &.termina {
+    margin-right: $spacing-xs;
+    border-top-right-radius: $radius-sm;
+    border-bottom-right-radius: $radius-sm;
+  }
+
+  // A barra só repete o título no começo da semana (ou do período)
+  &:not(.comeca) .texto {
+    opacity: 0.85;
   }
 }
 
-.eventos {
-  display: flex;
-  flex-direction: column;
+// Um dia só: uma linha com a bolinha da cor do tipo
+.pilula {
   gap: $spacing-xs;
+  margin: 0 $spacing-xs;
+  padding: 0 $spacing-xs;
+  border-radius: $radius-sm;
+
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: $radius-full;
+  }
+
+  &:hover {
+    background: $color-fundo-lateral;
+  }
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} {
+    &.periodo {
+      color: $color-blue-primary;
+      background: list.nth($cores, 2);
+      box-shadow: inset 0 0 0 1px rgba(list.nth($cores, 1), 0.25);
+
+      &.comeca {
+        box-shadow:
+          inset 3px 0 0 list.nth($cores, 1),
+          inset 0 0 0 1px rgba(list.nth($cores, 1), 0.25);
+      }
+
+      @media (max-width: ($breakpoint-md - 1px)) {
+        background: list.nth($cores, 1);
+      }
+    }
+
+    &.pilula {
+      color: $color-blue-primary;
+
+      &::before {
+        background: list.nth($cores, 1);
+      }
+
+      @media (max-width: ($breakpoint-md - 1px)) {
+        background: list.nth($cores, 1);
+
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 .mais {
-  font-size: 0.75rem;
-  font-weight: 600;
+  z-index: 1;
+  align-self: center;
+  justify-self: start;
+  margin-left: $spacing-xs;
+  padding: 0 $spacing-xs;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 700;
   color: $color-text-secondary;
-}
-
-.marcadores {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-
-.botaoDia {
-  position: absolute;
-  inset: 0;
-  padding: 0;
-  background: transparent;
+  background: none;
   border: none;
-  border-radius: inherit;
+  border-radius: $radius-sm;
   cursor: pointer;
 
   &:hover {
-    background: rgba($color-green, 0.06);
+    color: $color-blue-primary;
+    background: $color-fundo-lateral;
   }
 
-  &:focus-visible {
-    @include focus-ring;
+  @media (min-width: $breakpoint-md) {
+    margin-left: $spacing-sm;
+    font-size: 0.75rem;
   }
-}
-
-.oculto {
-  @include visually-hidden;
 }

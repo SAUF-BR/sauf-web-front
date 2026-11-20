@@ -1,57 +1,90 @@
+@use 'sass:list';
 @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .cabecalho {
+  background: $color-fundo-lateral;
   border-bottom: 1px solid $color-border-light;
 }
 
 .cabecalhoConteudo {
+  @include container;
+  display: grid;
+  gap: $spacing-lg;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+
+  @media (min-width: $breakpoint-xl) {
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.6fr);
+    align-items: end;
+    gap: $spacing-xl;
+  }
+}
+
+.apresentacao {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  padding: $spacing-lg $spacing-md;
+  max-width: 34rem;
+}
 
-  @media (min-width: $breakpoint-lg) {
-    padding: $spacing-lg $spacing-xl;
-  }
+.aviso {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: $color-text-secondary;
 }
 
 .corpo {
-  display: grid;
-
-  @media (min-width: $breakpoint-lg) {
-    grid-template-columns: 16rem minmax(0, 1fr);
-    align-items: start;
-  }
-}
-
-.lateral {
+  @include container;
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
-  padding: $spacing-lg $spacing-md;
-  background: $color-fundo-lateral;
-  border-bottom: 1px solid $color-border-light;
+  gap: $spacing-md;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-2xl;
 
-  @media (min-width: $breakpoint-lg) {
-    padding: $spacing-lg;
-    border-right: 1px solid $color-border-light;
+  > :last-child {
+    margin-top: $spacing-lg;
   }
 }
 
-.principal {
+.barraMes {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-  min-width: 0;
-  padding: $spacing-lg $spacing-md $spacing-2xl;
-
-  @media (min-width: $breakpoint-lg) {
-    padding: $spacing-lg $spacing-xl $spacing-2xl;
-  }
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm $spacing-lg;
 }
 
-.nota {
-  font-size: 0.8125rem;
-  line-height: 1.5;
+// Quantas inscrições, provas e resultados o mês tem (com os filtros aplicados)
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs $spacing-lg;
+  font-size: 0.875rem;
   color: $color-text-secondary;
+}
+
+.resumoItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.resumoNumero {
+  font-family: $font-serif;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} .resumoNumero {
+    color: list.nth($cores, 1);
+  }
+}
+
+// Amarelo puro some no fundo claro: o número de resultados usa o tom escuro do texto
+.resultado .resumoNumero {
+  color: $color-blue-primary;
+  text-decoration: underline 3px $color-evento-resultado;
+  text-underline-offset: 4px;
 }
