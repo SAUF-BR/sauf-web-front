@@ -131,3 +131,8 @@
     font-size: 0.8125rem;
   }
 }
+
+// Logo inteiro, sem cortar (ex.: o logo largo da UEL)
+img.logo {
+  object-fit: contain;
+}

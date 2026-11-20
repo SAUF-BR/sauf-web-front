@@ -198,3 +198,8 @@
     background: rgba($color-yellow, 0.25);
   }
 }
+
+// Logo inteiro, sem cortar (ex.: o logo largo da UEL)
+img.logo {
+  object-fit: contain;
+}
