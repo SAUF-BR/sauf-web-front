@@ -7,7 +7,6 @@ import {
   getCursosRecomendados,
   getTotalCursos,
 } from './api'
-import type { CursoApi } from './api'
 import {
   cursosListagemMock,
   cursosRecomendadosMock,

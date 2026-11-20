@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
 import { Tag } from '../../../components/ui/Tag/Tag'
-import { obterDestaqueCurso, ROTULO_GRAU, ROTULO_MODALIDADE } from '../../../features/cursos'
+import {
+  formatarDuracao,
+  obterDestaqueCurso,
+  ROTULO_GRAU,
+  ROTULO_MODALIDADE,
+} from '../../../features/cursos'
 import { obterNomeCurto } from '../../../features/universidades'
 import { formatarNumero } from '../../../lib/utils'
 import { ROTAS } from '../../../routes/paths'
@@ -10,7 +15,6 @@ import { ComparacaoRapida } from '../components/ComparacaoRapida/ComparacaoRapid
 import { PainelAlerta } from '../components/PainelAlerta/PainelAlerta'
 import type { EstadoFavoritos } from '../useFavoritos'
 import {
-  formatarSemestres,
   mediaEnemUsuarioMock,
   type CursoFavorito,
   type OrdenacaoCursos,
@@ -38,7 +42,7 @@ export function AbaCursos({ favoritos, alertaAtivo, onAlternarAlerta }: AbaCurso
               const detalhes = [
                 obterNomeCurto(curso.universidade),
                 `${curso.cidade}, ${curso.uf}`,
-                formatarSemestres(curso.duracaoSemestres),
+                formatarDuracao(curso.duracaoSemestresMin, curso.duracaoSemestresMax),
               ].join(' · ')
 
               return (
@@ -53,8 +57,14 @@ export function AbaCursos({ favoritos, alertaAtivo, onAlternarAlerta }: AbaCurso
                     }}
                     tags={
                       <>
-                        <Tag variant="destaque">{ROTULO_GRAU[curso.grau]}</Tag>
-                        <Tag>{ROTULO_MODALIDADE[curso.modalidade]}</Tag>
+                        {curso.graus.map((grau) => (
+                          <Tag key={grau} variant="destaque">
+                            {ROTULO_GRAU[grau]}
+                          </Tag>
+                        ))}
+                        {curso.modalidades.map((modalidade) => (
+                          <Tag key={modalidade}>{ROTULO_MODALIDADE[modalidade]}</Tag>
+                        ))}
                       </>
                     }
                     detalhes={detalhes}
