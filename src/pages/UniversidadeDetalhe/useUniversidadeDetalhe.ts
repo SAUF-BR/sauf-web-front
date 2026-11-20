@@ -1,5 +1,8 @@
-import { ehUniversidadeNaoEncontrada, useUniversidade } from '../../features/universidades'
-import type { UniversidadeDetalhe } from '../../features/universidades'
+import {
+  ehUniversidadeNaoEncontrada,
+  useUniversidade,
+  type UniversidadeDetalhe,
+} from '../../features/universidades'
 
 type ResultadoUniversidadeDetalhe = {
   universidade: UniversidadeDetalhe | null

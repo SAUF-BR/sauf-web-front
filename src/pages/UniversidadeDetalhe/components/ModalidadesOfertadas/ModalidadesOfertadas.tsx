@@ -1,6 +1,6 @@
 import { Check, Minus } from 'lucide-react'
-import type { ModalidadeOfertada } from '../../../../features/universidades'
-import { Ordem_modalidades, Rotulo_modalidade_detalhe } from '../../conteudo'
+import { ORDEM_MODALIDADES, type ModalidadeOfertada } from '../../../../features/universidades'
+import { Rotulo_modalidade_detalhe } from '../../conteudo'
 import styles from './ModalidadesOfertadas.module.scss'
 
 type ModalidadesOfertadasProps = {
@@ -10,7 +10,7 @@ type ModalidadesOfertadasProps = {
 export function ModalidadesOfertadas({ modalidades }: ModalidadesOfertadasProps) {
   return (
     <ul className={styles.grade}>
-      {Ordem_modalidades.map((modalidade) => {
+      {ORDEM_MODALIDADES.map((modalidade) => {
         const dados = modalidades.find((m) => m.modalidade === modalidade)
         const disponivel = dados?.disponivel ?? false
         const totalCursos = disponivel ? (dados?.totalCursos ?? null) : null

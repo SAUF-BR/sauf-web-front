@@ -1,5 +1,4 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { ErroApi } from '../../lib/api/erros'
 import {
   getCidadesComUniversidade,
   getContagensUniversidades,
@@ -18,10 +17,6 @@ export const universidadesKeys = {
     [...universidadesKeys.all, 'contagens', filtros] as const,
   cidades: (uf: string) => [...universidadesKeys.all, 'cidades', uf] as const,
   detalhe: (id: string) => [...universidadesKeys.all, 'detalhe', id] as const,
-}
-
-export function ehUniversidadeNaoEncontrada(erro: unknown) {
-  return erro instanceof ErroApi && (erro.status === 400 || erro.status === 404)
 }
 
 export function useUniversidadesEmDestaque() {
@@ -67,5 +62,6 @@ export function useUniversidade(id: string) {
     queryKey: universidadesKeys.detalhe(id),
     queryFn: () => getUniversidadeDetalhe(id),
     enabled: id !== '',
+    staleTime: 5 * 60 * 1000,
   })
 }
