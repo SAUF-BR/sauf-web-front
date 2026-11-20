@@ -172,19 +172,28 @@ export function CursosParecidos({ curso }: CursosParecidosProps) {
                         <span className={styles.nomeCurso}>
                           {cursoComparado.nome}
                         </span>
+
                         {cursoComparado.id === curso.id && (
                           <span className={styles.atual}>Atual</span>
                         )}
                       </td>
+
                       <td>
-                        {formatarDuracao(cursoComparado.duracaoSemestres)}
+                        {formatarDuracao(
+                          cursoComparado.duracaoSemestresMin,
+                          cursoComparado.duracaoSemestresMax,
+                        )}
                       </td>
+
                       <td>
                         {cursoComparado.notaCorteSisu !== null
-                            ? formatarNumero(cursoComparado.notaCorteSisu)
-                            : '—'}
+                          ? formatarNumero(cursoComparado.notaCorteSisu)
+                          : '—'}
                       </td>
-                     <td>{obterAreaPrincipal(cursoComparado.id, detalhesCursoMock)}</td>
+
+                      <td>
+                        {obterAreaPrincipal(cursoComparado.id, detalhesCursoMock)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

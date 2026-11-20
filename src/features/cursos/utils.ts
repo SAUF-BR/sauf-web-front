@@ -36,10 +36,7 @@ export function formatarDuracao(
   return `${minimo} a ${maximo} semestres`
 }
 
-/**
- * Informação principal exibida no rodapé do card: nota de corte do SISU quando
- * existir, senão a menor mensalidade. Retorna null se o curso não tiver nenhuma.
- */
+
 export function obterDestaqueCurso(curso: Curso) {
   if (curso.notaCorteSisu !== null) {
     return { rotulo: 'Nota de corte SISU', valor: formatarNumero(curso.notaCorteSisu) }
