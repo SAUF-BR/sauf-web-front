@@ -78,9 +78,20 @@
 }
 
 .itemTitulo {
+  display: block;
   font-size: 0.9375rem;
   font-weight: 600;
   color: $color-blue-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: $radius-sm;
+  }
 }
 
 .itemDescricao {
