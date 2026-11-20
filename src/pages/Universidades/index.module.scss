@@ -105,6 +105,10 @@ $fundo-lateral: color.mix($color-surface, $color-white, 60%);
   transition: opacity 0.15s;
 }
 
+.avisoFavorito {
+  margin-bottom: $spacing-md;
+}
+
 .rodapeLista {
   display: flex;
   flex-direction: column;

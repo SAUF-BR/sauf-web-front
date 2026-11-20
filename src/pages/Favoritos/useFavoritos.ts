@@ -85,7 +85,11 @@ export function useFavoritos<T extends ItemFavorito, O extends string>({
 
     const { item, posicao, estavaSelecionado } = ultimaRemocao
 
-    setFavoritos((atual) => [...atual.slice(0, posicao), item, ...atual.slice(posicao)])
+    setFavoritos((atual) =>
+      atual.some((atualItem) => atualItem.id === item.id)
+        ? atual
+        : [...atual.slice(0, posicao), item, ...atual.slice(posicao)],
+    )
 
     if (estavaSelecionado) {
       setSelecionados((atual) => new Set(atual).add(item.id))

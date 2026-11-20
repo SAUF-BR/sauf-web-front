@@ -9,6 +9,7 @@ import {
   getUniversidadesFavoritas,
   getUniversidadesFavoritasIds,
 } from './api'
+import type { UniversidadeFavoritaApi } from './types'
 
 export const favoritosKeys = {
   all: ['favoritos'] as const,
@@ -54,36 +55,70 @@ export function useUniversidadesFavoritasIds({ enabled = true } = {}) {
   })
 }
 
-type AlternarUniversidade = { universidadeId: string; favoritar: boolean }
+type AlternarUniversidade = {
+  universidadeId: string
+  favoritar: boolean
+  // Ao desfazer uma remoção, a universidade volta para a lista guardada na hora
+  universidade?: UniversidadeFavoritaApi
+}
 
-// O coração muda na hora; se a API falhar, volta ao que era. No fim, busca a lista
-// e os ids de novo para ficar igual ao servidor.
+const Chave_alternar_universidade = [...favoritosKeys.universidades(), 'alternar'] as const
+
+// Acrescenta sem repetir (ex.: clique duplo antes da API responder) ou tira o id
+function trocarId(ids: string[], id: string, favoritar: boolean) {
+  if (!favoritar) return ids.filter((atual) => atual !== id)
+
+  return ids.includes(id) ? ids : [...ids, id]
+}
+
+function trocarUniversidade(
+  lista: UniversidadeFavoritaApi[],
+  { universidadeId, favoritar, universidade }: AlternarUniversidade,
+) {
+  if (!favoritar) return lista.filter((item) => item.id !== universidadeId)
+  if (!universidade || lista.some((item) => item.id === universidadeId)) return lista
+
+  return [...lista, universidade]
+}
+
 export function useAlternarUniversidadeFavorita() {
   const queryClient = useQueryClient()
+  const chaveLista = favoritosKeys.universidades()
   const chaveIds = favoritosKeys.universidadesIds()
 
   return useMutation({
+    mutationKey: Chave_alternar_universidade,
     mutationFn: ({ universidadeId, favoritar }: AlternarUniversidade) =>
       alternarUniversidadeFavorita(universidadeId, favoritar),
-    onMutate: async ({ universidadeId, favoritar }: AlternarUniversidade) => {
-      await queryClient.cancelQueries({ queryKey: chaveIds })
-      const anteriores = queryClient.getQueryData<string[]>(chaveIds)
+    onMutate: async (alteracao: AlternarUniversidade) => {
+      // Cancela os GETs da lista e dos ids que estiverem em andamento
+      await queryClient.cancelQueries({ queryKey: chaveLista })
 
-      if (anteriores) {
-        queryClient.setQueryData<string[]>(
+      const idsAnteriores = queryClient.getQueryData<string[]>(chaveIds)
+      const listaAnterior = queryClient.getQueryData<UniversidadeFavoritaApi[]>(chaveLista)
+
+      if (idsAnteriores) {
+        queryClient.setQueryData(
           chaveIds,
-          favoritar
-            ? [...anteriores, universidadeId]
-            : anteriores.filter((id) => id !== universidadeId),
+          trocarId(idsAnteriores, alteracao.universidadeId, alteracao.favoritar),
         )
       }
 
-      return { anteriores }
+      if (listaAnterior) {
+        queryClient.setQueryData(chaveLista, trocarUniversidade(listaAnterior, alteracao))
+      }
+
+      return { idsAnteriores, listaAnterior }
     },
-    onError: (_erro, _variaveis, contexto) => {
-      if (contexto?.anteriores) queryClient.setQueryData(chaveIds, contexto.anteriores)
+    onError: (_erro, _alteracao, contexto) => {
+      if (contexto?.idsAnteriores) queryClient.setQueryData(chaveIds, contexto.idsAnteriores)
+      if (contexto?.listaAnterior) queryClient.setQueryData(chaveLista, contexto.listaAnterior)
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: favoritosKeys.universidades() }),
+    onSettled: () => {
+      if (queryClient.isMutating({ mutationKey: Chave_alternar_universidade }) === 1) {
+        return queryClient.invalidateQueries({ queryKey: chaveLista })
+      }
+    },
   })
 }
 
@@ -109,5 +144,8 @@ export function useFavoritarUniversidade() {
     alternar.mutate({ universidadeId, favoritar: !ehFavorita(universidadeId) })
   }
 
-  return { ehFavorita, alternarFavorita }
+  // Mensagem do ErroApi quando a última tentativa de favoritar ou remover falhou
+  const erro = alternar.isError ? alternar.error.message : null
+
+  return { ehFavorita, alternarFavorita, erro }
 }
