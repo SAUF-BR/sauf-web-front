@@ -47,3 +47,8 @@
   font-size: 0.875rem;
   color: $color-text-secondary;
 }
+
+// Logo inteiro, sem cortar (ex.: o logo largo da UEL)
+img.logo {
+  object-fit: contain;
+}
