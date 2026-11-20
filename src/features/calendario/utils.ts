@@ -1,4 +1,9 @@
-import { formatarDataExtenso, type AnoMes } from '../../lib/utils'
+import {
+  formatarDataExtenso,
+  montarGradeDoMes,
+  type AnoMes,
+  type DiaDaGrade,
+} from '../../lib/utils'
 import type { EventoCalendario, TipoEvento } from './types'
 
 export const TIPOS_EVENTO: TipoEvento[] = ['inscricao', 'prova', 'resultado', 'feira', 'outro']
@@ -109,4 +114,113 @@ export function formatarPeriodo(evento: Pick<EventoCalendario, 'inicio' | 'fim'>
   const mesmoAno = evento.inicio.slice(0, 4) === evento.fim.slice(0, 4)
   const inicio = formatarDataExtenso(evento.inicio, { comAno: !mesmoAno })
   return `${inicio} a ${formatarDataExtenso(evento.fim, { comAno: true })}`
+}
+
+export type FaixaSemana = {
+  evento: EventoCalendario
+  // Colunas 0 (domingo) a 6 (sábado) dentro da semana
+  inicio: number
+  fim: number
+  raia: number
+  comecaNaSemana: boolean
+  terminaNaSemana: boolean
+}
+
+export type SemanaDaGrade = {
+  dias: DiaDaGrade[]
+  faixas: FaixaSemana[]
+  // Eventos de cada coluna que não couberam nas raias visíveis
+  ocultos: number[]
+}
+
+/**
+ * Semanas da grade com os eventos do mês em faixas: um período vira uma barra que atravessa
+ * os dias dele em cada semana, em raias que não se sobrepõem. Só os dias do mês recebem faixas.
+ */
+export function montarSemanas(
+  eventos: EventoCalendario[],
+  anoMes: AnoMes,
+  maximoRaias: number,
+): SemanaDaGrade[] {
+  const grade = montarGradeDoMes(anoMes)
+  const doMes = eventosDoMes(eventos, anoMes)
+  const semanas: SemanaDaGrade[] = []
+
+  for (let i = 0; i < grade.length; i += 7) {
+    const dias = grade.slice(i, i + 7)
+    const visiveis = dias.filter((d) => d.doMesAtual)
+    const ocultos = Array<number>(7).fill(0)
+    const faixas: FaixaSemana[] = []
+
+    if (visiveis.length > 0) {
+      const primeiro = visiveis[0].dataIso
+      const ultimo = visiveis[visiveis.length - 1].dataIso
+      const coluna = (iso: string) => dias.findIndex((d) => d.dataIso === iso)
+
+      const segmentos = doMes
+        .filter((e) => e.inicio <= ultimo && ultimoDia(e) >= primeiro)
+        .map((evento) => {
+          const de = evento.inicio > primeiro ? evento.inicio : primeiro
+          const ate = ultimoDia(evento) < ultimo ? ultimoDia(evento) : ultimo
+          return {
+            evento,
+            inicio: coluna(de),
+            fim: coluna(ate),
+            comecaNaSemana: evento.inicio >= primeiro,
+            terminaNaSemana: ultimoDia(evento) <= ultimo,
+          }
+        })
+        // Pela data de início do evento (não da semana): um período fica na mesma raia de uma
+        // semana para a outra; entre os que começam juntos, o mais longo vai em cima
+        .sort(
+          (a, b) =>
+            a.evento.inicio.localeCompare(b.evento.inicio) ||
+            ultimoDia(b.evento).localeCompare(ultimoDia(a.evento)) ||
+            a.evento.titulo.localeCompare(b.evento.titulo, 'pt-BR'),
+        )
+
+      const ocupacao: number[][] = []
+      for (const segmento of segmentos) {
+        let raia = 0
+        while (
+          ocupacao[raia]?.some((col) => col >= segmento.inicio && col <= segmento.fim)
+        ) {
+          raia += 1
+        }
+        ocupacao[raia] = [
+          ...(ocupacao[raia] ?? []),
+          ...Array.from(
+            { length: segmento.fim - segmento.inicio + 1 },
+            (_, k) => segmento.inicio + k,
+          ),
+        ]
+
+        if (raia < maximoRaias) {
+          faixas.push({ ...segmento, raia })
+        } else {
+          for (let col = segmento.inicio; col <= segmento.fim; col += 1) ocultos[col] += 1
+        }
+      }
+    }
+
+    semanas.push({ dias, faixas, ocultos })
+  }
+
+  return semanas
+}
+
+/** "terça-feira, 22 de novembro" */
+export function formatarDiaSemanaExtenso(dataIso: string) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  }).format(new Date(`${dataIso}T00:00:00Z`))
+}
+
+export function somarDias(dataIso: string, dias: number) {
+  const data = new Date(`${dataIso}T00:00:00Z`)
+  data.setUTCDate(data.getUTCDate() + dias)
+  return data.toISOString().slice(0, 10)
 }

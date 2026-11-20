@@ -1,0 +1,218 @@
+@use 'sass:list';
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba($color-blue-primary, 0.45);
+
+  &[data-entering] {
+    animation: aparecer 0.15s ease-out;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    align-items: center;
+    padding: $spacing-md;
+  }
+}
+
+// No celular, folha que sobe de baixo; a partir do tablet, janela centralizada
+.modal {
+  width: 100%;
+  max-height: 85dvh;
+  overflow-y: auto;
+  background: $color-surface;
+  border-radius: $radius-lg $radius-lg 0 0;
+  box-shadow: 0 -12px 40px rgba($color-blue-primary, 0.2);
+
+  &[data-entering] {
+    animation: subir 0.2s ease-out;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    width: min(100%, 560px);
+    max-height: calc(100dvh - #{$spacing-md * 2});
+    border-radius: $radius-lg;
+    box-shadow: 0 20px 48px rgba($color-blue-primary, 0.25);
+
+    &[data-entering] {
+      animation: aparecer 0.15s ease-out;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay[data-entering],
+  .modal[data-entering] {
+    animation: none;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes subir {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-md $spacing-lg;
+  outline: none;
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-lg;
+  }
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.navegacao {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.titulo {
+  margin: -$spacing-xs 0 0;
+  font-family: $font-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.15;
+  color: $color-blue-primary;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 2rem;
+  }
+}
+
+.icone {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: $color-blue-primary;
+  background: $color-surface;
+  border: 1px solid $color-border-light;
+  border-radius: $radius-full;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: $color-blue-primary;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.vazio {
+  padding: $spacing-lg;
+  font-size: 0.9375rem;
+  color: $color-text-secondary;
+  text-align: center;
+  background: $color-fundo-lateral;
+  border-radius: $radius-md;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.evento {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  border: 1px solid $color-border-light;
+  border-left: 4px solid;
+  border-radius: $radius-md;
+}
+
+@each $tipo, $cores in $cores-evento {
+  .#{$tipo} {
+    border-left-color: list.nth($cores, 1);
+
+    .tipo {
+      background: list.nth($cores, 2);
+    }
+  }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $color-text-secondary;
+}
+
+.tipo {
+  padding: 2px $spacing-sm;
+  color: $color-blue-primary;
+  border-radius: $radius-full;
+}
+
+.nome {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: $color-blue-primary;
+}
+
+.periodo {
+  font-size: 0.875rem;
+  color: $color-blue-secondary;
+}
+
+.descricao {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $color-text-secondary;
+}
+
+.fonte {
+  @include text-link;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  align-self: flex-start;
+  margin-top: $spacing-xs;
+  font-size: 0.875rem;
+}
+
+.oculto {
+  @include visually-hidden;
+}
