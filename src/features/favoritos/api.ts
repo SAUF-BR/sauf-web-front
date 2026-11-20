@@ -1,27 +1,25 @@
 import { apiClient } from '../../lib/api/client'
 import { endpoints } from '../../lib/api/endpoints'
-import { simularRequisicao } from '../../lib/api/mock'
-import { cursosFavoritosIdsMock } from './mocks'
-import type { UniversidadeFavoritaApi } from './types'
+import type { CursoFavoritoApi, UniversidadeFavoritaApi } from './types'
+
+export async function getCursosFavoritos(): Promise<CursoFavoritoApi[]> {
+  const { data } = await apiClient.get<CursoFavoritoApi[]>(endpoints.favoritos.cursos)
+  return data
+}
 
 export async function getCursosFavoritosIds(): Promise<string[]> {
-  // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
-  // const { data } = await apiClient.get<string[]>(endpoints.favoritos.cursos)
-  // return data
-  return simularRequisicao([...cursosFavoritosIdsMock])
+  const { data } = await apiClient.get<string[]>(endpoints.favoritos.cursosIds)
+  return data
 }
 
 export async function alternarCursoFavorito(cursoId: string, favoritar: boolean): Promise<void> {
-  // TODO: trocar pelo endpoint real quando o contrato com a API estiver definido
-  // if (favoritar) await apiClient.post(endpoints.favoritos.curso(cursoId))
-  // else await apiClient.delete(endpoints.favoritos.curso(cursoId))
-  if (favoritar) {
-    cursosFavoritosIdsMock.add(cursoId)
-  } else {
-    cursosFavoritosIdsMock.delete(cursoId)
-  }
+  const url = endpoints.favoritos.curso(cursoId)
 
-  return simularRequisicao(undefined, 150)
+  if (favoritar) {
+    await apiClient.post(url)
+  } else {
+    await apiClient.delete(url)
+  }
 }
 
 export async function getUniversidadesFavoritas(): Promise<UniversidadeFavoritaApi[]> {

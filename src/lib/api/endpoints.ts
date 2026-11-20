@@ -33,6 +33,7 @@ export const endpoints = {
   },
   favoritos: {
     cursos: '/favoritos/cursos',
+    cursosIds: '/favoritos/cursos/ids',
     curso: (cursoId: string) => `/favoritos/cursos/${cursoId}`,
     universidades: '/favoritos/universidades',
     universidadesIds: '/favoritos/universidades/ids',
