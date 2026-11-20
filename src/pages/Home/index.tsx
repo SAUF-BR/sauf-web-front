@@ -20,7 +20,7 @@ import styles from './index.module.scss'
 
 export default function Home() {
   const { data: usuario } = useUsuarioAtual()
-  const { data: prazos, isPending: carregandoPrazos } = useProximosPrazos()
+  const consultaPrazos = useProximosPrazos()
   const { data: totalCursos } = useTotalCursos()
   const { data: cursosRecomendados } = useCursosRecomendados()
   const { data: favoritosIds } = useCursosFavoritosIds({ enabled: !!usuario })
@@ -37,7 +37,13 @@ export default function Home() {
             primeiroNome={usuario ? obterPrimeiroNome(usuario.nome) : undefined}
             buscasPopulares={BUSCAS_POPULARES}
           />
-          <PainelPrazos prazos={prazos} carregando={carregandoPrazos} />
+          <PainelPrazos
+            prazos={consultaPrazos.data}
+            carregando={consultaPrazos.isPending}
+            erro={consultaPrazos.isError && !consultaPrazos.data}
+            tentando={consultaPrazos.isFetching}
+            onTentarDeNovo={() => void consultaPrazos.refetch()}
+          />
         </div>
       </section>
 
