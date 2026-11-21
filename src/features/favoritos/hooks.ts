@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ROTAS } from '../../routes/paths'
@@ -20,6 +21,7 @@ export const favoritosKeys = {
   universidadesIds: () => [...favoritosKeys.universidades(), 'ids'] as const,
 }
 
+// Acrescenta sem repetir (ex.: clique duplo antes da API responder) ou tira o id
 function trocarId(ids: string[], id: string, favoritar: boolean) {
   if (!favoritar) return ids.filter((atual) => atual !== id)
 
@@ -38,6 +40,17 @@ function trocarItem<T extends { id: string }>(
   return [...lista, item]
 }
 
+const Tempo_aviso_erro_ms = 8000
+
+function useLimparErroDepois({ isError, reset }: { isError: boolean; reset: () => void }) {
+  useEffect(() => {
+    if (!isError) return
+
+    const temporizador = setTimeout(reset, Tempo_aviso_erro_ms)
+    return () => clearTimeout(temporizador)
+  }, [isError, reset])
+}
+
 export function useCursosFavoritos() {
   return useQuery({
     queryKey: favoritosKeys.cursos(),
@@ -45,6 +58,7 @@ export function useCursosFavoritos() {
   })
 }
 
+// Ids dos cursos favoritados. Só busca com usuário logado.
 export function useCursosFavoritosIds({ enabled = true } = {}) {
   const { data: usuario } = useUsuarioAtual()
 
@@ -57,6 +71,7 @@ export function useCursosFavoritosIds({ enabled = true } = {}) {
 }
 
 type AlternarCurso = {
+  // Id da oferta (o curso numa universidade), que é o que a API guarda
   cursoId: string
   favoritar: boolean
   curso?: CursoFavoritoApi
@@ -69,11 +84,10 @@ export function useAlternarCursoFavorito() {
   const chaveLista = favoritosKeys.cursos()
   const chaveIds = favoritosKeys.cursosIds()
 
-  return useMutation({
+  const mutacao = useMutation({
     mutationKey: Chave_alternar_curso,
     mutationFn: ({ cursoId, favoritar }: AlternarCurso) => alternarCursoFavorito(cursoId, favoritar),
     onMutate: async ({ cursoId, favoritar, curso }: AlternarCurso) => {
-
       await queryClient.cancelQueries({ queryKey: chaveLista })
 
       const idsAnteriores = queryClient.getQueryData<string[]>(chaveIds)
@@ -99,6 +113,10 @@ export function useAlternarCursoFavorito() {
       }
     },
   })
+
+  useLimparErroDepois(mutacao)
+
+  return mutacao
 }
 
 export function useUniversidadesFavoritas() {
@@ -108,11 +126,15 @@ export function useUniversidadesFavoritas() {
   })
 }
 
+// Ids das universidades favoritadas (coração da listagem e botão da visão geral).
+// Só busca com usuário logado.
 export function useUniversidadesFavoritasIds({ enabled = true } = {}) {
+  const { data: usuario } = useUsuarioAtual()
+
   return useQuery({
     queryKey: favoritosKeys.universidadesIds(),
     queryFn: getUniversidadesFavoritasIds,
-    enabled,
+    enabled: enabled && Boolean(usuario),
   })
 }
 
@@ -130,7 +152,7 @@ export function useAlternarUniversidadeFavorita() {
   const chaveLista = favoritosKeys.universidades()
   const chaveIds = favoritosKeys.universidadesIds()
 
-  return useMutation({
+  const mutacao = useMutation({
     mutationKey: Chave_alternar_universidade,
     mutationFn: ({ universidadeId, favoritar }: AlternarUniversidade) =>
       alternarUniversidadeFavorita(universidadeId, favoritar),
@@ -164,12 +186,17 @@ export function useAlternarUniversidadeFavorita() {
       }
     },
   })
+
+  useLimparErroDepois(mutacao)
+
+  return mutacao
 }
 
+// Coração das telas de universidade. Visitante que clica vai para o login e volta depois.
 export function useFavoritarUniversidade() {
   const { data: usuario } = useUsuarioAtual()
   const logado = Boolean(usuario)
-  const ids = useUniversidadesFavoritasIds({ enabled: logado })
+  const ids = useUniversidadesFavoritasIds()
   const alternar = useAlternarUniversidadeFavorita()
   const navigate = useNavigate()
   const location = useLocation()
@@ -187,6 +214,7 @@ export function useFavoritarUniversidade() {
     alternar.mutate({ universidadeId, favoritar: !ehFavorita(universidadeId) })
   }
 
+  // Mensagem do ErroApi quando a última tentativa de favoritar ou remover falhou
   const erro = alternar.isError ? alternar.error.message : null
 
   return { ehFavorita, alternarFavorita, erro }

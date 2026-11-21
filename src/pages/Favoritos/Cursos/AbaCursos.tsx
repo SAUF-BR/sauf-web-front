@@ -14,6 +14,7 @@ import { PainelAlerta } from '../components/PainelAlerta/PainelAlerta'
 import type { EstadoFavoritos } from '../useFavoritos'
 import {
   formatarDuracao,
+  formatarMensalidade,
   grausDaOferta,
   Rotulo_grau,
   type CursoFavorito,
@@ -114,6 +115,7 @@ export function AbaCursos({
                     valor: curso.notaCorteSisu !== null ? formatarNumero(curso.notaCorteSisu) : '—',
                   },
                   { rotulo: 'Vagas', valor: curso.vagas !== null ? formatarInteiro(curso.vagas) : '—' },
+                  { rotulo: 'Mensalidade', valor: formatarMensalidade(curso) },
                 ]}
                 link={{ para: ROTAS.cursoDetalhe(curso.cursoId), rotulo: 'Ver curso' }}
                 selecionado={favoritos.selecionados.has(curso.id)}
