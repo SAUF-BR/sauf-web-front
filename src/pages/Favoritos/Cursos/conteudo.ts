@@ -1,4 +1,5 @@
 import type { CursoFavoritoApi, GrauOferta } from '../../../features/favoritos'
+import { formatarMoeda } from '../../../lib/utils'
 import { compararComNulos, type Comparador, type Opcao } from '../conteudo'
 
 export type CursoFavorito = CursoFavoritoApi & { nome: string; cursoId: string }
@@ -7,17 +8,24 @@ export function paraCursoFavorito(oferta: CursoFavoritoApi): CursoFavorito {
   return { ...oferta, nome: oferta.curso.nome, cursoId: oferta.curso.id }
 }
 
-export type OrdenacaoCursos = 'corte' | 'nome'
+export type OrdenacaoCursos = 'corte' | 'mensalidade' | 'nome'
 
 export const Opcoes_ordenacao_cursos: Opcao<OrdenacaoCursos>[] = [
   { valor: 'corte', rotulo: 'Corte SISU' },
+  { valor: 'mensalidade', rotulo: 'Menor mensalidade' },
   { valor: 'nome', rotulo: 'Nome (A–Z)' },
 ]
+
+function valorMensalidade(curso: CursoFavorito) {
+  return curso.gratuito ? 0 : curso.mensalidade
+}
 
 export const Ordenacao_padrao_cursos: OrdenacaoCursos = 'corte'
 
 export const Comparadores_cursos: Record<OrdenacaoCursos, Comparador<CursoFavorito>> = {
   corte: (a, b) => compararComNulos(a.notaCorteSisu, b.notaCorteSisu, (x, y) => y - x),
+  mensalidade: (a, b) =>
+    compararComNulos(valorMensalidade(a), valorMensalidade(b), (x, y) => x - y),
   nome: () => 0,
 }
 
@@ -30,6 +38,13 @@ export const Rotulo_grau: Record<GrauOferta, string> = {
 
 export function grausDaOferta(curso: CursoFavorito) {
   return [...new Set(curso.opcoes.map((opcao) => opcao.grau))]
+}
+
+export function formatarMensalidade(curso: CursoFavorito) {
+  if (curso.gratuito) return 'Gratuito'
+  if (curso.mensalidade !== null) return formatarMoeda(curso.mensalidade)
+
+  return '—'
 }
 
 export function formatarDuracao(curso: CursoFavorito) {
